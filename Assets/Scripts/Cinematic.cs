@@ -29,13 +29,12 @@ public class Cinematic : MonoBehaviour {
         Camera.main.transform.rotation = Quaternion.Euler(0, 180, 0);
         triggerWaypointMove = false;
         currWaypointIndex = 0;
-        
 	}
 	public void beginCinematic () {
 		Invoke("fadeSceneIn", timeBeforeFadeIn);
 		Invoke("nextWaypointMove", waypointTimes[0]);
 	}
-	
+
 	public void Update () {
         if (triggerWaypointMove) {
             moveToPoint(waypoints[currWaypointIndex].transform.position);

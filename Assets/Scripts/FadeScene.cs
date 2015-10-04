@@ -15,10 +15,8 @@ public class FadeScene : MonoBehaviour {
         fadingIn = false;
         myImage = this.GetComponent<Image>();
         myColor = myImage.color;
-
-		Invoke ("fadeIn"
 	}
-	
+
 	void Update () {
         if (fadingIn) {
             myColor.a -= 0.3f * Time.deltaTime;
