@@ -24,16 +24,18 @@ public class Cinematic : MonoBehaviour {
     private float rotateSpeed = 1f;
     private bool triggerRotate = false;
 
-	void Start () {
+	public void Start () {
         Camera.main.transform.position = new Vector3(-21.15f, 0.6f, 10.6f);
         Camera.main.transform.rotation = Quaternion.Euler(0, 180, 0);
         triggerWaypointMove = false;
         currWaypointIndex = 0;
-        Invoke("fadeSceneIn", timeBeforeFadeIn);
-        Invoke("nextWaypointMove", waypointTimes[0]);
 	}
-	
-	void Update () {
+	public void beginCinematic () {
+		Invoke("fadeSceneIn", timeBeforeFadeIn);
+		Invoke("nextWaypointMove", waypointTimes[0]);
+	}
+
+	public void Update () {
         if (triggerWaypointMove) {
             moveToPoint(waypoints[currWaypointIndex].transform.position);
 
