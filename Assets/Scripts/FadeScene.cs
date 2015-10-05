@@ -5,6 +5,8 @@ using Image = UnityEngine.UI.Image;
 
 public class FadeScene : MonoBehaviour {
 
+	public float timeBeforeFadeIn = 0;
+
     private Image myImage;
     private Color myColor;
     private bool fadingIn;
@@ -14,7 +16,7 @@ public class FadeScene : MonoBehaviour {
         myImage = this.GetComponent<Image>();
         myColor = myImage.color;
 	}
-	
+
 	void Update () {
         if (fadingIn) {
             myColor.a -= 0.3f * Time.deltaTime;
