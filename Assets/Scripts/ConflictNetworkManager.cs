@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NetworkManager : MonoBehaviour {
+public class ConflictNetworkManager : UnityEngine.Networking.NetworkManager {
+
+    public GameObject playerToSpawn;
+    public GameObject playerSpawnLocation;
 
 	public static float networkTimeout = 10f;
 	private float currTime = 0;
@@ -20,6 +23,14 @@ public class NetworkManager : MonoBehaviour {
 		//	TODO: HANDLE REGISTRATION FAILURES
 		if (mse == MasterServerEvent.RegistrationSucceeded) {
 			Debug.Log("Registration succeeded!");
+            if (Network.isServer) {
+                //  Spawn the server's player
+                Instantiate(
+                    playerToSpawn,
+                    playerSpawnLocation.transform.position,
+                    playerSpawnLocation.transform.rotation
+                );
+            }
 		}
 	}
 	
@@ -55,8 +66,13 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	public void startServer (string gameTypeName) {
-		Network.InitializeServer(2, 25001, !Network.HavePublicAddress());
-		MasterServer.RegisterHost(gameTypeName, "Conflict Resolution", "Fun times at USC");
+        NetworkConnectionError response = Network.InitializeServer(2, 25001, !Network.HavePublicAddress());
+        if ( response != NetworkConnectionError.NoError) {
+            Debug.LogError("Error initializing server: " + response);
+        }
+        else {
+            MasterServer.RegisterHost(gameTypeName, "Conflict Resolution", "Fun times at USC");
+        }
 	}
 
 	//--------------------------------------------------

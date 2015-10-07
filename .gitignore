@@ -25,3 +25,6 @@ UnityGenerated/
 *.pidb
 
 *.booproj
+
+TestBuild_Data/
+*.exe

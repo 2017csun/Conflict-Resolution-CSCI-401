@@ -30,6 +30,7 @@ public class MenuScript : MonoBehaviour {
 	}
 	
 	public void Button1Pressed() {
+        Application.LoadLevel(2);
 		/*
 		exitButton.enabled = false;
 		button2Button.enabled = false;
