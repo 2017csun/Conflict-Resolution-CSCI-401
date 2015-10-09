@@ -4,21 +4,45 @@ using System.Collections;
 using UnityEngine.EventSystems;
 
 public class MenuScript : MonoBehaviour {
-	
+
 	public Button exitButton;
 	public Button helpButton;
-	public Button button1Button;
-	public Button button2Button;
+	public Button hostGameButton;
+	public Button joinGameButton;
+
+	public Canvas hostGameMenu;
+	public Canvas joinGameMenu;
 	// Use this for initialization
 	void Start () {
-		button1Button = button1Button.GetComponent<Button> ();
-		button2Button = button2Button.GetComponent<Button> ();
+
+		// host game
+		hostGameButton = hostGameButton.GetComponent<Button> ();
+		hostGameMenu = hostGameMenu.GetComponent<Canvas> ();
+		hostGameMenu.enabled = false;
+
+		// join game
+		joinGameButton = joinGameButton.GetComponent<Button> ();
+		joinGameMenu = joinGameMenu.GetComponent<Canvas> ();
+		joinGameMenu.enabled = false;
+
+
+		// help and exit
 		helpButton = helpButton.GetComponent<Button> ();
 		exitButton = exitButton.GetComponent<Button> ();
+
 	}
 	
 	public void ExitPressed() {
 		Application.Quit ();
+	}
+
+	public void CancelPressed() {
+		hostGameMenu.enabled = false;
+		joinGameMenu.enabled = false;
+		hostGameButton.enabled = true;
+		joinGameButton.enabled = true;
+		helpButton.enabled = true;
+		exitButton.enabled = true;
 	}
 	
 	public void HelpPressed() {
@@ -29,7 +53,13 @@ public class MenuScript : MonoBehaviour {
 		*/
 	}
 	
-	public void Button1Pressed() {
+	public void HostGamePressed() {
+		hostGameMenu.enabled = true;
+		hostGameButton.enabled = false;
+		joinGameButton.enabled = false;
+		helpButton.enabled = false;
+		exitButton.enabled = false;
+
 		/*
 		exitButton.enabled = false;
 		button2Button.enabled = false;
@@ -37,8 +67,12 @@ public class MenuScript : MonoBehaviour {
 		*/
 	}
 	
-	public void Button2Pressed() {
-		button2Button.GetComponentInChildren<Text> ().text = "SPACESHIP";
+	public void JoinGamePressed() {
+		hostGameButton.enabled = false;
+		joinGameButton.enabled = false;
+		joinGameMenu.enabled = true;
+		helpButton.enabled = false;
+		exitButton.enabled = false;
 		/*
 		button1Button.enabled = false;
 		exitButton.enabled = false;
