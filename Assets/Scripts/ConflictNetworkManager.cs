@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
 using UnityEngine.Networking.Types;
@@ -12,43 +13,14 @@ public class ConflictNetworkManager : NetworkManager {
 	private HostData[] hostData;
 	private bool isRefreshingHosts = false;
 
-	private string serverToConnect;
+	private string gameCode;
     private NetworkClient myClient;
     private NetworkMatch networkMatch;
 
 	void Start () {
         networkMatch = this.gameObject.AddComponent<NetworkMatch>();
         networkMatch.SetProgramAppID((AppID)379051);
-	}
-	
-	void OnMasterServerEvent (MasterServerEvent mse) {
-		//	TODO: HANDLE REGISTRATION FAILURES
-		if (mse == MasterServerEvent.RegistrationSucceeded) {
-			Debug.Log("Registration succeeded!");
-		}
-	}
-	
-	void Update () {
-		if (isRefreshingHosts) {
-			currTime += Time.deltaTime;
-			if (currTime > networkTimeout) {
-				Debug.Log("Network timed out");
-			}
-
-			//	If host list request is done
-			if (MasterServer.PollHostList().Length > 0) {
-				hostData = MasterServer.PollHostList();
-				//	Find the game we want to connect to 
-				for (int i = 0; i < hostData.Length; ++i) {
-					if (hostData[i].gameType == serverToConnect) {
-						Network.Connect(hostData[i]);
-						isRefreshingHosts = false;
-						currTime = 0;
-						break;
-					}
-				}
-			}
-		}
+		gameCode = "";
 	}
 
 	//--------------------------------------------------
@@ -64,26 +36,26 @@ public class ConflictNetworkManager : NetworkManager {
 	public void startServer () {
         myClient = this.StartHost();
 
-        //string gameCode = "";
-        //int codeLength = 6;
-        //string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		int codeLength = 6;
+		string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		
+		//  Generate random string
+		for (int i = 0; i < codeLength; ++i) {
+			char randomChar = chars[Random.Range(0, chars.Length)];
+			gameCode += randomChar;
+		}
+		
+		gameCode = "ericdongisawesome";
+		Debug.Log("Creating match under name: " + gameCode);
 
-        ////  Generate random string
-        //for (int i = 0; i < codeLength; ++i) {
-        //    char randomChar = chars[Random.Range(0, chars.Length)];
-        //    gameCode += randomChar;
-        //}
+		//	Create the matchmaker request
+        CreateMatchRequest create = new CreateMatchRequest();
+        create.name = gameCode;
+        create.size = 2;
+        create.advertise = true;
+        create.password = "";
 
-        //gameCode = "eric_dong_is_awesome";
-        //Debug.Log("Registering under code: " + gameCode);
-        //CreateMatchRequest create = new CreateMatchRequest();
-        //create.name = gameCode;
-        //create.size = 2;
-        //create.advertise = true;
-        //create.password = "";
-
-        //networkMatch.CreateMatch(create, OnMatchCreate);
-        //MasterServer.RegisterHost(gameCode, "Conflict Resolution", "Fun times at USC");
+        networkMatch.CreateMatch(create, OnMatchCreate);        
 	}
 
     public override void OnMatchCreate (CreateMatchResponse matchResponse) {
@@ -100,13 +72,44 @@ public class ConflictNetworkManager : NetworkManager {
         }
     }
 
+	public override void OnStartHost () {
+		base.OnStartHost();
+
+		Debug.Log("Host started!");
+	}
+
 	//--------------------------------------------------
 	//	Client Code
 	//--------------------------------------------------
 
 	public void connectToServer (string gameTypeName) {
-		MasterServer.RequestHostList(gameTypeName);
-		serverToConnect = gameTypeName;
-		isRefreshingHosts = true;
+		networkMatch.ListMatches(0, 20, gameTypeName, OnMatchList);
+	}
+
+	public override void OnMatchList (ListMatchResponse matchListResponse) {
+		List<MatchDesc> matches = matchListResponse.matches;
+
+		if (matches.Count > 1) {
+			Debug.LogError("THERE ARE MULTIPLE MATCHES IDK WHAT TO DOOOOO");
+		}
+		else if (matches.Count == 1) {
+			networkMatch.JoinMatch(matches[0].networkId, "", OnMatchJoined);
+		}
+		else {
+			Debug.LogError("MATCH NOT FOUND!!");
+		}
+	}
+
+	public void OnMatchJoined (JoinMatchResponse join) {
+		Debug.Log("Match joined successfully!");
+		if (join.success) {
+			NetworkClient myClient = new NetworkClient();
+			myClient.RegisterHandler(MsgType.Connect, OnConnected);
+			myClient.Connect(new MatchInfo(join));
+		}
+	}
+
+	public void OnConnected (NetworkMessage msg) {
+		Debug.Log("Connected!");
 	}
 }

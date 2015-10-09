@@ -1,3 +1,5 @@
+[Bb]uilds/
+
 [Ll]ibrary/
 
 [Tt]emp/
@@ -25,6 +27,3 @@ UnityGenerated/
 *.pidb
 
 *.booproj
-
-TestBuild_Data/
-*.exe
