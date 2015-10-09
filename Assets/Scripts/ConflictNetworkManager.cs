@@ -36,16 +36,6 @@ public class ConflictNetworkManager : NetworkManager {
 	public void startServer () {
         myClient = this.StartHost();
 
-		int codeLength = 6;
-		string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		
-		//  Generate random string
-		for (int i = 0; i < codeLength; ++i) {
-			char randomChar = chars[Random.Range(0, chars.Length)];
-			gameCode += randomChar;
-		}
-		
-		gameCode = "ericdongisawesome";
 		Debug.Log("Creating match under name: " + gameCode);
 
 		//	Create the matchmaker request
@@ -111,5 +101,23 @@ public class ConflictNetworkManager : NetworkManager {
 
 	public void OnConnected (NetworkMessage msg) {
 		Debug.Log("Connected!");
+	}
+
+	//--------------------------------------------------
+	//	Utility functions
+	//--------------------------------------------------
+
+	public string generateMatchKey () {
+		int codeLength = 6;
+		string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		
+		//  Generate random string
+		for (int i = 0; i < codeLength; ++i) {
+			char randomChar = chars[Random.Range(0, chars.Length)];
+			gameCode += randomChar;
+		}
+
+		gameCode = "ilikecereal";
+		return gameCode;
 	}
 }
