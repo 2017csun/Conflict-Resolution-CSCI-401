@@ -20,12 +20,15 @@ public class Spin : MonoBehaviour {
 	void Update () {
 		if (spinning == true) {
 			//transform.Rotate (Vector3.up, speed);
-			currentSpeed = Mathf.Lerp(initialSpeed, finalSpeed, Time.deltaTime);
+			float currentSpeed = Mathf.Lerp(initialSpeed, finalSpeed, Time.deltaTime);
+			if (currentSpeed == 0f) {
+				spinning = false;
+			}
 			transform.Rotate (Vector3.up, currentSpeed);
 		}
 
-		if (speed == 0) {
-			spinning = false;
-		}
+//		if (speed == 0) {
+//			spinning = false;
+//		}
 	}
 }
