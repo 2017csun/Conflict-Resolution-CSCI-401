@@ -27,15 +27,12 @@ public class ConflictNetworkManager : NetworkManager {
 	//	Server Code
 	//--------------------------------------------------
 
-	private void OnPlayerConnected(NetworkPlayer player) {
-		Debug.Log("A PLAYER HAS CONNECTED!!");
-	}
-
     //  Start a host and register the game
     //  @returns game code for other host to connect to
 	public void startServer () {
         myClient = this.StartHost();
 
+		gameCode = "ilikecereal";
 		Debug.Log("Creating match under name: " + gameCode);
 
 		//	Create the matchmaker request
@@ -72,10 +69,12 @@ public class ConflictNetworkManager : NetworkManager {
 	//	Client Code
 	//--------------------------------------------------
 
+	//	Request the list of matches matching gameTypeName
 	public void connectToServer (string gameTypeName) {
 		networkMatch.ListMatches(0, 20, gameTypeName, OnMatchList);
 	}
 
+	//	Check for exactly 1 match
 	public override void OnMatchList (ListMatchResponse matchListResponse) {
 		List<MatchDesc> matches = matchListResponse.matches;
 
@@ -90,17 +89,34 @@ public class ConflictNetworkManager : NetworkManager {
 		}
 	}
 
+	//	Called when match has been joined
 	public void OnMatchJoined (JoinMatchResponse join) {
-		Debug.Log("Match joined successfully!");
 		if (join.success) {
+			Debug.Log("Match joined successfully!");
 			NetworkClient myClient = new NetworkClient();
-			myClient.RegisterHandler(MsgType.Connect, OnConnected);
+			myClient.RegisterHandler(MsgType.Connect, OnConnectedToServer);
 			myClient.Connect(new MatchInfo(join));
+		}
+		else {
+			Debug.LogError("MATCH JOIN FAILED IDK WHAT TO DOOOOO");
 		}
 	}
 
-	public void OnConnected (NetworkMessage msg) {
+	//	Once connected, load level and spawn player
+	public void OnConnectedToServer (NetworkMessage msg) {
 		Debug.Log("Connected!");
+		spawnPlayer();
+	}
+
+	private void spawnPlayer () {
+		Application.LoadLevel("Eric_Scene");
+		GameObject spawnLocation = GameObject.FindGameObjectWithTag("PlayerSpawn");
+		GameObject player = Network.Instantiate(
+			this.playerPrefab,
+			spawnLocation.transform.position,
+			spawnLocation.transform.rotation,
+			0	//	Group number
+		) as GameObject;
 	}
 
 	//--------------------------------------------------
