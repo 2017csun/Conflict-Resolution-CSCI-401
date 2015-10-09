@@ -2,9 +2,14 @@
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 
 public class MenuScript : MonoBehaviour {
 
+	public GameObject networkManagerPrefab;
+	ConflictNetworkManager networkManager;
+	public Text gameTitleText;
+	public Text keyText;
 	public Button exitButton;
 	public Button helpButton;
 	public Button hostGameButton;
@@ -15,9 +20,16 @@ public class MenuScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		// networkmanager
+		networkManager = networkManagerPrefab.GetComponent<ConflictNetworkManager> ();
+
+		// game title
+		gameTitleText = gameTitleText.GetComponent<Text> ();
+
 		// host game
 		hostGameButton = hostGameButton.GetComponent<Button> ();
 		hostGameMenu = hostGameMenu.GetComponent<Canvas> ();
+		keyText = keyText.GetComponent<Text> ();
 		hostGameMenu.enabled = false;
 
 		// join game
@@ -54,29 +66,38 @@ public class MenuScript : MonoBehaviour {
 	}
 	
 	public void HostGamePressed() {
+
+		// handle GUI
 		hostGameMenu.enabled = true;
 		hostGameButton.enabled = false;
 		joinGameButton.enabled = false;
 		helpButton.enabled = false;
 		exitButton.enabled = false;
 
-		/*
-		exitButton.enabled = false;
-		button2Button.enabled = false;
-		helpButton.enabled = false;
-		*/
+		// handle network
+		string key = networkManager.generateMatchKey();
+		keyText.text = key;
+
 	}
 	
 	public void JoinGamePressed() {
+
+		// handle GUI
 		hostGameButton.enabled = false;
 		joinGameButton.enabled = false;
 		joinGameMenu.enabled = true;
 		helpButton.enabled = false;
 		exitButton.enabled = false;
-		/*
-		button1Button.enabled = false;
-		exitButton.enabled = false;
-		helpButton.enabled = false;
-		*/
+
+		// handle networking
+
+	}
+
+	public void StartPressed() {
+
+	}
+
+	public void JoinPressed() {
+
 	}
 }
