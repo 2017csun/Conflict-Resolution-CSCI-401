@@ -14,7 +14,6 @@ public class ConflictNetworkManager : NetworkManager {
 	private bool isRefreshingHosts = false;
 
 	private string gameCode;
-	private string serverToConnect;
     private NetworkClient myClient;
     private NetworkMatch networkMatch;
 
@@ -22,36 +21,6 @@ public class ConflictNetworkManager : NetworkManager {
         networkMatch = this.gameObject.AddComponent<NetworkMatch>();
         networkMatch.SetProgramAppID((AppID)379051);
 		gameCode = "";
-	}
-	
-	void OnMasterServerEvent (MasterServerEvent mse) {
-		//	TODO: HANDLE REGISTRATION FAILURES
-		if (mse == MasterServerEvent.RegistrationSucceeded) {
-			Debug.Log("Registration succeeded!");
-		}
-	}
-	
-	void Update () {
-		if (isRefreshingHosts) {
-			currTime += Time.deltaTime;
-			if (currTime > networkTimeout) {
-				Debug.Log("Network timed out");
-			}
-
-			//	If host list request is done
-			if (MasterServer.PollHostList().Length > 0) {
-				hostData = MasterServer.PollHostList();
-				//	Find the game we want to connect to 
-				for (int i = 0; i < hostData.Length; ++i) {
-					if (hostData[i].gameType == serverToConnect) {
-						Network.Connect(hostData[i]);
-						isRefreshingHosts = false;
-						currTime = 0;
-						break;
-					}
-				}
-			}
-		}
 	}
 
 	//--------------------------------------------------
