@@ -34,7 +34,10 @@ public class GalacticNetworkManager : NetworkManager {
         isServer = true;
         myClient = this.StartHost();
 
-        gameCode = "foodisgud";
+        if (gameCode.Equals("")) {
+            Debug.LogError("Error: gameCode has not been set");
+            return;
+        }
         Debug.Log("Creating match under name: " + gameCode);
 
         //	Create the matchmaker request
@@ -130,6 +133,7 @@ public class GalacticNetworkManager : NetworkManager {
     //--------------------------------------------------
 
     public string generateMatchKey () {
+        gameCode = "";
         int codeLength = 6;
         string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -139,7 +143,6 @@ public class GalacticNetworkManager : NetworkManager {
             gameCode += randomChar;
         }
 
-        gameCode = "ilikecereal";
         return gameCode;
     }
 }
