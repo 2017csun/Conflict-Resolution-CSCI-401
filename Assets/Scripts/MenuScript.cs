@@ -6,8 +6,8 @@ using UnityEngine.Networking;
 
 public class MenuScript : MonoBehaviour {
 
-	public GameObject networkManagerPrefab;
-	ConflictNetworkManager networkManager;
+    public GameObject networkManagerPrefab;
+	GalacticNetworkManager networkManager;
 	public Text gameTitleText;
 	public Text keyText;
 	public Button exitButton;
@@ -21,7 +21,7 @@ public class MenuScript : MonoBehaviour {
 	void Start () {
 
 		// networkmanager
-		networkManager = networkManagerPrefab.GetComponent<ConflictNetworkManager> ();
+        networkManager = networkManagerPrefab.GetComponent<GalacticNetworkManager>();
 
 		// game title
 		gameTitleText = gameTitleText.GetComponent<Text> ();
@@ -75,7 +75,7 @@ public class MenuScript : MonoBehaviour {
 		exitButton.enabled = false;
 
 		// handle network
-		string key = networkManager.generateMatchKey();
+        string key = networkManager.generateMatchKey();
 		keyText.text = key;
 
 	}
