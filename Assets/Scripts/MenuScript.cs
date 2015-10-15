@@ -10,6 +10,7 @@ public class MenuScript : MonoBehaviour {
     NetworkMatcher networkMatcher;
 	public Text gameTitleText;
 	public Text keyText;
+	public InputField keyInputField;
 	public Button exitButton;
 	public Button helpButton;
 	public Button hostGameButton;
@@ -35,6 +36,7 @@ public class MenuScript : MonoBehaviour {
 		// join game
 		joinGameButton = joinGameButton.GetComponent<Button> ();
 		joinGameMenu = joinGameMenu.GetComponent<Canvas> ();
+		keyInputField = keyInputField.GetComponent<InputField> ();
 		joinGameMenu.enabled = false;
 
 
@@ -98,6 +100,7 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void JoinPressed() {
-
+		string inputKey = keyInputField.text;
+		networkMatcher.connectToServer(inputKey);
 	}
 }
