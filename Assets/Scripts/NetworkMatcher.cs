@@ -84,7 +84,6 @@ public class NetworkMatcher : MonoBehaviour {
             gameCode += randomChar;
         }
 
-        gameCode = "foodisgud";
         return gameCode;
     }
 }
