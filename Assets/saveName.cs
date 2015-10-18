@@ -14,6 +14,7 @@ public class saveName : MonoBehaviour {
 	public int num = 1;
 
 	public int reset;
+	public GameObject obj;
 	public List<GameObject> gameOlist;
 	public List<Dictionary<string,GameObject>>players;
 	public Dictionary<string, GameObject> currentdict;
@@ -24,11 +25,12 @@ public class saveName : MonoBehaviour {
 		num = 1;
 		names = new List<string>();
 		List<GameObject> gameOlist = new List<GameObject> ();
-		GameObject obj = GameObject.Find ("EachPlayer");
+		obj = new GameObject ();
+		 obj = GameObject.Find ("EachPlayer");
 		//print (obj.name);
 		//GameObject p = GameObject.Find ("/Icons");
 		//	GameObject gameObject = GameObject.Find("Canvas");
-		places = new Text[8];
+		//places = new Text[8];
 		places = obj.GetComponentsInChildren<Text>(); 
 
 		go = GetComponentsInChildren<Transform>();
