@@ -22,7 +22,7 @@ public class saveName : MonoBehaviour {
 		num = 1;
 		names = new List<string>();
 		List<GameObject> gameOlist = new List<GameObject> ();
-		GameObject o = GameObject.Find ("Summary/EachPlayer");
+		GameObject o = GameObject.Find ("/CanvasNameInput/Summary/EachPlayer");
 		//GameObject p = GameObject.Find ("/Icons");
 		//	GameObject gameObject = GameObject.Find("Canvas");
 		places = o.GetComponentsInChildren<Text>();
