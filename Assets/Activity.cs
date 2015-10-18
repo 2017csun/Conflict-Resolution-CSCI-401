@@ -11,10 +11,18 @@ public class Activity : MonoBehaviour {
 	
 	// Update is called once per frame
 public	void Update () {
-		gameObject.SetActive (true);
+	//	gameObject.SetActive (true);
 
 
 	}
 
+public void enablePanel(GameObject go) {
+		go.SetActive (true);
+	}
+
+public void disablePanel(GameObject go) {
+
+		go.SetActive (false);
+	}
 
 }
