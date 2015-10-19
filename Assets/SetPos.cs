@@ -12,7 +12,7 @@ public class SetPos : MonoBehaviour {
 		
 		//this.transform.rotation = Camera.main.transform.rotation;
 		
-		//Debug.Log (" HI " + gameObject);
+		Debug.Log (" HI " + gameObject + transform.position);
 		
 	}
 	

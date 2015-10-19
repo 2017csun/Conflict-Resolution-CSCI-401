@@ -12,20 +12,27 @@ public class saveName : MonoBehaviour {
 	public Transform[] go;
 	string currentname;
 	public int num = 1;
+
 	public int reset;
+	public GameObject obj;
 	public List<GameObject> gameOlist;
 	public List<Dictionary<string,GameObject>>players;
 	public Dictionary<string, GameObject> currentdict;
 
 	void Start() {
+		 //var obj =  new GameObject();
 		reset = 0;
 		num = 1;
 		names = new List<string>();
 		List<GameObject> gameOlist = new List<GameObject> ();
-		GameObject o = GameObject.Find ("/CanvasNameInput/Summary/EachPlayer");
+		obj = new GameObject ();
+		 obj = GameObject.Find ("EachPlayer");
+		//print (obj.name);
 		//GameObject p = GameObject.Find ("/Icons");
 		//	GameObject gameObject = GameObject.Find("Canvas");
-		places = o.GetComponentsInChildren<Text>();
+		//places = new Text[8];
+		places = obj.GetComponentsInChildren<Text>(); 
+
 		go = GetComponentsInChildren<Transform>();
 		//places.text[enter the index of the text object here].text = "hey";
 		players = new List<Dictionary<string,GameObject>> ();
