@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class IconSelector : MonoBehaviour {
 
 	public GameObject[] gos;
+	GameObject obj;
+	public Text iconname;
 	public bool doit;
 	public GameObject p;
 	public GameObject[] objects;
@@ -24,6 +26,8 @@ public class IconSelector : MonoBehaviour {
 		p = GameObject.Find ("Test");// InitializeArray<GameObject>(12);
 		objects[0] = GameObject.Find ("/Icons");
 		//start = new Vector3 (0.0,0.0,0.0);
+		obj = GameObject.Find ("/PanelIconSelect/selectButton");
+	
 		gos =new GameObject[12];;
 		gos [0] = GameObject.Find ("/Icons/speedChar");
 		gos[1] = GameObject.Find ("/Icons/greenAlien");
@@ -38,19 +42,19 @@ public class IconSelector : MonoBehaviour {
 		gos [10] = GameObject.Find ("/Icons/tv");
 		gos [11] = GameObject.Find ("/Icons/tubeGlass");
 
-		wos [0] = GameObject.Find ("/Icons/speedChar");
-		wos [1] = GameObject.Find ("/Icons/greenAlien");
-		wos [2] = GameObject.Find ("/Icons/kyleRobot");
+		wos [0] = GameObject.Find ("/Icons/spaceman");
+		wos [1] = GameObject.Find ("/Icons/greenalien");
+		wos [2] = GameObject.Find ("/Icons/robot");
 		wos [3] = GameObject.Find ("/Icons/stone");
 
-		wos [4] = GameObject.Find ("/Icons/Astronaut");
+		wos [4] = GameObject.Find ("/Icons/astronaut");
 		wos [5] = GameObject.Find ("/Icons/bullet");
 		wos [6] = GameObject.Find ("/Icons/gun");
-		wos [7] = GameObject.Find ("/Icons/pinkAlien");
+		wos [7] = GameObject.Find ("/Icons/pinkalien");
 		wos [8] = GameObject.Find ("/Icons/drone");
 		wos [9] = GameObject.Find ("/Icons/laptop");
 		wos [10] = GameObject.Find ("/Icons/tv");
-		wos [11] = GameObject.Find ("/Icons/tubeGlass");
+		wos [11] = GameObject.Find ("/Icons/tubeglass");
 
 	}
 
@@ -87,7 +91,7 @@ public class IconSelector : MonoBehaviour {
 			wos[current].SetActive(true);
 			wos[current].transform.position = Camera.main.transform.position + Camera.main.transform.forward * .8f;
 			//Debug.Log ("In This update");
-			
+			iconname.text = wos[current].name;
 			//astro.SetActive (true);
 			current++; 
 			
@@ -97,12 +101,16 @@ public class IconSelector : MonoBehaviour {
 			//Debug.Log ("this index should be true " + (current % 12));
 			//Debug.Log ("Current is now " + current);
 			wos[(current - 1) % 12].SetActive(false);
+			while(wos[current % 12] == null) {
+				current++;
+			}
 			wos[current % 12].SetActive (true);
 		
 			wos[current % 12].transform.position = Camera.main.transform.position + Camera.main.transform.forward * .8f;
 			//start = Camera.main.transform.position + Camera.main.transform.forward * .8f;
 			doit = true;
 			current = current % 12;
+			iconname.text = wos[current % 12].name;
 			current++;
 		}
 		
@@ -124,4 +132,20 @@ public class IconSelector : MonoBehaviour {
 		r = reset;
 
 	}
+
+	public void removeIcon() {
+		//wos [current] = null;
+		for (int i = 0; i < wos.Length; i++) {
+			if (i == current) {
+				print (wos [i].name);
+				wos [i] = null;
+			}
+		}
+		for (int i = current; i < wos.Length; i++) {
+			wos [i + 1] = wos [i];
+
+	
+		}
+	}
+
 }

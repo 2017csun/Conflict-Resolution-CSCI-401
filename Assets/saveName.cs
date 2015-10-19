@@ -9,12 +9,14 @@ public class saveName : MonoBehaviour {
 
 	public List<string> names;
 	public Text[] places;
+	public List<string> iconNames;
 	public Transform[] go;
 	string currentname;
 	public int num = 1;
 
 	public int reset;
 	public GameObject obj;
+	public GameObject obj2;
 	public List<GameObject> gameOlist;
 	public List<Dictionary<string,GameObject>>players;
 	public Dictionary<string, GameObject> currentdict;
@@ -24,9 +26,11 @@ public class saveName : MonoBehaviour {
 		reset = 0;
 		num = 1;
 		names = new List<string>();
+		iconNames = new List<string> ();
 		List<GameObject> gameOlist = new List<GameObject> ();
-		obj = new GameObject ();
+		//obj = new GameObject ();
 		 obj = GameObject.Find ("EachPlayer");
+
 		//print (obj.name);
 		//GameObject p = GameObject.Find ("/Icons");
 		//	GameObject gameObject = GameObject.Find("Canvas");
@@ -67,7 +71,18 @@ public class saveName : MonoBehaviour {
 	}
 
 	
-	public void saveIcon(Transform obj) {
+	public void saveIcon(Text name) {
+		print ("THAT Text " + name.text);
+		iconNames.Add (name.text);
+		//print (places[0].text);
+
+		//places[0].text = names [0] + " Icon: " + iconNames [0];
+		//places [0].text = places[0].text + " " + name.text;
+		for (int i = 0; i < iconNames.Count; i++) {
+				
+			places [i].text = "Player " + (i + 1) + " " + places[i].text + " - " + iconNames[i];// + " Icon: " + iconNames [i];
+		//print (places [i].text + " erererere ");
+	}
 		/*
 		//go = obj.GetComponentsInChildren<GameObject> ();
 		foreach (var child  in obj) {
@@ -103,14 +118,19 @@ public class saveName : MonoBehaviour {
 				//o = gameOlist[i];
 				//newtext.transform.position = Vector3(gameObject.transform.position);
 				//o.transform.position = Vector3(gameObject.transform.position);
-
+			
 
 			}
 
 		}
 
-
-
+	/*	if (places != null && iconNames != null) {
+			for (int i = 0; i < names.Count; i++) {
+			
+				places [i].text = names [i] + " Icon: " + iconNames [i];
+			
+			}
+		}*/
 
 
 	}
