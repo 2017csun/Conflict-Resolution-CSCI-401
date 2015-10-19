@@ -32,7 +32,7 @@ public class IconSelector : MonoBehaviour {
 		gos [0] = GameObject.Find ("/Icons/speedChar");
 		gos[1] = GameObject.Find ("/Icons/greenAlien");
 		gos [2] = GameObject.Find ("/Icons/kyleRobot");
-		gos [3] = GameObject.Find ("/Icons/stones");
+		gos [3] = GameObject.Find ("/Icons/stone");
 		gos [4] = GameObject.Find ("/Icons/Astronaut");
 		gos [5] = GameObject.Find ("/Icons/bullet");
 		gos [6] = GameObject.Find ("/Icons/gun");
@@ -45,7 +45,7 @@ public class IconSelector : MonoBehaviour {
 		wos [0] = GameObject.Find ("/Icons/spaceman");
 		wos [1] = GameObject.Find ("/Icons/greenalien");
 		wos [2] = GameObject.Find ("/Icons/robot");
-		wos [3] = GameObject.Find ("/Icons/stone");
+		wos [3] = GameObject.Find ("/Icons/asteroid");
 
 		wos [4] = GameObject.Find ("/Icons/astronaut");
 		wos [5] = GameObject.Find ("/Icons/bullet");
@@ -101,9 +101,9 @@ public class IconSelector : MonoBehaviour {
 			//Debug.Log ("this index should be true " + (current % 12));
 			//Debug.Log ("Current is now " + current);
 			wos[(current - 1) % 12].SetActive(false);
-			while(wos[current % 12] == null) {
-				current++;
-			}
+			//while(wos[current % 12] == null) {
+				//current++;
+			//}
 			wos[current % 12].SetActive (true);
 		
 			wos[current % 12].transform.position = Camera.main.transform.position + Camera.main.transform.forward * .8f;
@@ -135,7 +135,7 @@ public class IconSelector : MonoBehaviour {
 
 	public void removeIcon() {
 		//wos [current] = null;
-		for (int i = 0; i < wos.Length; i++) {
+	/*	for (int i = 0; i < wos.Length; i++) {
 			if (i == current) {
 				print (wos [i].name);
 				wos [i] = null;
@@ -145,7 +145,7 @@ public class IconSelector : MonoBehaviour {
 			wos [i + 1] = wos [i];
 
 	
-		}
+		}*/
 	}
 
 }
