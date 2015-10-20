@@ -4,25 +4,19 @@ using System.Collections;
 
 public class Activity : MonoBehaviour {
 
+    public GameObject panel;
+
 	// Use this for initialization
 	void Start () {
-		gameObject.SetActive (false);
+		panel.SetActive (false);
 	}
 	
-	// Update is called once per frame
-public	void Update () {
-	//	gameObject.SetActive (true);
-
-
+    public void enablePanel() {
+        panel.SetActive(true);
 	}
 
-public void enablePanel(GameObject go) {
-		go.SetActive (true);
-	}
-
-public void disablePanel(GameObject go) {
-
-		go.SetActive (false);
+    public void disablePanel() {
+        panel.SetActive(false);
 	}
 
 }

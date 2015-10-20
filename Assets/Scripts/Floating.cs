@@ -4,6 +4,9 @@ using System.Collections;
 public class Floating : MonoBehaviour {
     public GameObject checkpointEffect;
 
+    [HideInInspector]
+    public GameObject gameEngine;
+
     public float bobRadius;
     public float bobSpeed;
 
@@ -13,6 +16,7 @@ public class Floating : MonoBehaviour {
 	void Start () {
         startPoint = this.transform.position;
         goingUp = Random.Range(0, 2) == 0;
+        gameEngine = GameObject.Find("GameEngine");
 	}
 	
 	void Update () {
@@ -36,6 +40,9 @@ public class Floating : MonoBehaviour {
 
     void OnTriggerEnter (Collider col) {
         Instantiate(checkpointEffect, this.transform.position, Quaternion.identity);
+
+        gameEngine.GetComponent<GameEngine>().activateNameInputPanel();
+
         Destroy(this.gameObject);
     }
 }
