@@ -30,7 +30,7 @@ public class saveName : MonoBehaviour {
 		List<GameObject> gameOlist = new List<GameObject> ();
 		//obj = new GameObject ();
 		 obj = GameObject.Find ("EachPlayer");
-
+		print (obj.name);
 		//print (obj.name);
 		//GameObject p = GameObject.Find ("/Icons");
 		//	GameObject gameObject = GameObject.Find("Canvas");

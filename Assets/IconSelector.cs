@@ -101,11 +101,12 @@ public class IconSelector : MonoBehaviour {
 			//Debug.Log ("this index should be true " + (current % 12));
 			//Debug.Log ("Current is now " + current);
 			wos[(current - 1) % 12].SetActive(false);
+			print(wos[(current - 1) % 12].name + " is false " );
 			//while(wos[current % 12] == null) {
 				//current++;
 			//}
 			wos[current % 12].SetActive (true);
-		
+			print(wos[current % 12].name + " is true " );
 			wos[current % 12].transform.position = Camera.main.transform.position + Camera.main.transform.forward * .8f;
 			//start = Camera.main.transform.position + Camera.main.transform.forward * .8f;
 			doit = true;
@@ -118,11 +119,11 @@ public class IconSelector : MonoBehaviour {
 
 	public void disableIcon (GameObject g) {
 		g.SetActive(false);
-		current = 0;
+		//current = 0;
 		//print (reset);
 	}
 	public void enableIcon (GameObject g) {
-		current = 0;
+		//current = 0;
 		g.SetActive(true);
 		 
 	//	print ("SETACTIVE");

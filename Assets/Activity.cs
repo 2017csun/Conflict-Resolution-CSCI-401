@@ -19,4 +19,11 @@ public class Activity : MonoBehaviour {
         panel.SetActive(false);
 	}
 
+	public void enableMyPanel(GameObject g) {
+
+		g.SetActive (true);
+	}
+	public void disableMyPanel(GameObject g) {
+		g.SetActive (false);
+	}
 }
