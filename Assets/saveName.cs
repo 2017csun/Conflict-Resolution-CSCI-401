@@ -29,7 +29,7 @@ public class saveName : MonoBehaviour {
 		iconNames = new List<string> ();
 		List<GameObject> gameOlist = new List<GameObject> ();
 		//obj = new GameObject ();
-		 obj = GameObject.Find ("EachPlayer");
+		obj = GameObject.Find ("EachPlayer");
 		print (obj.name);
 		//print (obj.name);
 		//GameObject p = GameObject.Find ("/Icons");
