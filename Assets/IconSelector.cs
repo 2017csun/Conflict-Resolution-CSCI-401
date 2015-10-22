@@ -22,7 +22,6 @@ public class IconSelector : MonoBehaviour {
 		doit = false;
 		current = 0;
 		objects = new GameObject[1];
-		wos = new GameObject[12];
 		p = GameObject.Find ("Test");// InitializeArray<GameObject>(12);
 		objects[0] = GameObject.Find ("/Icons");
 		//start = new Vector3 (0.0,0.0,0.0);
@@ -41,21 +40,6 @@ public class IconSelector : MonoBehaviour {
 		gos [9] = GameObject.Find ("/Icons/laptop");
 		gos [10] = GameObject.Find ("/Icons/tv");
 		gos [11] = GameObject.Find ("/Icons/tubeGlass");
-
-		wos [0] = GameObject.Find ("/Icons/spaceman");
-		wos [1] = GameObject.Find ("/Icons/greenalien");
-		wos [2] = GameObject.Find ("/Icons/robot");
-		wos [3] = GameObject.Find ("/Icons/asteroid");
-
-		wos [4] = GameObject.Find ("/Icons/astronaut");
-		wos [5] = GameObject.Find ("/Icons/bullet");
-		wos [6] = GameObject.Find ("/Icons/gun");
-		wos [7] = GameObject.Find ("/Icons/pinkalien");
-		wos [8] = GameObject.Find ("/Icons/drone");
-		wos [9] = GameObject.Find ("/Icons/laptop");
-		wos [10] = GameObject.Find ("/Icons/tv");
-		wos [11] = GameObject.Find ("/Icons/tubeglass");
-
 	}
 
 	T[] InitializeArray<T>(int length) where T : new()
@@ -88,6 +72,7 @@ public class IconSelector : MonoBehaviour {
 		}*/
 		if (current == 0) {
 			//gos[0] = GameObject.Find ("/Icons/speedChar");
+            Debug.Log(this.gameObject.name);
 			wos[current].SetActive(true);
 			wos[current].transform.position = Camera.main.transform.position + Camera.main.transform.forward * .8f;
 			//Debug.Log ("In This update");

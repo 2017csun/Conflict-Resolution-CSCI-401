@@ -12,6 +12,12 @@ public class GameEngine : MonoBehaviour {
         player = GameObject.FindGameObjectWithTag("Player");
 	}
 
+    void Update () {
+        if (player == null) {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+    }
+
     public void activateNameInputPanel () {
         //  Display the UI
         Activity act = this.gameObject.GetComponent<Activity>();
