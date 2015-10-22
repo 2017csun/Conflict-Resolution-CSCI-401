@@ -50,7 +50,8 @@ public class NetworkMatcher : MonoBehaviour {
     //	Request the list of matches matching gameTypeName
     public void connectToServer (string gameTypeName) {
         isServer = false;
-        NetworkManager.singleton.matchMaker.ListMatches(0, 20, gameTypeName, OnMatchList);
+        Debug.Log("Attempting to join " + gameTypeName);
+        NetworkManager.singleton.matchMaker.ListMatches(0, 20, "", OnMatchList);
     }
 
     //	Check for exactly 1 match
