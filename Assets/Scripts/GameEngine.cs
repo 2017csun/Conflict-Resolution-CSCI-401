@@ -108,7 +108,7 @@ public class GameEngine : MonoBehaviour {
 
 		for (int i = 0; i < iconNames.Count; i++) {
 
-			playerNameTextFields [i].text = "Player " + (i + 1) + " " + playerNameTextFields [i].text + " - " + iconNames [i];
+			playerNameTextFields [i].text = "Player " + (i + 1) + " " + playerNames[i] + " - " + iconNames [i];
 
 		}
 		panelIconSelect.SetActive (false);
@@ -120,10 +120,24 @@ public class GameEngine : MonoBehaviour {
 	}
 
 	public void donePlayerInput () {
+		summaryPanel.SetActive (false);
 		//	Re-enable player controls
 		//	Remove all UI panels
 		//	Spawn next checkpoint at role selection button
 			//	Get CheckpointLocations[x]
 			//	Instantiate(checkpoint, location)
+		player.GetComponent<FirstPersonController>().enabled = true;
 	}
+
+	public void addPlayerInput () {
+		summaryPanel.SetActive (false);
+		nameInputPanel.SetActive (true);
+		//	Re-enable player controls
+		//	Remove all UI panels
+		//	Spawn next checkpoint at role selection button
+		//	Get CheckpointLocations[x]
+		//	Instantiate(checkpoint, location)
+
+	}
+
 }
