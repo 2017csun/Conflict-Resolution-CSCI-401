@@ -9,31 +9,40 @@ public class GameEngine : MonoBehaviour {
     [HideInInspector]
     public GameObject player;
 
+    public GameObject[] checkpoints;
+    private List<string> playerNames;
+
 	//---------------------------------------------
 	//	Player input variables
 	//---------------------------------------------
+    [Header("Player Input Variables")]
 	public GameObject[] playerIcons;
-	public GameObject[] checkpoints;
-	public int roundNumber;//not input player variable
 	public Text[] playerNameTextFields;
 	public GameObject nameInputPanel;
 	public GameObject panelIconSelect;
-	public int currentIcon;
-	public Text iconName;
-	public Text player1;
-	public Text player2;
 	public GameObject spotlight;
 	public GameObject summaryPanel;
-	public GameObject choosePlayersPanel;
-	public GameObject playersChosenPanel;
-	public int checkPointNum;
+	
+    //---------------------------------------------
+    //	Random player selection variables
+    //---------------------------------------------
+    [Header("Random Player Selection Variables")]
+    public GameObject choosePlayersPanel;
+    public GameObject playersChosenPanel;
+    public Text iconName;
+    public Text player1;
+    public Text player2;
+    public int roundNumber;//not input player variable
 
-	[HideInInspector]
-	public List<string> playerNames;
-	public List<string> randomPlayerNames;
+    //---------------------------------------------
+    //	Wheel spinning variables
+    //---------------------------------------------
+    [Header("Wheel Spinning Variables")]
 
-	[HideInInspector]
-	public List<string> iconNames;
+    private List<string> randomPlayerNames;
+	private List<string> iconNames;
+    private int checkPointNum;
+    private int currentIcon;
 
 	// Use this for initialization
 	void Start () {
