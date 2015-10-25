@@ -9,8 +9,15 @@ public class GameEngine : MonoBehaviour {
     [HideInInspector]
     public GameObject player;
 
-    public GameObject[] checkpoints;
+    //---------------------------------------------
+    //	General game variables
+    //---------------------------------------------
+    [Header("General Game")]
+    public GameObject checkpointFab;
+    public GameObject checkpointLocations;
+    private List<Transform> allCheckpoints;
     private List<string> playerNames;
+    private int currCheckpoint;
 
 	//---------------------------------------------
 	//	Player input variables
@@ -41,18 +48,28 @@ public class GameEngine : MonoBehaviour {
 
     private List<string> randomPlayerNames;
 	private List<string> iconNames;
-    private int checkPointNum;
     private int currentIcon;
 
-	// Use this for initialization
 	void Start () {
-		checkPointNum = 0;
+		currCheckpoint = 0;
+
+        //  Add all checkpoints
+        allCheckpoints = new List<Transform>();
+        if (checkpointLocations == null)
+            Debug.Log("IT'S NULL");
+        foreach (Transform child in checkpointLocations.transform) {
+            allCheckpoints.Add(child);
+        }
+
 		roundNumber = 1;
 		currentIcon = 0;
         player = GameObject.FindGameObjectWithTag("Player");
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
 		randomPlayerNames = new List<string> ();
+
+        //  Spawn the first checkpoint
+        Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
 	}
 
     void Update () {
@@ -112,8 +129,6 @@ public class GameEngine : MonoBehaviour {
 		player.GetComponent<FirstPersonController>().enabled = true;
 
 	}
-
-
 
 	public void nameSave(InputField name) {
 		nameInputPanel.SetActive (false);
@@ -208,7 +223,6 @@ public class GameEngine : MonoBehaviour {
 
 	}
 
-
 	public void displayRandomPlayers() {
 		Random rnd = new Random ();
 	
@@ -244,21 +258,21 @@ public class GameEngine : MonoBehaviour {
 
 
 	}
-	public void selectPanel() {
-		if (checkPointNum == 0) {
-
+	
+    public void checkpointHit() {
+        //  Call appropriate function
+		if (currCheckpoint == 0) {
 			this.activateNameInputPanel ();
-
-
 		}
 
-		if (checkPointNum == 1) {
-
-
+		if (currCheckpoint == 1) {
 			this.activateChoosePlayerPanel ();
 		}
-		checkPointNum++;
+
+        //  Spawn next checkpoint
+		currCheckpoint++;
+        if (currCheckpoint < allCheckpoints.Count) {
+            Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
+        }
 	}
-
-
 }

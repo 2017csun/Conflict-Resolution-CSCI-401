@@ -49,7 +49,7 @@ public class Floating : MonoBehaviour {
 
 
         Instantiate(checkpointEffect, this.transform.position, Quaternion.identity);
-		gameEngine.GetComponent<GameEngine> ().selectPanel ();
+		gameEngine.GetComponent<GameEngine> ().checkpointHit ();
 
 		Destroy (this.gameObject);
 	}
