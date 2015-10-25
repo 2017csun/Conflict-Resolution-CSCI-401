@@ -51,17 +51,11 @@ public class Floating : MonoBehaviour {
         Instantiate(checkpointEffect, this.transform.position, Quaternion.identity);
 		gameEngine.GetComponent<GameEngine> ().selectPanel ();
 
-	/*	if (current == 0) {
+	/*	
 	
 			gameEngine.GetComponent<GameEngine> ().activateNameInputPanel ();
 
-		}
-		if (current == 1) {
-      		
-			gameEngine.GetComponent<GameEngine> ().activateChoosePlayerPanel ();
-
-    	}
-		current++; */
+	*/
 		Destroy (this.gameObject);
 	}
 }

@@ -91,7 +91,18 @@ public class GameEngine : MonoBehaviour {
 		player.GetComponent<FirstPersonController>().enabled = false;
 
 	}
+	public void deactivateChosenPanel() {
 
+
+		playersChosenPanel.SetActive (false);
+		//playerIcons [index].SetActive (false);
+		//playerIcons [index2].SetActive (false);
+
+
+
+		player.GetComponent<FirstPersonController>().enabled = true;
+
+	}
 
 
 
@@ -142,19 +153,29 @@ public class GameEngine : MonoBehaviour {
 	}
 
 	public void saveIcon() {
-		iconNames.Add (iconName.text);
 
-		for (int i = 0; i < iconNames.Count; i++) {
 
-			playerNameTextFields [i].text = "Player " + (i + 1) + " " + playerNames[i] + " - " + iconNames [i];
+		if (!iconNames.Contains (iconName.text)) {
+			iconNames.Add (iconName.text);
 
+			for (int i = 0; i < iconNames.Count; i++) {
+
+				playerNameTextFields [i].text = "Player " + (i + 1) + " " + playerNames [i] + " - " + iconNames [i];
+
+			}
+			panelIconSelect.SetActive (false);
+			for (int i = 0; i < playerIcons.Length; i++) {
+				playerIcons [i].SetActive (false);
+			}
+
+			summaryPanel.SetActive (true);
+		} 
+		else 
+		{
+
+			//TODO handle error
+			print ("already chosen");
 		}
-		panelIconSelect.SetActive (false);
-		for (int i = 0; i < playerIcons.Length; i++) {
-			playerIcons [i].SetActive (false);
-		}
-
-		summaryPanel.SetActive (true);
 	}
 
 	public void donePlayerInput () {
@@ -185,21 +206,29 @@ public class GameEngine : MonoBehaviour {
 
 		if (roundNumber == playerNames.Count / 2 || roundNumber == 1) {
 
-			randomPlayerNames = playerNames;
-
+			for (int i = 0; i < playerNames.Count; i++) {
+				randomPlayerNames.Add(playerNames[i]);
+			}
 		}
 
 
 		int index = Random.Range (0, randomPlayerNames.Count - 1);
-			print(randomPlayerNames[index]);
+		print (randomPlayerNames.Count);
+			print(playerIcons[index].name);
 		player1.text = randomPlayerNames [index];
+		playerIcons [index].SetActive (true);
+		playerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
 		int index2 = Random.Range (0, randomPlayerNames.Count-1);
 
 		if (index == index2) {
-			index2 = index++;
+			print("YO THE SAMe"); 
+			index2 = (index + 2) % (randomPlayerNames.Count -1);
 		}
 		print(player2.text = playerNames[index2]);
 		player2.text = playerNames[index2];
+		print(playerIcons[index2].name);
+		playerIcons [index2].SetActive (true);
+		playerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
 
 		randomPlayerNames.Remove (playerNames [index]);
 		randomPlayerNames.Remove (playerNames [index2]);
