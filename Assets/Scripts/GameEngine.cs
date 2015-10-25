@@ -13,26 +13,37 @@ public class GameEngine : MonoBehaviour {
 	//	Player input variables
 	//---------------------------------------------
 	public GameObject[] playerIcons;
+	public GameObject[] checkpoints;
+	public int roundNumber;//not input player variable
 	public Text[] playerNameTextFields;
 	public GameObject nameInputPanel;
 	public GameObject panelIconSelect;
 	public int currentIcon;
 	public Text iconName;
+	public Text player1;
+	public Text player2;
 	public GameObject spotlight;
 	public GameObject summaryPanel;
+	public GameObject choosePlayersPanel;
+	public GameObject playersChosenPanel;
+	public int checkPointNum;
 
 	[HideInInspector]
 	public List<string> playerNames;
+	public List<string> randomPlayerNames;
 
 	[HideInInspector]
 	public List<string> iconNames;
 
 	// Use this for initialization
 	void Start () {
+		checkPointNum = 0;
+		roundNumber = 1;
 		currentIcon = 0;
         player = GameObject.FindGameObjectWithTag("Player");
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
+		randomPlayerNames = new List<string> ();
 	}
 
     void Update () {
@@ -56,6 +67,33 @@ public class GameEngine : MonoBehaviour {
         //  Enable player controls
         player.GetComponent<FirstPersonController>().enabled = true;
     }
+	public void activateChoosePlayerPanel() {
+		choosePlayersPanel.SetActive (true);
+		print ("Activate Choose Players Panel");
+		roundNumber++;
+		//Disable player
+		player.GetComponent<FirstPersonController>().enabled = false;
+
+	}
+	public void deactivateChoosePlayerPanel() {
+		choosePlayersPanel.SetActive (false);
+
+
+
+
+		player.GetComponent<FirstPersonController>().enabled = true;
+
+	}
+
+	public void activateChosenPanel() {
+		playersChosenPanel.SetActive (true);
+		displayRandomPlayers ();
+		player.GetComponent<FirstPersonController>().enabled = false;
+
+	}
+
+
+
 
 	public void nameSave(InputField name) {
 		nameInputPanel.SetActive (false);
@@ -139,5 +177,50 @@ public class GameEngine : MonoBehaviour {
 		//	Instantiate(checkpoint, location)
 
 	}
+
+
+	public void displayRandomPlayers() {
+		Random rnd = new Random ();
+	
+
+		if (roundNumber == playerNames.Count / 2 || roundNumber == 1) {
+
+			randomPlayerNames = playerNames;
+
+		}
+
+
+		int index = Random.Range (0, randomPlayerNames.Count - 1);
+			print(randomPlayerNames[index]);
+		player1.text = randomPlayerNames [index];
+		int index2 = Random.Range (0, randomPlayerNames.Count-1);
+
+		if (index == index2) {
+			index2 = index++;
+		}
+		print(player2.text = playerNames[index2]);
+		player2.text = playerNames[index2];
+
+		randomPlayerNames.Remove (playerNames [index]);
+		randomPlayerNames.Remove (playerNames [index2]);
+
+
+	}
+	public void selectPanel() {
+		if (checkPointNum == 0) {
+
+			this.activateNameInputPanel ();
+
+
+		}
+
+		if (checkPointNum == 1) {
+
+
+			this.activateChoosePlayerPanel ();
+		}
+		checkPointNum++;
+	}
+
 
 }

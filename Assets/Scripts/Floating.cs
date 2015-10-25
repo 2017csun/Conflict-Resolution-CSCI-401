@@ -6,6 +6,8 @@ public class Floating : MonoBehaviour {
 
     [HideInInspector]
     public GameObject gameEngine;
+	//public GameObject[] checkPoint;
+
 
     public float bobRadius;
     public float bobSpeed;
@@ -13,10 +15,15 @@ public class Floating : MonoBehaviour {
     private Vector3 startPoint;
     private bool goingUp;
 
+	private int current;
+
 	void Start () {
         startPoint = this.transform.position;
         goingUp = Random.Range(0, 2) == 0;
         gameEngine = GameObject.Find("GameEngine");
+
+		current = 0;
+
 	}
 	
 	void Update () {
@@ -39,10 +46,22 @@ public class Floating : MonoBehaviour {
 	}
 
     void OnTriggerEnter (Collider col) {
+
+
         Instantiate(checkpointEffect, this.transform.position, Quaternion.identity);
+		gameEngine.GetComponent<GameEngine> ().selectPanel ();
 
-        gameEngine.GetComponent<GameEngine>().activateNameInputPanel();
+	/*	if (current == 0) {
+	
+			gameEngine.GetComponent<GameEngine> ().activateNameInputPanel ();
 
-        Destroy(this.gameObject);
-    }
+		}
+		if (current == 1) {
+      		
+			gameEngine.GetComponent<GameEngine> ().activateChoosePlayerPanel ();
+
+    	}
+		current++; */
+		Destroy (this.gameObject);
+	}
 }
