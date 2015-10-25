@@ -130,7 +130,7 @@ public class GameEngine : MonoBehaviour {
 	public void updateIconSelect() {
 		//position the icon in front of the camera
 		playerIcons[currentIcon].transform.position = Camera.main.transform.position + Camera.main.transform.forward * .8f;
-		spotlight.transform.position = playerIcons [currentIcon].transform.position + new Vector3 (0, 2, 0);
+		spotlight.transform.position = playerIcons [currentIcon].transform.position + new Vector3 (0, 0.5f, 0);
 		spotlight.transform.rotation = Quaternion.Euler (90, 0, 0); 
 		//disable the previous icon
 		int toFalse = currentIcon - 1;
