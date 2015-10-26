@@ -62,7 +62,7 @@ public class GameEngine : MonoBehaviour {
         }
 
 		roundNumber = 1;
-		currentIcon = 0;
+		currentIcon = -1;
         player = GameObject.FindGameObjectWithTag("Player");
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
@@ -153,22 +153,25 @@ public class GameEngine : MonoBehaviour {
 
 	public void updateIconSelect() {
 		//position the icon in front of the camera
-		playerIcons[currentIcon].transform.position = Camera.main.transform.position + Camera.main.transform.forward * .8f;
+        int toDisable = currentIcon++;
+        if (currentIcon == playerIcons.Length) {
+            currentIcon = 0;
+        }
+
+		playerIcons[currentIcon].transform.position =
+            Camera.main.transform.position + Camera.main.transform.forward * .8f + new Vector3(0, -0.18f, 0);
 		spotlight.transform.position = playerIcons [currentIcon].transform.position + new Vector3 (0, 0.5f, 0);
 		spotlight.transform.rotation = Quaternion.Euler (90, 0, 0); 
+
 		//disable the previous icon
-		int toFalse = currentIcon - 1;
-		if (toFalse == -1) {
-
-			toFalse = playerIcons.Length - 1;
-
-		}
-		playerIcons[toFalse].SetActive (false);
+        if (toDisable >= 0) {
+            playerIcons[toDisable].SetActive(false);
+        }
 	
 		//enable the current Icon
 		playerIcons[currentIcon].SetActive (true);
 		iconName.text = playerIcons[currentIcon].name;
-		currentIcon++;
+		
 		if (currentIcon == playerIcons.Length) {
 
 			currentIcon = 0;
@@ -177,7 +180,6 @@ public class GameEngine : MonoBehaviour {
 	}
 
 	public void saveIcon() {
-
 
 		if (!iconNames.Contains (iconName.text)) {
 			iconNames.Add (iconName.text);
@@ -200,6 +202,15 @@ public class GameEngine : MonoBehaviour {
 			//TODO handle error
 			print ("already chosen");
 		}
+
+        //  Update the player's body to be the icon
+        GameObject myIcon = playerIcons[currentIcon];
+        myIcon.transform.localScale += new Vector3(.2f, .2f, .2f);
+        myIcon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
+        myIcon.transform.parent = player.transform;
+        myIcon.transform.localPosition = new Vector3(0, 0, 0);
+        myIcon.transform.localRotation = Quaternion.Euler(0, 90, 0);
+        myIcon.SetActive(true);
 	}
 
 	public void donePlayerInput () {

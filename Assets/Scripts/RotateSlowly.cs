@@ -7,6 +7,6 @@ public class RotateSlowly : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-        this.transform.Rotate(0, rotationSpeed * Time.deltaTime, 0);
+        this.transform.RotateAround(this.transform.position, Vector3.up, rotationSpeed * Time.deltaTime);
 	}
 }
