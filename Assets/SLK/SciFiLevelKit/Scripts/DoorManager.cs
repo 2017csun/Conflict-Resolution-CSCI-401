@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class DoorManager : MonoBehaviour {
@@ -6,17 +7,11 @@ public class DoorManager : MonoBehaviour {
 	public Door door1;
 	public Door door2;
 	
-	
-	void OnTriggerEnter(){
-		
-		if (door1!=null){
-			door1.OpenDoor();	
-
-		}
-		
-		if (door2!=null){
-			door2.OpenDoor();	
-
-		}
+	void OnTriggerEnter() {
+        Debug.Log("Opening door");
+        if (door1)
+            door1.OpenDoor();
+        if (door2)
+            door2.OpenDoor();
 	}
 }
