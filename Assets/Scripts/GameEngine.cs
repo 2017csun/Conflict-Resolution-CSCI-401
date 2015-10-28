@@ -50,16 +50,8 @@ public class GameEngine : MonoBehaviour {
 	private List<string> iconNames;
     private int currentIcon;
 
-	//-------------------------------------------
-	// Pros and Cons Variables
-	//-------------------------------------------
-	[Header("Pros and Cons Variables")]
-	public  List<string> generalProConList;
-	private List<string> competingList;
-	private List<string> accomList;
-	private List<string> collabList;
-	private List<string> avoidList;
-	private List<string> compromiseList;
+	private List<string> answers;
+	private string[] intentions;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -79,17 +71,6 @@ public class GameEngine : MonoBehaviour {
 		iconNames = new List<string> ();
 		randomPlayerNames = new List<string> ();
 
-		//Initialize the ConflictStyle/IntentionLists
-		generalProConList = new List<string> ();
-		generalProConList.Add ("Asserting your positions so ideas are taken seriously");
-		generalProConList.Add ("Making quick decisions or achieving quick victory");
-		generalProConList.Add ("Protecting interests from attack");
-		generalProConList.Add ("Straining work relationships as people develop resentment");
-		generalProConList.Add ("Not exchanging information freely");
-		generalProConList.Add ("Creating escalation and deadlock negotiations by using extreme tactics");
-		generalProConList.Add ("Working toward meeting both people’s concerns");
-		generalProConList.Add ("Resolving problems in a relationship");
-		generalProConList.Add ("Involving a lot of time, full concentration, and creativity");
 	
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
@@ -290,6 +271,16 @@ public class GameEngine : MonoBehaviour {
 		randomPlayerNames.Remove (playerNames [index]);
 		randomPlayerNames.Remove (playerNames [index2]);
 
+
+	}
+	public void sendAnswers(List<string> answers) {
+		this.answers = answers;
+
+
+
+	}
+	public void sendIntention(string[] intentions){
+		this.intentions = intentions;
 
 	}
 	
