@@ -6,9 +6,12 @@ public class ScenarioSpin : MonoBehaviour {
 	private bool spinning = false;
 	private float currentSpeed = 0;
 	public int currentRoll = 0;
+//	public NetworkView nView;
 
 	// Use this for initialization
 	void Start () {
+//		nView = GetComponent<NetworkView>();
+//		nView.observed = this;
 		GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 	}
 
@@ -33,6 +36,11 @@ public class ScenarioSpin : MonoBehaviour {
 		if (Input.GetKeyUp ("space")) {
 			if (!spinning) {
 				int roll = Random.Range (0, 8);
+				if(Network.isServer) {
+					GameEngine.setScenario(roll);
+				} else {
+					GameEngine.setScenario(roll);
+				}
 				int equivAngle;
 				if (currentRoll > roll) {
 					equivAngle = (calculateAngle (roll) + 360) - calculateAngle (currentRoll);
@@ -40,10 +48,10 @@ public class ScenarioSpin : MonoBehaviour {
 					equivAngle = calculateAngle (roll) - calculateAngle (currentRoll);
 				}
 				int rotations = Random.Range (2, 5);
-				Debug.Log ("Init: " + currentRoll);
+//				Debug.Log ("Init: " + currentRoll);
 				Debug.Log ("Curr: " + roll);
-				Debug.Log ("Angle: " + equivAngle);
-				Debug.Log ("Rotations: " + rotations);
+//				Debug.Log ("Angle: " + equivAngle);
+//				Debug.Log ("Rotations: " + rotations);
 				currentSpeed = (-10 + Mathf.Sqrt (100f + 160f*(360f*(float)(rotations)+(float)(equivAngle))))/2f;
 				currentRoll = roll;
 				spinning = true;

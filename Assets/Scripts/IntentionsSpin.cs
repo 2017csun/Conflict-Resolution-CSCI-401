@@ -9,6 +9,7 @@ public class IntentionsSpin : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+//		GetComponent<NetworkView>().observed = this;
 		GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 	}
 
@@ -33,6 +34,11 @@ public class IntentionsSpin : MonoBehaviour {
 		if (Input.GetKeyUp ("return")) {
 			if (!spinning) {
 				int roll = Random.Range (0, 4);
+				if(Network.isServer) {
+					GameEngine.setIntention(0, roll);
+				} else {
+					GameEngine.setIntention(1, roll);
+				}
 				int equivAngle;
 				if (currentRoll > roll) {
 					equivAngle = (calculateAngle (roll) + 360) - calculateAngle (currentRoll);
@@ -40,10 +46,10 @@ public class IntentionsSpin : MonoBehaviour {
 					equivAngle = calculateAngle (roll) - calculateAngle (currentRoll);
 				}
 				int rotations = Random.Range (2, 5);
-				Debug.Log ("IntInit: " + currentRoll);
+//				Debug.Log ("IntInit: " + currentRoll);
 				Debug.Log ("IntCurr: " + roll);
-				Debug.Log ("IntAngle: " + equivAngle);
-				Debug.Log ("IntRotations: " + rotations);
+//				Debug.Log ("IntAngle: " + equivAngle);
+//				Debug.Log ("IntRotations: " + rotations);
 				currentSpeed = (-10 + Mathf.Sqrt (100f + 160f*(360f*(float)(rotations)+(float)(equivAngle))))/2f;
 				currentRoll = roll;
 				spinning = true;
