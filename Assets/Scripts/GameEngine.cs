@@ -196,16 +196,9 @@ public class GameEngine : NetworkBehaviour {
 		else {
 			summaryPanel.SetActive (true);
 			maxMessage.text = "Max Players Reached. Press done to continue";
-
-
-<<<<<<< HEAD
-
 		}
-=======
-		name.text = " ";
-		panelIconSelect.SetActive (true);
-		updateIconSelect ();	
->>>>>>> 2c76598559e94767cc286f71a0982ba87de72c55
+
+
 	}
         
 	public void updateIconSelect() {
@@ -272,18 +265,7 @@ public class GameEngine : NetworkBehaviour {
 			print ("already chosen");
 
 		}
-<<<<<<< HEAD
 
-        //  Update the player's body to be the icon
-        GameObject myIcon = playerIcons[currentIcon];
-        myIcon.transform.localScale += new Vector3(.2f, .2f, .2f);
-        myIcon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
-        myIcon.transform.parent = player.transform;
-        myIcon.transform.localPosition = new Vector3(0, 0, 0);
-        myIcon.transform.localRotation = Quaternion.Euler(0, 90, 0);
-        //myIcon.SetActive(true);
-=======
->>>>>>> 2c76598559e94767cc286f71a0982ba87de72c55
 	}
 
 	public void donePlayerInput () {
@@ -314,7 +296,7 @@ public class GameEngine : NetworkBehaviour {
 		print (randomPlayerNames.Count);
 			print(playerIcons[index].name);
 		player1.text = randomPlayerNames [index];
-		playerIcons [index].transform.localScale = new Vector3 (.5f, .5f, .5f);
+		playerIcons [index].transform.localScale += new Vector3 (.5f, .5f, .5f);
 		playerIcons [index].SetActive (true);
 		playerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
 		//playerIcons [index].transform.localScale.Set (.5f, .5f, .5f);
@@ -327,7 +309,7 @@ public class GameEngine : NetworkBehaviour {
 		print(player2.text = playerNames[index2]);
 		player2.text = playerNames[index2];
 		print(playerIcons[index2].name);
-		playerIcons [index2].transform.localScale = new Vector3 (.5f, .5f, .5f);
+		playerIcons [index2].transform.localScale += new Vector3 (.5f, .5f, .5f);
 		playerIcons [index2].SetActive (true);
 		playerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
 
