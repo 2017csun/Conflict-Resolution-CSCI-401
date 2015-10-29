@@ -29,6 +29,8 @@ public class GameEngine : MonoBehaviour {
 	public GameObject panelIconSelect;
 	public GameObject spotlight;
 	public GameObject summaryPanel;
+	public GameObject buttonAddPlayer;
+	public Text maxMessage;
 
     //---------------------------------------------
     //	Random player selection variables
@@ -69,7 +71,7 @@ public class GameEngine : MonoBehaviour {
             allCheckpoints.Add(child);
         }
 
-		roundNumber = 1;
+		roundNumber = 0;
 		currentIcon = -1;
         player = GameObject.FindGameObjectWithTag("Player");
 		playerNames = new List<string> ();
@@ -155,24 +157,33 @@ public class GameEngine : MonoBehaviour {
 		
 	}
 	public void nameSave(InputField name) {
-		nameInputPanel.SetActive (false);
-
-		name.placeholder.GetComponent<Text> ().text = "Enter Name";
-		playerNames.Add (name.text);
-		if (playerNames.Count > playerNameTextFields.Length) {
-
+		if (playerNames.Count <= playerNameTextFields.Length) {
+			
 			//TODO: error handling
+			
+		
+			nameInputPanel.SetActive (false);
 
+			name.placeholder.GetComponent<Text> ().text = "Enter Name";
+			playerNames.Add (name.text);
+	
+
+
+			playerNameTextFields [playerNames.Count - 1].text = name.text;
+		
+
+			name.text = " ";
+			panelIconSelect.SetActive (true);
+			playerIcons [0].transform.parent.gameObject.SetActive (true);
+			updateIconSelect ();
 		} 
-
 		else {
-			playerNameTextFields[playerNames.Count - 1].text = name.text;
-		}
+			summaryPanel.SetActive (true);
+			maxMessage.text = "Max Players Reached. Press done to continue";
 
-		name.text = " ";
-		panelIconSelect.SetActive (true);
-		playerIcons [0].transform.parent.gameObject.SetActive (true);
-		updateIconSelect ();	
+
+
+		}
 	}
 
 	public void updateIconSelect() {
@@ -225,6 +236,7 @@ public class GameEngine : MonoBehaviour {
 
 			//TODO handle error
 			print ("already chosen");
+
 		}
 
         //  Update the player's body to be the icon
@@ -234,7 +246,7 @@ public class GameEngine : MonoBehaviour {
         myIcon.transform.parent = player.transform;
         myIcon.transform.localPosition = new Vector3(0, 0, 0);
         myIcon.transform.localRotation = Quaternion.Euler(0, 90, 0);
-        myIcon.SetActive(true);
+        //myIcon.SetActive(true);
 	}
 
 	public void donePlayerInput () {
@@ -259,7 +271,7 @@ public class GameEngine : MonoBehaviour {
 	}
 
 	public void displayRandomPlayers() {
-		Random rnd = new Random ();
+
 	
 
 		if (roundNumber == playerNames.Count / 2 || roundNumber == 1) {
@@ -274,8 +286,10 @@ public class GameEngine : MonoBehaviour {
 		print (randomPlayerNames.Count);
 			print(playerIcons[index].name);
 		player1.text = randomPlayerNames [index];
+		playerIcons [index].transform.localScale = new Vector3 (.5f, .5f, .5f);
 		playerIcons [index].SetActive (true);
 		playerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
+		//playerIcons [index].transform.localScale.Set (.5f, .5f, .5f);
 		int index2 = Random.Range (0, randomPlayerNames.Count-1);
 
 		if (index == index2) {
@@ -285,6 +299,7 @@ public class GameEngine : MonoBehaviour {
 		print(player2.text = playerNames[index2]);
 		player2.text = playerNames[index2];
 		print(playerIcons[index2].name);
+		playerIcons [index2].transform.localScale = new Vector3 (.5f, .5f, .5f);
 		playerIcons [index2].SetActive (true);
 		playerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
 
@@ -298,7 +313,7 @@ public class GameEngine : MonoBehaviour {
 
 		for (int i = 0; i < ansList.Count; i++) {
 
-			answers[i] = ansList[i];
+			answers.Add(ansList[i]);
 		}
 
 
@@ -319,6 +334,10 @@ public class GameEngine : MonoBehaviour {
 
 		if (currCheckpoint == 1) {
 			this.activateChoosePlayerPanel ();
+		}
+
+		if (currCheckpoint == 2) {
+			this.activateProConPanel();
 		}
 
         //  Spawn next checkpoint
