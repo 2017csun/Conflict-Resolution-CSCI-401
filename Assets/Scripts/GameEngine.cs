@@ -195,7 +195,7 @@ public class GameEngine : NetworkBehaviour {
 		} 
 		else {
 			summaryPanel.SetActive (true);
-			maxMessage.text = "Max Players Reached. Press done to continue";
+//			maxMessage.text = "Max Players Reached. Press done to continue";
 		}
 
 
