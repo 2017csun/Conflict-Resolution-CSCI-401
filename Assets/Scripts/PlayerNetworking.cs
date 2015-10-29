@@ -4,11 +4,20 @@ using UnityEngine.Networking;
 
 public class PlayerNetworking : NetworkBehaviour {
 
+    private GameObject[] playerIcons;
+
     [SerializeField]
     Camera FPSCharacterCam;
 
     [SerializeField]
     AudioListener audioListener;
+
+    void Update () {
+        if (playerIcons == null) {
+            Debug.Log("Setting the icons!!");
+            playerIcons = GameObject.FindGameObjectsWithTag("Icon");
+        }
+    }
 
     public override void OnStartLocalPlayer () {
         base.OnStartLocalPlayer();
@@ -21,13 +30,18 @@ public class PlayerNetworking : NetworkBehaviour {
 
     [Command]
     public void CmdSetBodyIcon (string iconName) {
-        GameObject icon = GameObject.Find(iconName);
+        //  Get the icon being set
+        GameObject icon = null;
+        for (int i = 0; i < playerIcons.Length; ++i) {
+            if (playerIcons[i].name.Equals(iconName)) {
+                icon = playerIcons[i];
+            }
+        }
         if (icon == null) {
-            //  TODO: NEED TO BE ABLE TO FIND GAMEOBJECT THAT IS INACTIVE
-
-            Debug.LogError("Can't find icon with name: " + iconName);
+            Debug.LogError("Can't find the icon named " + iconName);
             return;
         }
+
         icon.transform.localScale += new Vector3(.2f, .2f, .2f);
         icon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
 
