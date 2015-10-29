@@ -52,16 +52,13 @@ public class GameEngine : NetworkBehaviour {
 	private List<string> iconNames;
     private int currentIcon;
 
-	//-------------------------------------------
-	// Pros and Cons Variables
-	//-------------------------------------------
-	[Header("Pros and Cons Variables")]
-	public  List<string> generalProConList;
-	private List<string> competingList;
-	private List<string> accomList;
-	private List<string> collabList;
-	private List<string> avoidList;
-	private List<string> compromiseList;
+	//---------------------------------------------
+	//	Pro/Con variables
+	//---------------------------------------------
+	[Header("Pro & Con Variables")]
+	private List<string> answers;
+	private string[] intentions;
+	public GameObject proConPanel;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -78,17 +75,6 @@ public class GameEngine : NetworkBehaviour {
 		iconNames = new List<string> ();
 		randomPlayerNames = new List<string> ();
 
-		//Initialize the ConflictStyle/IntentionLists
-		generalProConList = new List<string> ();
-		generalProConList.Add ("Asserting your positions so ideas are taken seriously");
-		generalProConList.Add ("Making quick decisions or achieving quick victory");
-		generalProConList.Add ("Protecting interests from attack");
-		generalProConList.Add ("Straining work relationships as people develop resentment");
-		generalProConList.Add ("Not exchanging information freely");
-		generalProConList.Add ("Creating escalation and deadlock negotiations by using extreme tactics");
-		generalProConList.Add ("Working toward meeting both people’s concerns");
-		generalProConList.Add ("Resolving problems in a relationship");
-		generalProConList.Add ("Involving a lot of time, full concentration, and creativity");
 	
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
@@ -172,7 +158,18 @@ public class GameEngine : NetworkBehaviour {
         //  Enable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
+	public void activateProConPanel() {
 
+		proConPanel.SetActive (true);
+		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+
+	}
+	public void deactivateProConPanel() {
+		
+		proConPanel.SetActive (false);
+        myPlayer.GetComponent<FirstPersonController>().enabled = true;
+		
+	}
 	public void nameSave(InputField name) {
 		nameInputPanel.SetActive (false);
 
@@ -310,6 +307,23 @@ public class GameEngine : NetworkBehaviour {
 		randomPlayerNames.Remove (playerNames [index2]);
 
 
+	}
+	public void sendAnswers(List<string> ansList) {
+		answers = new List<string> ();
+
+		for (int i = 0; i < ansList.Count; i++) {
+
+			answers[i] = ansList[i];
+		}
+
+
+
+	}
+	public void sendIntention(string[] intent){
+		intentions = new string[6];
+		for (int i = 0; i < intent.Length; i++) {
+			intentions [i] = intent [i];
+		}
 	}
 	
     public void checkpointHit() {
