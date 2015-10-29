@@ -265,12 +265,6 @@ public class GameEngine : NetworkBehaviour {
 	public void addPlayerInput () {
 		summaryPanel.SetActive (false);
 		nameInputPanel.SetActive (true);
-		//	Re-enable player controls
-		//	Remove all UI panels
-		//	Spawn next checkpoint at role selection button
-		//	Get CheckpointLocations[x]
-		//	Instantiate(checkpoint, location)
-
 	}
 
 	public void displayRandomPlayers() {
