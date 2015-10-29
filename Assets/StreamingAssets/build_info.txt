@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-Build from PUSHPIN at 10/28/2015 8:58:00 PM
-=======
-Build from JITHONG-PC at 10/28/2015 9:08:34 PM
->>>>>>> 8f0d995479e34ce57f28eec3075d93b073f36435
