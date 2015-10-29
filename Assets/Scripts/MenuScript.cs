@@ -15,14 +15,11 @@ public class MenuScript : MonoBehaviour {
 	public Button helpButton;
 	public Button hostGameButton;
 	public Button joinGameButton;
-	public Image gameLogoImage;
 
 	public Canvas hostGameMenu;
 	public Canvas joinGameMenu;
 	// Use this for initialization
 	void Start () {
-		// game logo
-		gameLogoImage = gameLogoImage.GetComponent<Image> ();
 		// networkmanager
         networkMatcher = networkManagerPrefab.GetComponent<NetworkMatcher>();
 
