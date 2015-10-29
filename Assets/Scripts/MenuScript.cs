@@ -15,6 +15,10 @@ public class MenuScript : MonoBehaviour {
 	public Button helpButton;
 	public Button hostGameButton;
 	public Button joinGameButton;
+	public Button joinButton;
+	public Button startButton;
+	public Button hostGameCancelButton;
+	public Button joinGameCancelButton;
 
 	public Canvas hostGameMenu;
 	public Canvas joinGameMenu;
@@ -28,15 +32,21 @@ public class MenuScript : MonoBehaviour {
 
 		// host game
 		hostGameButton = hostGameButton.GetComponent<Button> ();
+		hostGameCancelButton = hostGameCancelButton.GetComponent<Button> ();
 		hostGameMenu = hostGameMenu.GetComponent<Canvas> ();
 		keyText = keyText.GetComponent<Text> ();
 		hostGameMenu.enabled = false;
 
+		startButton = startButton.GetComponent<Button> ();
+
 		// join game
 		joinGameButton = joinGameButton.GetComponent<Button> ();
+		joinGameCancelButton = joinGameCancelButton.GetComponent<Button> ();
 		joinGameMenu = joinGameMenu.GetComponent<Canvas> ();
 		keyInputField = keyInputField.GetComponent<InputField> ();
 		joinGameMenu.enabled = false;
+
+		joinButton = joinButton.GetComponent<Button> ();
 
 
 		// help and exit
@@ -95,11 +105,27 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void StartPressed() {
+		hostGameMenu.enabled = true;
+		hostGameButton.enabled = false;
+		joinGameButton.enabled = false;
+		helpButton.enabled = false;
+		exitButton.enabled = false;
+		startButton.enabled = false;
+		hostGameCancelButton.enabled = false;
 
 	}
 
 	public void JoinPressed() {
+		joinGameMenu.enabled = true;
+		hostGameButton.enabled = false;
+		joinGameButton.enabled = false;
+		helpButton.enabled = false;
+		exitButton.enabled = false;
+		joinButton.enabled = false;
+		joinGameCancelButton.enabled = false;
+		/*
 		string inputKey = keyInputField.text;
 		networkMatcher.connectToServer(inputKey);
+		*/
 	}
 }
