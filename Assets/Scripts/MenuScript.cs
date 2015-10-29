@@ -123,9 +123,8 @@ public class MenuScript : MonoBehaviour {
 		exitButton.enabled = false;
 		joinButton.enabled = false;
 		joinGameCancelButton.enabled = false;
-		/*
+		
 		string inputKey = keyInputField.text;
 		networkMatcher.connectToServer(inputKey);
-		*/
 	}
 }

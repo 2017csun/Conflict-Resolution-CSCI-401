@@ -104,7 +104,7 @@ public class GameEngine : NetworkBehaviour {
         GameObject check = GameObject.FindGameObjectWithTag("Checkpoint");
         if (check != null) {
             foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
-                if (!go.GetComponent<FirstPersonController>().isActiveAndEnabled) {
+                if (go != myPlayer) {
                     Physics.IgnoreCollision(
                         go.GetComponent<Collider>(),
                         check.GetComponent<Collider>()
@@ -190,7 +190,6 @@ public class GameEngine : NetworkBehaviour {
 
 			name.text = " ";
 			panelIconSelect.SetActive (true);
-			playerIcons [0].transform.parent.gameObject.SetActive (true);
 			updateIconSelect ();
 		} 
 		else {

@@ -45,6 +45,11 @@ public class NetworkMatcher : MonoBehaviour {
 
     //	Request the list of matches matching gameTypeName
     public void connectToServer (string gameTypeName) {
+        if (gameTypeName.Equals("")) {
+            //  TODO: this
+            Debug.LogError("MUST INPUT SOMETHING");
+        }
+
         gameTypeName = gameTypeName.ToUpper();
         Debug.Log("Attempting to join " + gameTypeName);
         NetworkManager.singleton.matchMaker.ListMatches(0, 20, gameTypeName, OnMatchList);
