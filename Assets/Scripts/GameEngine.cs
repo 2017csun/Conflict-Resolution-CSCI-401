@@ -194,7 +194,7 @@ public class GameEngine : NetworkBehaviour {
 		} 
 		else {
 			summaryPanel.SetActive (true);
-//			maxMessage.text = "Max Players Reached. Press done to continue";
+			maxMessage.text = "Max Players Reached. Press done to continue";
 		}
 
 
@@ -295,9 +295,9 @@ public class GameEngine : NetworkBehaviour {
 		print (randomPlayerNames.Count);
 			print(playerIcons[index].name);
 		player1.text = randomPlayerNames [index];
-		playerIcons [index].transform.localScale += new Vector3 (.5f, .5f, .5f);
+		playerIcons [index].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
 		playerIcons [index].SetActive (true);
-		playerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
+		playerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		//playerIcons [index].transform.localScale.Set (.5f, .5f, .5f);
 		int index2 = Random.Range (0, randomPlayerNames.Count-1);
 
@@ -308,9 +308,9 @@ public class GameEngine : NetworkBehaviour {
 		print(player2.text = playerNames[index2]);
 		player2.text = playerNames[index2];
 		print(playerIcons[index2].name);
-		playerIcons [index2].transform.localScale += new Vector3 (.5f, .5f, .5f);
+		playerIcons [index2].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
 		playerIcons [index2].SetActive (true);
-		playerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.2f;
+		playerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 
 		randomPlayerNames.Remove (playerNames [index]);
 		randomPlayerNames.Remove (playerNames [index2]);
