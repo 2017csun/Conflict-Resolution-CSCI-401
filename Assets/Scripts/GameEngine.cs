@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityStandardAssets.Characters.FirstPerson;
 
-public class GameEngine : MonoBehaviour {
+public class GameEngine : NetworkBehaviour {
 
     [HideInInspector]
-    public GameObject player;
+    public GameObject myPlayer;
 
     //---------------------------------------------
     //	General game variables
@@ -23,7 +24,8 @@ public class GameEngine : MonoBehaviour {
 	//	Player input variables
 	//---------------------------------------------
     [Header("Player Input Variables")]
-	public GameObject[] playerIcons;
+	public GameObject[] playerIconFabs;
+    public GameObject[] playerIcons;
 	public Text[] playerNameTextFields;
 	public GameObject nameInputPanel;
 	public GameObject panelIconSelect;
@@ -66,15 +68,12 @@ public class GameEngine : MonoBehaviour {
 
         //  Add all checkpoints
         allCheckpoints = new List<Transform>();
-        if (checkpointLocations == null)
-            Debug.Log("IT'S NULL");
         foreach (Transform child in checkpointLocations.transform) {
             allCheckpoints.Add(child);
         }
 
 		roundNumber = 1;
 		currentIcon = -1;
-        player = GameObject.FindGameObjectWithTag("Player");
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
 		randomPlayerNames = new List<string> ();
@@ -93,11 +92,37 @@ public class GameEngine : MonoBehaviour {
 	
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
+
+        //  Spawn the icons
+        playerIcons = new GameObject[playerIconFabs.Length];
+        for (int i = 0; i < playerIconFabs.Length; ++i) {
+            GameObject go = Instantiate(playerIconFabs[i], new Vector3(0, -10, 0), Quaternion.identity) as GameObject;
+            playerIcons[i] = go;
+        }
 	}
 
     void Update () {
-        if (player == null) {
-            player = GameObject.FindGameObjectWithTag("Player");
+        //  Set myPlayer
+        if (myPlayer == null) {
+            foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
+                if (go.GetComponent<FirstPersonController>().isActiveAndEnabled) {
+                    myPlayer = go;
+                }
+            }
+        }
+
+        //  Don't let other players activate our checkpoint
+        //      This is a terrible way to do it but it's the easiest to implement 
+        GameObject check = GameObject.FindGameObjectWithTag("Checkpoint");
+        if (check != null) {
+            foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
+                if (!go.GetComponent<FirstPersonController>().isActiveAndEnabled) {
+                    Physics.IgnoreCollision(
+                        go.GetComponent<Collider>(),
+                        check.GetComponent<Collider>()
+                    );
+                }
+            }
         }
     }
 
@@ -106,7 +131,7 @@ public class GameEngine : MonoBehaviour {
 		nameInputPanel.SetActive (true);
 
         //  Disable player controls
-        player.GetComponent<FirstPersonController>().enabled = false;
+        myPlayer.GetComponent<FirstPersonController>().enabled = false;
     }
 
     public void deactivateNameInputPanel () {
@@ -114,43 +139,38 @@ public class GameEngine : MonoBehaviour {
 		nameInputPanel.SetActive (false);
 
         //  Enable player controls
-        player.GetComponent<FirstPersonController>().enabled = true;
+        myPlayer.GetComponent<FirstPersonController>().enabled = true;
     }
 	public void activateChoosePlayerPanel() {
 		choosePlayersPanel.SetActive (true);
 		print ("Activate Choose Players Panel");
 		roundNumber++;
 		//Disable player
-		player.GetComponent<FirstPersonController>().enabled = false;
 
+        //  Disable player controls
+        myPlayer.GetComponent<FirstPersonController>().enabled = false;
 	}
 	public void deactivateChoosePlayerPanel() {
 		choosePlayersPanel.SetActive (false);
 
-
-
-
-		player.GetComponent<FirstPersonController>().enabled = true;
-
+        //  Enable player controls
+        myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 
 	public void activateChosenPanel() {
 		playersChosenPanel.SetActive (true);
 		displayRandomPlayers ();
-		player.GetComponent<FirstPersonController>().enabled = false;
 
+        //  Disable player controls
+        myPlayer.GetComponent<FirstPersonController>().enabled = false;
 	}
 	public void deactivateChosenPanel() {
-
-
 		playersChosenPanel.SetActive (false);
 		//playerIcons [index].SetActive (false);
 		//playerIcons [index2].SetActive (false);
 
-
-
-		player.GetComponent<FirstPersonController>().enabled = true;
-
+        //  Enable player controls
+        myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 
 	public void nameSave(InputField name) {
@@ -170,15 +190,18 @@ public class GameEngine : MonoBehaviour {
 
 		name.text = " ";
 		panelIconSelect.SetActive (true);
-		playerIcons [0].transform.parent.gameObject.SetActive (true);
 		updateIconSelect ();	
 	}
-
+        
 	public void updateIconSelect() {
 		//position the icon in front of the camera
-        int toDisable = currentIcon++;
-        if (currentIcon == playerIcons.Length) {
-            currentIcon = 0;
+        int toDisable = currentIcon;
+        currentIcon = (currentIcon + 1) % playerIcons.Length;
+
+        //  Skip over icon already owned by another player
+        if (playerIcons[currentIcon].transform.parent != null) {
+            Debug.Log(playerIcons[currentIcon].name + " already owned!");
+            currentIcon = (currentIcon + 1) % playerIcons.Length;
         }
 
 		playerIcons[currentIcon].transform.position =
@@ -203,7 +226,11 @@ public class GameEngine : MonoBehaviour {
 	}
 
 	public void saveIcon() {
+        //  Update the player's body to be the icon
+        GameObject myIcon = playerIcons[currentIcon];
+        myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
 
+        //  TODO: Kristen can you comment what exactly is happening here
 		if (!iconNames.Contains (iconName.text)) {
 			iconNames.Add (iconName.text);
 
@@ -214,36 +241,28 @@ public class GameEngine : MonoBehaviour {
 			}
 			panelIconSelect.SetActive (false);
 			for (int i = 0; i < playerIcons.Length; i++) {
-				playerIcons [i].SetActive (false);
+                if (playerIcons[i].transform.parent == null) {
+                    playerIcons[i].SetActive(false);
+                }
+                else {
+                    Debug.Log(playerIcons[i].name + " is owned by a player!");
+                }
 			}
 
 			summaryPanel.SetActive (true);
 		} 
 		else 
 		{
-
 			//TODO handle error
 			print ("already chosen");
 		}
-
-        //  Update the player's body to be the icon
-        GameObject myIcon = playerIcons[currentIcon];
-        myIcon.transform.localScale += new Vector3(.2f, .2f, .2f);
-        myIcon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
-        myIcon.transform.parent = player.transform;
-        myIcon.transform.localPosition = new Vector3(0, 0, 0);
-        myIcon.transform.localRotation = Quaternion.Euler(0, 90, 0);
-        myIcon.SetActive(true);
 	}
 
 	public void donePlayerInput () {
 		summaryPanel.SetActive (false);
+
 		//	Re-enable player controls
-		//	Remove all UI panels
-		//	Spawn next checkpoint at role selection button
-			//	Get CheckpointLocations[x]
-			//	Instantiate(checkpoint, location)
-		player.GetComponent<FirstPersonController>().enabled = true;
+        myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 
 	public void addPlayerInput () {
@@ -306,7 +325,11 @@ public class GameEngine : MonoBehaviour {
         //  Spawn next checkpoint
 		currCheckpoint++;
         if (currCheckpoint < allCheckpoints.Count) {
-            Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
+            GameObject check = Instantiate(
+                checkpointFab,
+                allCheckpoints[currCheckpoint].position,
+                Quaternion.identity
+            ) as GameObject;
         }
 	}
 }
