@@ -10,8 +10,6 @@ public class NetworkMatcher : MonoBehaviour {
     private string gameCode;
     private NetworkMatch networkMatch;
 
-    private bool isServer;
-
 	// Use this for initialization
 	void Start () {
         NetworkManager.singleton.StartMatchMaker();
@@ -25,8 +23,6 @@ public class NetworkMatcher : MonoBehaviour {
     //--------------------------------------------------
 
     public void startServer () {
-        isServer = true;
-
         if (gameCode.Equals("")) {
             Debug.LogError("Error: gameCode has not been set");
             return;
@@ -49,9 +45,9 @@ public class NetworkMatcher : MonoBehaviour {
 
     //	Request the list of matches matching gameTypeName
     public void connectToServer (string gameTypeName) {
-        isServer = false;
+        gameTypeName = gameTypeName.ToUpper();
         Debug.Log("Attempting to join " + gameTypeName);
-        NetworkManager.singleton.matchMaker.ListMatches(0, 20, "", OnMatchList);
+        NetworkManager.singleton.matchMaker.ListMatches(0, 20, gameTypeName, OnMatchList);
     }
 
     //	Check for exactly 1 match
@@ -60,6 +56,9 @@ public class NetworkMatcher : MonoBehaviour {
 
         if (matches.Count > 1) {
             Debug.LogError("THERE ARE MULTIPLE MATCHES IDK WHAT TO DOOOOO");
+            for (int i = 0; i < matches.Count; ++i) {
+                Debug.LogError("ID: " + matches[i].networkId + "\nName: " + matches[i].name);
+            }
         }
         else if (matches.Count == 1) {
             Debug.Log("Joining " + matches[0].name);
