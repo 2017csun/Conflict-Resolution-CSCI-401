@@ -50,8 +50,13 @@ public class GameEngine : MonoBehaviour {
 	private List<string> iconNames;
     private int currentIcon;
 
+	//---------------------------------------------
+	//	Pro/Con variables
+	//---------------------------------------------
+	[Header("Pro & Con Variables")]
 	private List<string> answers;
 	private string[] intentions;
+	public GameObject proConPanel;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -74,6 +79,10 @@ public class GameEngine : MonoBehaviour {
 	
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
+
+
+
+
 	}
 
     void Update () {
@@ -133,7 +142,18 @@ public class GameEngine : MonoBehaviour {
 		player.GetComponent<FirstPersonController>().enabled = true;
 
 	}
+	public void activateProConPanel() {
 
+		proConPanel.SetActive (true);
+		player.GetComponent<FirstPersonController>().enabled = false;
+
+	}
+	public void deactivateProConPanel() {
+		
+		proConPanel.SetActive (false);
+		player.GetComponent<FirstPersonController>().enabled = true;
+		
+	}
 	public void nameSave(InputField name) {
 		nameInputPanel.SetActive (false);
 
@@ -273,15 +293,22 @@ public class GameEngine : MonoBehaviour {
 
 
 	}
-	public void sendAnswers(List<string> answers) {
-		this.answers = answers;
+	public void sendAnswers(List<string> ansList) {
+		answers = new List<string> ();
+
+		for (int i = 0; i < ansList.Count; i++) {
+
+			answers[i] = ansList[i];
+		}
 
 
 
 	}
-	public void sendIntention(string[] intentions){
-		this.intentions = intentions;
-
+	public void sendIntention(string[] intent){
+		intentions = new string[6];
+		for (int i = 0; i < intent.Length; i++) {
+			intentions [i] = intent [i];
+		}
 	}
 	
     public void checkpointHit() {

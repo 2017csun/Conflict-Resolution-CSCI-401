@@ -14,6 +14,9 @@ public class ProsAndConsList : MonoBehaviour {
 	[Header("Pros and Cons Variables")]
 	public 	GameObject scrollview;
 	public GameEngine gameEngine;
+	public Text displayText;
+	public string currentIntention1;
+	public string currentIntention2;
 	public Text[] proConsList;
 	public Button[] buttons;
 	public List<string> savedAnswers;
@@ -23,8 +26,11 @@ public class ProsAndConsList : MonoBehaviour {
 	public string[] collabList;
 	public string[] avoidList;
 	public string[] compromiseList;
+	public GameObject chooseButton;
+
 
 	public Vector2 scr = Vector2.zero;
+	int numClicked = 0;
 	//private string innerText = "Found me!";
 	void Start() {
 		//Initialize the ConflictStyle/IntentionLists
@@ -35,6 +41,8 @@ public class ProsAndConsList : MonoBehaviour {
 		collabList = new string[6];
 		avoidList = new string[6];
 		compromiseList = new string[6];
+		currentIntention1 = "avoiding";
+		displayText.text = displayText.text + " " + currentIntention1;
 
 		//competing pros
 		generalProConList.Add ("Asserting your positions so ideas are taken seriously");
@@ -69,7 +77,7 @@ public class ProsAndConsList : MonoBehaviour {
 		
 		//avoiding pros
 		generalProConList.Add ("Reducing stress by evading unpleasant people and topics");
-		generalProConList.Add ("Providing equal gains and losses for both people");
+		generalProConList.Add ("Not stirring up problems or provoking trouble");
 		generalProConList.Add ("Gaining more time to be better prepared and be less distracted");
 		
 		//avoiding cons
@@ -104,13 +112,19 @@ public class ProsAndConsList : MonoBehaviour {
 		for (int i = 0; i < 6; i++) {
 			compromiseList [i] = generalProConList [i + 24];
 		}
-		populateScrollList ("competing");
+		populateScrollList (currentIntention1);
 	}
 
 	void Update(){
+		if (numClicked == 6) {
 
+			chooseButton.SetActive(true);
+		}
 
-
+		if (numClicked > 6  || numClicked < 6) {
+			
+			chooseButton.SetActive(false);
+		}
 
 
 	}
@@ -201,7 +215,7 @@ public class ProsAndConsList : MonoBehaviour {
 				tempList2.Remove(tempList2[ind]);
 			}
 
-		print (tempList.Count - 1);
+		//print (tempList.Count - 1);
 		for (int i = 0; i < proConsList.Length; i++) {
 
 			int index = Random.Range (0, tempList.Count - 1);
@@ -215,10 +229,10 @@ public class ProsAndConsList : MonoBehaviour {
 
 	public void saveAnswer() {
 
-		for (int i = 0; i < buttons.Length; i++) {
-			if (buttons [i].colors.normalColor.Equals (Color.yellow)) {
+		for (int i = 0; i < proConsList.Length; i++) {
+			if (proConsList[i].color.Equals(Color.blue)) {
 
-				savedAnswers.Add (buttons [i].GetComponentInChildren<Text> ().text);
+				savedAnswers.Add (proConsList [i].text);
 
 
 
@@ -228,27 +242,22 @@ public class ProsAndConsList : MonoBehaviour {
 	}
 	
 
-	 public void changeColor(Button button) {
 
-	//	button.colors.normalColor = Color.yellow;
-		//button.colors.normalColor = Color.yellow;
-		if(button.colors.normalColor.Equals(Color.white)){
-		ColorBlock cb = button.colors;
-		cb.normalColor = Color.blue;
-		button.colors = cb;
+	public void changeTheColor(Text t) {
+		if (t.color.Equals (Color.black)) {
+			t.color = Color.blue;
+				numClicked++;
 		}
-
 		else {
-			if(button.colors.normalColor.Equals(Color.yellow)){
-			ColorBlock cb = button.colors;
-			cb.normalColor = Color.white;
-			button.colors = cb;
-		}
+
+			if (t.color.Equals (Color.blue)) {
+				t.color = Color.black;
+					numClicked--;
 			}
-		print ("populating");
 
 
 		}
+	}
 
 
 
