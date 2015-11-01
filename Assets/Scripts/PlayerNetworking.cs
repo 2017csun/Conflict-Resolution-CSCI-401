@@ -14,7 +14,6 @@ public class PlayerNetworking : NetworkBehaviour {
 
     void Update () {
         if (playerIcons == null) {
-            Debug.Log("Setting the icons!!");
             playerIcons = GameObject.FindGameObjectsWithTag("Icon");
         }
     }
@@ -71,7 +70,6 @@ public class PlayerNetworking : NetworkBehaviour {
 
     //  Update the player's body to be the icon
     public void updateBodyToIcon (GameObject icon) {
-        Debug.Log("Updating " + icon.name);
         CmdSetBodyIcon(icon.name);
     }
 }
