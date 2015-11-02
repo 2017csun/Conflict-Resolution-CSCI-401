@@ -272,11 +272,13 @@ public class GameEngine : NetworkBehaviour {
 
 			}
 			panelIconSelect.SetActive (false);
+			animationPanel.discardPanel();
 			for (int i = 0; i < playerIcons.Length; i++) {
                 if (playerIcons[i].transform.parent == null) {
                     playerIcons[i].SetActive(false);
                 }
 			}
+
 
 			summaryPanel.SetActive (true);
 		} 
@@ -325,7 +327,7 @@ public class GameEngine : NetworkBehaviour {
 				index2 = index + 1;
 			}
 			else {
-			index2 =(index + 2)  % (randomPlayerNames.Count -1);
+			index2 =(index + 1)  % (randomPlayerNames.Count -1);
 			}
 		}
 		print(player2.text = playerNames[index2]);
