@@ -72,4 +72,36 @@ public class PlayerNetworking : NetworkBehaviour {
     public void updateBodyToIcon (GameObject icon) {
         CmdSetBodyIcon(icon.name);
     }
+
+    //  Send a new player name to the server game engine
+    public void sendNameToServer (string name) {
+        CmdSendNameToServer(name);
+    }
+    //  The actual Command call
+    [Command]
+    public void CmdSendNameToServer (string name) {
+        GameObject engine = GameObject.FindGameObjectWithTag("Engine");
+        if (engine == null) {
+            Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
+            return;
+        }
+
+        engine.GetComponent<GameEngine>().updateNamesFromClient(name);
+    }
+
+    //  Send a new player icon to the server game engine
+    public void sendIconToServer (string name) {
+        CmdSendIconToServer(name);
+    }
+    //  The actual Command call
+    [Command]
+    public void CmdSendIconToServer (string name) {
+        GameObject engine = GameObject.FindGameObjectWithTag("Engine");
+        if (engine == null) {
+            Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
+            return;
+        }
+
+        engine.GetComponent<GameEngine>().updateIconFromClient(name);
+    }
 }

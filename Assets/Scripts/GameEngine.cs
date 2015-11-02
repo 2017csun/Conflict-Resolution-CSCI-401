@@ -185,9 +185,11 @@ public class GameEngine : NetworkBehaviour {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 		
 	}
-	public void nameSave(InputField name) {
+	
+    public void nameSave(InputField name) {
         animationPanel.discardPanel();
-		if (playerNames.Count <= playerNameTextFields.Length) {
+
+		if (playerNames.Count < playerNameTextFields.Length) {
 			
 			//TODO: error handling
 			
@@ -197,10 +199,12 @@ public class GameEngine : NetworkBehaviour {
 			name.placeholder.GetComponent<Text> ().text = "Enter Name";
 			playerNames.Add (name.text);
 	
-
-
 			playerNameTextFields [playerNames.Count - 1].text = name.text;
 		
+            //  Send to server if this is the client
+            if (!this.isServer) {
+                myPlayer.GetComponent<PlayerNetworking>().sendNameToServer(name.text);
+            }
 
 			name.text = " ";
 			panelIconSelect.SetActive (true);
@@ -213,9 +217,13 @@ public class GameEngine : NetworkBehaviour {
 			summaryPanel.SetActive (true);
 			maxMessage.text = "Max Players Reached. Press done to continue";
 		}
-
-
 	}
+
+    //  Called by clients to update name on server
+    public void updateNamesFromClient (string name) {
+        playerNames.Add(name);
+        playerNameTextFields[playerNames.Count - 1].text = name;
+    }
         
 	public void updateIconSelect() {
 		//position the icon in front of the camera
@@ -243,7 +251,13 @@ public class GameEngine : NetworkBehaviour {
 	
 		//enable the current Icon
 		playerIcons[currentIcon].SetActive (true);
-		iconName.text = playerIcons[currentIcon].name;
+        string name = playerIcons[currentIcon].name;
+        //  Take out the (Clone) part of the name
+        int i = name.IndexOf("(Clone)");
+        if (i != -1) {
+            name = name.Substring(0, i) + name.Substring(i + 7);
+        }
+        iconName.text = name;
 		
 		if (currentIcon == playerIcons.Length) {
 
@@ -260,6 +274,11 @@ public class GameEngine : NetworkBehaviour {
         //  TODO: Kristen can you comment what exactly is happening here
 		if (!iconNames.Contains (iconName.text)) {
 			iconNames.Add (iconName.text);
+
+            //  If client, update the icon on server too
+            if (!this.isServer) {
+                myPlayer.GetComponent<PlayerNetworking>().sendIconToServer(iconName.text);
+            }
 
 			for (int i = 0; i < iconNames.Count; i++) {
 
@@ -283,6 +302,11 @@ public class GameEngine : NetworkBehaviour {
 		}
 
 	}
+    //  Called by clients to update icon on server
+    public void updateIconFromClient (string iconName) {
+        Debug.Log("Adding icon info from client");
+        iconNames.Add(iconName);
+    }
 
 	public void donePlayerInput () {
 		summaryPanel.SetActive (false);
