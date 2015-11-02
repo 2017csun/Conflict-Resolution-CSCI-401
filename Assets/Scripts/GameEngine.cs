@@ -14,6 +14,7 @@ public class GameEngine : NetworkBehaviour {
     //	General game variables
     //---------------------------------------------
     [Header("General Game")]
+    public AnimationPanel animationPanel;
     public GameObject checkpointFab;
     public GameObject checkpointLocations;
     private List<Transform> allCheckpoints;
@@ -125,19 +126,21 @@ public class GameEngine : NetworkBehaviour {
     }
 
     public void activateNameInputPanel () {
-        //  Display the UI
-		nameInputPanel.SetActive (true);
-
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
+        //  Start up the panel animation
+        animationPanel.beginAnimation(250, 275, 0.9f);
+        //  Wait for animation to finish before displaying UI
+        Invoke("actuallyActivateNameInputPanel", animationPanel.animationTime);
+    }
+    private void actuallyActivateNameInputPanel () {
+        //  Display the UI
+        nameInputPanel.SetActive(true);
     }
 
     public void deactivateNameInputPanel () {
         //  Hide the UI
 		nameInputPanel.SetActive (false);
-
-        //  Enable player controls
-        myPlayer.GetComponent<FirstPersonController>().enabled = true;
     }
 	public void activateChoosePlayerPanel() {
 		choosePlayersPanel.SetActive (true);
@@ -183,6 +186,7 @@ public class GameEngine : NetworkBehaviour {
 		
 	}
 	public void nameSave(InputField name) {
+        animationPanel.discardPanel();
 		if (playerNames.Count <= playerNameTextFields.Length) {
 			
 			//TODO: error handling
@@ -200,7 +204,10 @@ public class GameEngine : NetworkBehaviour {
 
 			name.text = " ";
 			panelIconSelect.SetActive (true);
-			updateIconSelect ();
+            //  Start up the panel animation
+            animationPanel.beginAnimation(500, 600, 0.3f);
+            //  Wait for animation to finish before displaying UI
+			Invoke("updateIconSelect", animationPanel.animationTime);
 		} 
 		else {
 			summaryPanel.SetActive (true);
@@ -223,8 +230,11 @@ public class GameEngine : NetworkBehaviour {
 
 		playerIcons[currentIcon].transform.position =
             Camera.main.transform.position + Camera.main.transform.forward * .8f + new Vector3(0, -0.18f, 0);
-		spotlight.transform.position = playerIcons [currentIcon].transform.position + new Vector3 (0, 0.5f, 0);
-		spotlight.transform.rotation = Quaternion.Euler (90, 0, 0); 
+		spotlight.transform.position =
+            playerIcons [currentIcon].transform.position +
+            new Vector3 (0, 0.8f, 0) +
+            (Camera.main.transform.forward * -1/8f);    //  Move it forward a little so more light hits icon
+        spotlight.transform.LookAt(playerIcons[currentIcon].transform);
 
 		//disable the previous icon
         if (toDisable >= 0) {
@@ -244,8 +254,8 @@ public class GameEngine : NetworkBehaviour {
 
 	public void saveIcon() {
         //  Update the player's body to be the icon
-        GameObject myIcon = playerIcons[currentIcon];
-        myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
+        //GameObject myIcon = playerIcons[currentIcon];
+        //myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
 
         //  TODO: Kristen can you comment what exactly is happening here
 		if (!iconNames.Contains (iconName.text)) {
@@ -260,9 +270,6 @@ public class GameEngine : NetworkBehaviour {
 			for (int i = 0; i < playerIcons.Length; i++) {
                 if (playerIcons[i].transform.parent == null) {
                     playerIcons[i].SetActive(false);
-                }
-                else {
-                    Debug.Log(playerIcons[i].name + " is owned by a player!");
                 }
 			}
 
@@ -291,15 +298,12 @@ public class GameEngine : NetworkBehaviour {
 
 	public void displayRandomPlayers() {
 
-	
-
 		if (roundNumber == playerNames.Count / 2 || roundNumber == 1) {
 
 			for (int i = 0; i < playerNames.Count; i++) {
 				randomPlayerNames.Add(playerNames[i]);
 			}
 		}
-
 
 		int index = Random.Range (0, randomPlayerNames.Count - 1);
 		print (randomPlayerNames.Count);
