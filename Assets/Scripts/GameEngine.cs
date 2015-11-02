@@ -19,6 +19,7 @@ public class GameEngine : NetworkBehaviour {
     public GameObject checkpointLocations;
     private List<Transform> allCheckpoints;
     private List<string> playerNames;
+    private List<int> playersChosenToPlay;
     private int currCheckpoint;
 
 	//---------------------------------------------
@@ -52,7 +53,6 @@ public class GameEngine : NetworkBehaviour {
     //---------------------------------------------
     [Header("Wheel Spinning Variables")]
 
-    private List<string> randomPlayerNames;
 	private List<string> iconNames;
     private int currentIcon;
 	private static string[] scenariosList;
@@ -83,7 +83,7 @@ public class GameEngine : NetworkBehaviour {
 		currentIcon = -1;
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
-		randomPlayerNames = new List<string> ();
+        playersChosenToPlay = new List<int>();
 		currentPlayerIcons = new List<GameObject> ();
 
 		currIntentions = new string[2];
@@ -148,7 +148,6 @@ public class GameEngine : NetworkBehaviour {
 		choosePlayersPanel.SetActive (true);
 		print ("Activate Choose Players Panel");
 		roundNumber++;
-		//Disable player
 
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -283,7 +282,7 @@ public class GameEngine : NetworkBehaviour {
 
             //  If client, update the icon on server too
             if (!this.isServer) {
-                myPlayer.GetComponent<PlayerNetworking>().sendIconToServer(iconName.text);
+                myPlayer.GetComponent<PlayerNetworking>().sendIconToServer(iconName.text, currentIcon);
             }
 
 			currentPlayerIcons.Add(playerIcons[currentIcon]);
@@ -316,9 +315,10 @@ public class GameEngine : NetworkBehaviour {
 
 	}
     //  Called by clients to update icon on server
-    public void updateIconFromClient (string iconName) {
+    public void updateIconFromClient (string iconName, int iconIndex) {
         Debug.Log("Adding icon info from client");
         iconNames.Add(iconName);
+        currentPlayerIcons.Add(playerIcons[iconIndex]);
     }
 
 	public void donePlayerInput () {
@@ -335,48 +335,36 @@ public class GameEngine : NetworkBehaviour {
 
 	public void displayRandomPlayers() {
 
-		/*checks if we are in the first round or if the round is equal to the number of players the game has in order to filter 
-		 the randomization of players*/
-		if (roundNumber == playerNames.Count / 2 || roundNumber == 1) {
+        //  Check if all players have been chosen to play
+        if (playersChosenToPlay.Count >= playerNames.Count-1) {
+            //  Clear it out so they can be chosen again
+            playersChosenToPlay.Clear();
+        }
 
-			/*add every player to the list of the list that will soon be randomized */
-			for (int i = 0; i < playerNames.Count; i++) {
-				randomPlayerNames.Add(playerNames[i]);
-			}
-		}
-
-		/*assigns a random number to a index and assign corresponding text*/
-		int index = Random.Range (0, randomPlayerNames.Count - 1);
-		player1.text = randomPlayerNames [index];
+		/*assigns a random number to a index, assign corresponding text, and adds to list of players chosen*/
+		int index = Random.Range (0, playerNames.Count);
+        //  Make sure the index hasn't been picked already
+        while (playersChosenToPlay.Contains(index)) {
+            index = Random.Range(0, playerNames.Count);
+        }
+		player1.text = playerNames [index];
+        playersChosenToPlay.Add(index);
 	
 		/*set player1s icon to true and place in camera view */
 		currentPlayerIcons [index].SetActive (true);
 		currentPlayerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
-	
-		int index2 = Random.Range (0, randomPlayerNames.Count-1);
 
-
-		/* checks if indecies are equal. If there are only 2 players, and the indecies, are equal index2 will be set to the
-		 only other choice. If more than 2, set it to a different random number*/ 
-		if (index == index2) {
-			 if(randomPlayerNames.Count == 2) {
-				index2 = index + 1;
-			}
-			else {
-			index2 =(index + 1)  % (randomPlayerNames.Count -1);
-			}
-		}
+        int index2 = Random.Range(0, playerNames.Count);
+        //  Loop and reroll for as long as you got the same roll or one that's been picked already
+        while (playersChosenToPlay.Contains(index2)) {
+            index2 = Random.Range(0, playerNames.Count);
+        }
 		player2.text = playerNames[index2];
+        playersChosenToPlay.Add(index2);
 	
-		/*set player1s icon to true and place in camera view */
+		/*set player2s icon to true and place in camera view */
 		currentPlayerIcons [index2].SetActive (true);
 		currentPlayerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
-
-		/*removes the players from the list so that they cannot be chose for the next round */
-		randomPlayerNames.Remove (playerNames [index]);
-		randomPlayerNames.Remove (playerNames [index2]);
-
-
 	}
 	public void sendAnswers(List<string> ansList) {
 		answers = new List<string> ();

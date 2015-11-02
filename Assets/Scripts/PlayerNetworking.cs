@@ -90,18 +90,18 @@ public class PlayerNetworking : NetworkBehaviour {
     }
 
     //  Send a new player icon to the server game engine
-    public void sendIconToServer (string name) {
-        CmdSendIconToServer(name);
+    public void sendIconToServer (string name, int iconIndex) {
+        CmdSendIconToServer(name, iconIndex);
     }
     //  The actual Command call
     [Command]
-    public void CmdSendIconToServer (string name) {
+    public void CmdSendIconToServer (string name, int iconIndex) {
         GameObject engine = GameObject.FindGameObjectWithTag("Engine");
         if (engine == null) {
             Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
             return;
         }
 
-        engine.GetComponent<GameEngine>().updateIconFromClient(name);
+        engine.GetComponent<GameEngine>().updateIconFromClient(name, iconIndex);
     }
 }
