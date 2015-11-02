@@ -262,15 +262,20 @@ public class GameEngine : NetworkBehaviour {
         //GameObject myIcon = playerIcons[currentIcon];
         //myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
 
-        //  TODO: Kristen can you comment what exactly is happening here
+        /* If the currentIcon , "iconName" that just got saved is not the iconNames list (which contains the selected iconNames) 
+         then add it to the list. Add it also to the GameObject List of actual icons (currentPlayer Icons)*/
 		if (!iconNames.Contains (iconName.text)) {
 			iconNames.Add (iconName.text);
 			currentPlayerIcons.Add(playerIcons[currentIcon]);
 			for (int i = 0; i < iconNames.Count; i++) {
 
+				/*playerNameTextFields refers to the summaryPanel in the PlayerInput Variables. It updates each block of text to a player
+				and its icon number*/
 				playerNameTextFields [i].text = "Player " + (i + 1) + " " + playerNames [i] + " - " + iconNames [i];
 
 			}
+
+			/* Turn the panel off. Discard animation. And set the players to false */
 			panelIconSelect.SetActive (false);
 			animationPanel.discardPanel();
 			for (int i = 0; i < playerIcons.Length; i++) {
@@ -279,7 +284,7 @@ public class GameEngine : NetworkBehaviour {
                 }
 			}
 
-
+			//turn on summaryPlayerInput Panel
 			summaryPanel.SetActive (true);
 		} 
 		else 
@@ -305,23 +310,29 @@ public class GameEngine : NetworkBehaviour {
 
 	public void displayRandomPlayers() {
 
+		/*checks if we are in the first round or if the round is equal to the number of players the game has in order to filter 
+		 the randomization of players*/
 		if (roundNumber == playerNames.Count / 2 || roundNumber == 1) {
 
+			/*add every player to the list of the list that will soon be randomized */
 			for (int i = 0; i < playerNames.Count; i++) {
 				randomPlayerNames.Add(playerNames[i]);
 			}
 		}
 
+		/*assigns a random number to a index and assign corresponding text*/
 		int index = Random.Range (0, randomPlayerNames.Count - 1);
-		print (randomPlayerNames.Count);
-			print(currentPlayerIcons[index].name);
 		player1.text = randomPlayerNames [index];
-		//playerIcons [index].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
+	
+		/*set player1s icon to true and place in camera view */
 		currentPlayerIcons [index].SetActive (true);
 		currentPlayerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
-		//playerIcons [index].transform.localScale.Set (.5f, .5f, .5f);
+	
 		int index2 = Random.Range (0, randomPlayerNames.Count-1);
 
+
+		/* checks if indecies are equal. If there are only 2 players, and the indecies, are equal index2 will be set to the
+		 only other choice. If more than 2, set it to a different random number*/ 
 		if (index == index2) {
 			 if(randomPlayerNames.Count == 2) {
 				index2 = index + 1;
@@ -330,13 +341,13 @@ public class GameEngine : NetworkBehaviour {
 			index2 =(index + 1)  % (randomPlayerNames.Count -1);
 			}
 		}
-		print(player2.text = playerNames[index2]);
 		player2.text = playerNames[index2];
-		print(currentPlayerIcons[index2].name);
-		//playerIcons [index2].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
+	
+		/*set player1s icon to true and place in camera view */
 		currentPlayerIcons [index2].SetActive (true);
 		currentPlayerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 
+		/*removes the players from the list so that they cannot be chose for the next round */
 		randomPlayerNames.Remove (playerNames [index]);
 		randomPlayerNames.Remove (playerNames [index2]);
 

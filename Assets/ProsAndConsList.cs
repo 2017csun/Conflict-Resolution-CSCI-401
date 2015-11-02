@@ -21,6 +21,8 @@ public class ProsAndConsList : MonoBehaviour {
 	public Button[] buttons;
 	public List<string> savedAnswers;
 	public  List<string> generalProConList;
+	public List<string> masterProList;
+	public List<string> masterConList;
 	public string[] competingList;
 	public string[] accomList;
 	public string[] collabList;
@@ -42,6 +44,8 @@ public class ProsAndConsList : MonoBehaviour {
 		avoidList = new string[6];
 		compromiseList = new string[6];
 		currentIntention1 = "avoiding";
+		List<string> masterProList = new List<string> ();
+		List<string> masterConList = new List<string> ();
 		displayText.text = displayText.text + " " + currentIntention1;
 
 		//competing pros
