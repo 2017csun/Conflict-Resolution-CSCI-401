@@ -27,6 +27,7 @@ public class GameEngine : NetworkBehaviour {
     [Header("Player Input Variables")]
 	public GameObject[] playerIconFabs;
     public GameObject[] playerIcons;
+	public List<GameObject> currentPlayerIcons;
 	public Text[] playerNameTextFields;
 	public GameObject nameInputPanel;
 	public GameObject panelIconSelect;
@@ -83,6 +84,7 @@ public class GameEngine : NetworkBehaviour {
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
 		randomPlayerNames = new List<string> ();
+		currentPlayerIcons = new List<GameObject> ();
 
 		currIntentions = new string[2];
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
@@ -195,7 +197,9 @@ public class GameEngine : NetworkBehaviour {
 			nameInputPanel.SetActive (false);
 
 			name.placeholder.GetComponent<Text> ().text = "Enter Name";
+
 			playerNames.Add (name.text);
+
 	
 
 
@@ -222,16 +226,17 @@ public class GameEngine : NetworkBehaviour {
         int toDisable = currentIcon;
         currentIcon = (currentIcon + 1) % playerIcons.Length;
 
+
         //  Skip over icon already owned by another player
-        if (playerIcons[currentIcon].transform.parent != null) {
-            Debug.Log(playerIcons[currentIcon].name + " already owned!");
+        if (playerIcons[currentIcon].transform.parent != null) {//playerIcons
+			Debug.Log(playerIcons[currentIcon].name + " already owned!");
             currentIcon = (currentIcon + 1) % playerIcons.Length;
         }
 
-		playerIcons[currentIcon].transform.position =
+		playerIcons[currentIcon].transform.position =//playericons
             Camera.main.transform.position + Camera.main.transform.forward * .8f + new Vector3(0, -0.18f, 0);
 		spotlight.transform.position =
-            playerIcons [currentIcon].transform.position +
+			playerIcons [currentIcon].transform.position +//playerIcons
             new Vector3 (0, 0.8f, 0) +
             (Camera.main.transform.forward * -1/8f);    //  Move it forward a little so more light hits icon
         spotlight.transform.LookAt(playerIcons[currentIcon].transform);
@@ -260,7 +265,7 @@ public class GameEngine : NetworkBehaviour {
         //  TODO: Kristen can you comment what exactly is happening here
 		if (!iconNames.Contains (iconName.text)) {
 			iconNames.Add (iconName.text);
-
+			currentPlayerIcons.Add(playerIcons[currentIcon]);
 			for (int i = 0; i < iconNames.Count; i++) {
 
 				playerNameTextFields [i].text = "Player " + (i + 1) + " " + playerNames [i] + " - " + iconNames [i];
@@ -307,24 +312,28 @@ public class GameEngine : NetworkBehaviour {
 
 		int index = Random.Range (0, randomPlayerNames.Count - 1);
 		print (randomPlayerNames.Count);
-			print(playerIcons[index].name);
+			print(currentPlayerIcons[index].name);
 		player1.text = randomPlayerNames [index];
-		playerIcons [index].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
-		playerIcons [index].SetActive (true);
-		playerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+		//playerIcons [index].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
+		currentPlayerIcons [index].SetActive (true);
+		currentPlayerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		//playerIcons [index].transform.localScale.Set (.5f, .5f, .5f);
 		int index2 = Random.Range (0, randomPlayerNames.Count-1);
 
 		if (index == index2) {
-			 
-			index2 = (index + 2) % (randomPlayerNames.Count -1);
+			 if(randomPlayerNames.Count == 2) {
+				index2 = index + 1;
+			}
+			else {
+			index2 =(index + 2)  % (randomPlayerNames.Count -1);
+			}
 		}
 		print(player2.text = playerNames[index2]);
 		player2.text = playerNames[index2];
-		print(playerIcons[index2].name);
-		playerIcons [index2].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
-		playerIcons [index2].SetActive (true);
-		playerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+		print(currentPlayerIcons[index2].name);
+		//playerIcons [index2].transform.localScale += new Vector3 (-.18f, -0.18f, -.18f);
+		currentPlayerIcons [index2].SetActive (true);
+		currentPlayerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 
 		randomPlayerNames.Remove (playerNames [index]);
 		randomPlayerNames.Remove (playerNames [index2]);
