@@ -190,6 +190,7 @@ public class GameEngine : NetworkBehaviour {
 		//playerIcons [index2].SetActive (false);
 
         //  Enable player controls
+
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 	public void activateProConPanel() {
@@ -399,11 +400,16 @@ public class GameEngine : NetworkBehaviour {
         }
 
         GameObject playerOneIcon = playerIcons[playerOneIconIndex];
+		print ("The body is " + playerOneIcon.name);
+		//set body by Kristen
+		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
+
         playerOneIcon.SetActive(true);
         playerOneIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 
         GameObject playerTwoIcon = playerIcons[playerTwoIconIndex];
+		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerTwoIcon);
         playerTwoIcon.SetActive(true);
         playerTwoIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
