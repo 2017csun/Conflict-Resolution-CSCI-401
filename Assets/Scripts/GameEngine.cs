@@ -35,6 +35,7 @@ public class GameEngine : NetworkBehaviour {
 	public GameObject spotlight;
 	public GameObject summaryPanel;
 	public GameObject buttonAddPlayer;
+
 	public Text maxMessage;
 
     //---------------------------------------------
@@ -73,6 +74,19 @@ public class GameEngine : NetworkBehaviour {
 	private List<string> answers;
 	private string[] intentions;
 	public GameObject proConPanel;
+
+
+
+	[Header("Score Variables")]
+	public Text[] player1Answers;
+	public Text[] player2Answers;
+	public Text[] answerKey1;
+	public Text[] answerKey2;
+	public Text roundScore;
+	public Text totalScore;
+	public int score;
+	public int totalscore;
+	public GameObject scorePanel;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -205,7 +219,22 @@ public class GameEngine : NetworkBehaviour {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 		
 	}
-	
+
+	public void activateScorePanel() {
+		
+		
+		scorePanel.SetActive (true);
+		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		
+		
+	}
+	public void deactivateScorePanel() {
+		
+		scorePanel.SetActive (false);
+		myPlayer.GetComponent<FirstPersonController>().enabled = true;
+		
+		
+	}
     public void nameSave(InputField name) {
         animationPanel.discardPanel();
 
@@ -492,7 +521,9 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 2) {
 			this.activateProConPanel();
 		}
-
+		if (currCheckpoint == 3) {
+			this.activateScorePanel();
+		}
         //  Spawn next checkpoint
 		currCheckpoint++;
         if (currCheckpoint < allCheckpoints.Count) {
