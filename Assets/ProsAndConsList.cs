@@ -19,6 +19,7 @@ public class ProsAndConsList : MonoBehaviour {
 	public string currentIntention2;
 	public Text[] proConsList1;
 	public Text[] proConsList2;
+	public Text intentText;
 	public Button[] buttons;
 	public List<string> savedAnswers;
 	public  List<string> generalProConList;
@@ -48,7 +49,7 @@ public class ProsAndConsList : MonoBehaviour {
 		 masterProList = new List<string> ();
 		masterConList = new List<string> ();
 		displayText.text = displayText.text + " " + currentIntention1;
-
+		intentText.text = currentIntention1;
 		//competing pros
 		generalProConList.Add ("Asserting your positions so ideas are taken seriously");
 		generalProConList.Add ("Making quick decisions or achieving quick victory");
@@ -182,7 +183,7 @@ public class ProsAndConsList : MonoBehaviour {
 			compromiseList [i] = generalProConList [i + 24];
 		}
 
-		populateScrollList (currentIntention1);
+		populateScrollList ("Compromising");
 	}
 
 	void Update(){
@@ -303,6 +304,7 @@ public class ProsAndConsList : MonoBehaviour {
 				tempPro.Remove (avoidList [i]);
 				tempCon.Remove (avoidList[i]);
 				gameEngine.sendIntention(avoidList);
+
 			}
 			
 		}
