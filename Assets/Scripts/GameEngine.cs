@@ -41,6 +41,10 @@ public class GameEngine : NetworkBehaviour {
     //	Random player selection variables
     //---------------------------------------------
     [Header("Random Player Selection Variables")]
+    [HideInInspector]
+    public int playerOneIconIndex;
+    [HideInInspector]
+    public int playerTwoIconIndex;
     public GameObject choosePlayersPanel;
     public GameObject playersChosenPanel;
     public Text iconName;
@@ -72,6 +76,7 @@ public class GameEngine : NetworkBehaviour {
 
 	void Start () {
 		currCheckpoint = 0;
+        playerOneIconIndex = playerTwoIconIndex = -1;
 
         //  Add all checkpoints
         allCheckpoints = new List<Transform>();
@@ -161,7 +166,20 @@ public class GameEngine : NetworkBehaviour {
 
 	public void activateChosenPanel() {
 		playersChosenPanel.SetActive (true);
-		displayRandomPlayers ();
+
+        //  If client, call ServerChooseRandomPlayers() on the server game engine
+        if (this.isServer) {
+            //  If NOT null, the client already called choose random players
+            if (playerOneIconIndex == -1 && playerTwoIconIndex == -1) {
+                ServerChooseRandomPlayers(true);
+            }
+            else {
+                this.displayRandomPlayers();
+            }
+        }
+        else {
+            myPlayer.GetComponent<PlayerNetworking>().getRandomPlayersFromServer();
+        }
 
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -320,7 +338,7 @@ public class GameEngine : NetworkBehaviour {
         iconNames.Add(iconName);
         currentPlayerIcons.Add(playerIcons[iconIndex]);
     }
-
+    
 	public void donePlayerInput () {
 		summaryPanel.SetActive (false);
 
@@ -333,7 +351,9 @@ public class GameEngine : NetworkBehaviour {
 		nameInputPanel.SetActive (true);
 	}
 
-	public void displayRandomPlayers() {
+    //  Function that can only be run on server
+    [Server]
+	public void ServerChooseRandomPlayers (bool displayIcons) {
 
         //  Check if all players have been chosen to play
         if (playersChosenToPlay.Count >= playerNames.Count-1) {
@@ -350,9 +370,8 @@ public class GameEngine : NetworkBehaviour {
 		player1.text = playerNames [index];
         playersChosenToPlay.Add(index);
 	
-		/*set player1s icon to true and place in camera view */
-		currentPlayerIcons [index].SetActive (true);
-		currentPlayerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+		//  Set the player one icon variable
+        playerOneIconIndex = index;
 
         int index2 = Random.Range(0, playerNames.Count);
         //  Loop and reroll for as long as you got the same roll or one that's been picked already
@@ -361,11 +380,35 @@ public class GameEngine : NetworkBehaviour {
         }
 		player2.text = playerNames[index2];
         playersChosenToPlay.Add(index2);
-	
-		/*set player2s icon to true and place in camera view */
-		currentPlayerIcons [index2].SetActive (true);
-		currentPlayerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+
+        //  Set the player one icon variable
+        playerTwoIconIndex = index2;
+
+        //  Must be separate function so this can be done from client side
+        if (displayIcons) {
+            //  Don't wanna display the client's icons, just server's
+            displayRandomPlayers();
+        }
 	}
+
+    //  Display the random players that have been chosen
+    public void displayRandomPlayers () {
+        if (playerOneIconIndex == -1 && playerTwoIconIndex == -1) {
+            Debug.LogError("Error: One of the player icons has not been set!");
+            return;
+        }
+
+        GameObject playerOneIcon = playerIcons[playerOneIconIndex];
+        playerOneIcon.SetActive(true);
+        playerOneIcon.transform.position =
+            Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+
+        GameObject playerTwoIcon = playerIcons[playerTwoIconIndex];
+        playerTwoIcon.SetActive(true);
+        playerTwoIcon.transform.position =
+            Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
+    }
+
 	public void sendAnswers(List<string> ansList) {
 		answers = new List<string> ();
 
