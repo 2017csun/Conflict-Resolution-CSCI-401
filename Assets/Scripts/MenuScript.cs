@@ -24,6 +24,7 @@ public class MenuScript : MonoBehaviour {
 	public Canvas joinGameMenu;
 	// Use this for initialization
 	void Start () {
+
 		// networkmanager
         networkMatcher = networkManagerPrefab.GetComponent<NetworkMatcher>();
 
@@ -90,6 +91,16 @@ public class MenuScript : MonoBehaviour {
 		keyText.text = key;
 
 	}
+
+	public void ReenableButtons() {
+		joinGameMenu.enabled = true;
+		hostGameButton.enabled = false;
+		joinGameButton.enabled = false;
+		helpButton.enabled = false;
+		exitButton.enabled = false;
+		joinButton.enabled = true;
+		joinGameCancelButton.enabled = true;
+	}
 	
 	public void JoinGamePressed() {
 
@@ -127,4 +138,6 @@ public class MenuScript : MonoBehaviour {
 		string inputKey = keyInputField.text;
 		networkMatcher.connectToServer(inputKey);
 	}
+
+
 }
