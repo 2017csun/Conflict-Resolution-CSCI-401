@@ -61,6 +61,7 @@ public class GameEngine : NetworkBehaviour {
 	private static string currScenarioTitle;
 	private static string[] intentionsList;
 	private static string[] currIntentions;
+	public GameObject recapPanel;
 
 	//---------------------------------------------
 	//	Pro/Con variables
@@ -187,7 +188,14 @@ public class GameEngine : NetworkBehaviour {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 		
 	}
-	
+
+	public void activateRecapPanel() {
+		
+		recapPanel.SetActive (true);
+		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		
+	}
+
     public void nameSave(InputField name) {
         animationPanel.discardPanel();
 
@@ -451,8 +459,13 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 1) {
 			this.activateChoosePlayerPanel ();
 		}
+		// Checkpoint == 3 is wheels
 
-		if (currCheckpoint == 2) {
+		if (currCheckpoint == 4) {
+			this.activateRecapPanel();
+		}
+
+		if (currCheckpoint == 5) {
 			this.activateProConPanel();
 		}
 
