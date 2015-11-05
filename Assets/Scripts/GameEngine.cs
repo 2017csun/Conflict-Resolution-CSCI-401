@@ -80,6 +80,8 @@ public class GameEngine : NetworkBehaviour {
 	private static string P2Recap;
 	private static string[] playerRoles;
 
+	// Planning and Role-playing
+	public Canvas helpMenu;
 	//---------------------------------------------
 	//	Pro/Con variables
 	//---------------------------------------------
@@ -126,6 +128,8 @@ public class GameEngine : NetworkBehaviour {
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
 
+		helpMenu = helpMenu.GetComponent<Canvas> ();
+		helpMenu.enabled = false;
 
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
@@ -739,6 +743,7 @@ public class GameEngine : NetworkBehaviour {
 
 		if (currCheckpoint == 4) {
 			//Planning stuff
+			helpMenu.enabled = true;
 		}
 
 		if (currCheckpoint == 5) {

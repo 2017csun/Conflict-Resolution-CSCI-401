@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class CountDownTimer : MonoBehaviour {
 
+	public Canvas timerMenu;
+
 	// change these two values accordingly
 	const int PLANNING_TIME = 25; // in number of seconds
 	const int ROLEPLAYING_TIME = 25; // in number of seconds
@@ -35,6 +37,8 @@ public class CountDownTimer : MonoBehaviour {
 	bool doneRolePlaying = false;
 	
 	void Start () {
+		timerMenu = timerMenu.GetComponent<Canvas> ();
+		timerMenu.enabled = false;
 		// buttons for intentions
 		competingButton = competingButton.GetComponent<Button> ();
 		competingButton.GetComponentInChildren<Text> ().text = "Competing";
@@ -119,6 +123,7 @@ public class CountDownTimer : MonoBehaviour {
 		int numMin = timeRemaining / 60;
 		int numSec = timeRemaining % 60;
 		timerText.text = "0" + numMin + ":" + numSec;
+		if (timerMenu.enabled)
 		InvokeRepeating("CountDown", (float)1.0, (float)1.0);
 	}
 	// do not need to use Update
@@ -148,11 +153,13 @@ public class CountDownTimer : MonoBehaviour {
 
 
 
+
 		} else if (timeRemaining == 0 && donePlanning && !doneRolePlaying) {
 			// roleplaying has ended
 			timerAlarm.Play ();
 			doneRolePlaying = true;
 			timeRemaining = 0;
+			timerMenu.enabled = false;
 		}
 	}
 
