@@ -67,6 +67,8 @@ public class GameEngine : NetworkBehaviour {
 	private static string[] intentionsList;
 	private static string[] currIntentions;
 	public GameObject recapPanel;
+	private static string P1Recap;
+	private static string P2Recap;
 
 	//---------------------------------------------
 	//	Pro/Con variables
@@ -210,14 +212,15 @@ public class GameEngine : NetworkBehaviour {
         //  Enable player controls
 
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
-	}
+	} 
+
 	public void activateProConPanel() {
 		pscript.populateScrollList ("Avoiding");
 		proConPanel.SetActive (true);
 
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 
-	}
+	} 
 	public void deactivateProConPanel() {
 		
 		proConPanel.SetActive (false);
@@ -276,9 +279,9 @@ public class GameEngine : NetworkBehaviour {
 			playerNameTextFields [playerNames.Count - 1].text = name.text;
 		
             //  Send to server if this is the client
-//            if (!this.isServer) {
-//                myPlayer.GetComponent<PlayerNetworking>().sendNameToServer(name.text);
-//            }
+            if (!this.isServer) {
+                myPlayer.GetComponent<PlayerNetworking>().sendNameToServer(name.text);
+            }
 
 			name.text = " ";
 			panelIconSelect.SetActive (true);
@@ -471,6 +474,21 @@ public class GameEngine : NetworkBehaviour {
 		}
 	}
 
+	public void updatePlayers() {
+		P1Recap = player1.text;
+		P2Recap = player2.text;
+		Debug.Log (P1Recap);
+		Debug.Log (P2Recap);
+	}
+
+	static public string getPlayer1() {
+		return P1Recap;
+	}
+
+	static public string getPlayer2() {
+		return P2Recap;
+	}
+
 	public void sendAnswers(List<string> ansList) {
 		//answers = new List<string> ();
 
@@ -584,10 +602,15 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 1) {
 			this.activateChoosePlayerPanel ();
 		}
-		// Checkpoint == 3 is wheels
+		// Checkpoint == 2 is wheels
+
+		if (currCheckpoint == 3) {
+			updatePlayers();
+			this.activateRecapPanel();
+		}
 
 		if (currCheckpoint == 4) {
-			this.activateRecapPanel();
+			//Planning stuff
 		}
 
 		if (currCheckpoint == 5) {
