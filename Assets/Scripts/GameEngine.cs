@@ -69,6 +69,7 @@ public class GameEngine : NetworkBehaviour {
 	public GameObject recapPanel;
 	private static string P1Recap;
 	private static string P2Recap;
+	private static string[] playerRoles;
 
 	//---------------------------------------------
 	//	Pro/Con variables
@@ -112,6 +113,7 @@ public class GameEngine : NetworkBehaviour {
 		intentList = new List<string> ();
 		answers = new List<string> ();
 		currIntentions = new string[2];
+		playerRoles = new string[2];
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
 
@@ -556,6 +558,67 @@ public class GameEngine : NetworkBehaviour {
 		currScenario = scenariosList [scenarioNumber];
 		currScenarioTitle = scenariosTitles [scenarioNumber];
 		Debug.Log ("Set scenario to " + currScenarioTitle);
+		setRoles (scenarioNumber);
+	}
+
+	static private void setRoles(int scenarioNumber) {
+		if(scenarioNumber == 0) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Captain";
+			if (selected == 0)
+				playerRoles[1] = "Cadet";
+			else
+				playerRoles[0] = "Cadet";
+		} else if(scenarioNumber == 1) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Lieutenant of Communications";
+			if (selected == 0)
+				playerRoles[1] = "Lieutenant of Navigation";
+			else
+				playerRoles[0] = "Lieutenant of Navigation";
+		} else if(scenarioNumber == 2) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Lieutenant Commander of Weapons";
+			if (selected == 0)
+				playerRoles[1] = "Ensign";
+			else
+				playerRoles[0] = "Ensign";
+		} else if(scenarioNumber == 3) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Captain";
+			if (selected == 0)
+				playerRoles[1] = "Chief Officer";
+			else
+				playerRoles[0] = "Chief Officer";
+		} else if(scenarioNumber == 4) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Staff Officer of Communication";
+			if (selected == 0)
+				playerRoles[1] = "Staff Officer of Technology";
+			else
+				playerRoles[0] = "Staff Officer of Technology";
+		} else if(scenarioNumber == 5) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Physician's Assistant";
+			if (selected == 0)
+				playerRoles[1] = "Lead Nurse";
+			else
+				playerRoles[0] = "Lead Nurse";
+		} else if(scenarioNumber == 6) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Chief Officer";
+			if (selected == 0)
+				playerRoles[1] = "Captain";
+			else
+				playerRoles[0] = "Captain";
+		} else {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Fleet Commander";
+			if (selected == 0)
+				playerRoles[1] = "Captain";
+			else
+				playerRoles[0] = "Captain";
+		}
 	}
 
 	private void instantiateScenarios() {
@@ -587,6 +650,10 @@ public class GameEngine : NetworkBehaviour {
 
 	public static string getScenario() {
 		return currScenario;
+	}
+
+	public static string[] getRoles() {
+		return playerRoles;
 	}
 
 	public static string[] getIntentions() {
