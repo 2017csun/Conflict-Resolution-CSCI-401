@@ -22,6 +22,11 @@ public class GameEngine : NetworkBehaviour {
     private List<int> playersChosenToPlay;
     private int currCheckpoint;
 
+    private List<PlayerClass> allPlayers;
+    [SyncVar]
+    private int currAvailableID = 1;
+    private PlayerClass currEditedPlayer;   //  The player currently being modified from user input
+
 	//---------------------------------------------
 	//	Player input variables
 	//---------------------------------------------
@@ -76,8 +81,6 @@ public class GameEngine : NetworkBehaviour {
 	public GameObject proConPanel;
 	public List<string> intentList;
 
-
-
 	[Header("Score Variables")]
 	public Text[] player1Answers;
 	public Text[] player2Answers;
@@ -101,7 +104,8 @@ public class GameEngine : NetworkBehaviour {
         }
 
 		roundNumber = 0;
-		currentIcon = -1;
+		currentIcon = 0;
+        allPlayers = new List<PlayerClass>();
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
         playersChosenToPlay = new List<int>();
@@ -252,26 +256,24 @@ public class GameEngine : NetworkBehaviour {
         animationPanel.discardPanel();
 
 		if (playerNames.Count < playerNameTextFields.Length) {
+            currEditedPlayer = new PlayerClass();
+            Debug.Log("Creating player with ID " + currAvailableID);
+            currEditedPlayer.playerID = currAvailableID;
+            currEditedPlayer.playerName = name.text;
+            currAvailableID += 1;
+            Debug.Log("ID updated to " + currAvailableID);
+
+            Debug.Log("Created a player with ID: " + currEditedPlayer.playerID + " and name: " + currEditedPlayer.playerName);
 			
 			//TODO: error handling
 			
-		
 			nameInputPanel.SetActive (false);
 
 			name.placeholder.GetComponent<Text> ().text = "Enter Name";
 
 			playerNames.Add (name.text);
 
-	
 			playerNameTextFields [playerNames.Count - 1].text = name.text;
-		
-            //  Send across network
-            if (!this.isServer) {
-                myPlayer.GetComponent<PlayerNetworking>().sendNameToServer(name.text);
-            }
-            else {
-                myPlayer.GetComponent<PlayerNetworking>().receiveNameFromServer(name.text);
-            }
 
 			name.text = " ";
 			panelIconSelect.SetActive (true);
@@ -285,25 +287,21 @@ public class GameEngine : NetworkBehaviour {
 			maxMessage.text = "Max Players Reached. Press done to continue";
 		}
 	}
-
-    //  Called to update names across network
-    public void updateNamesAcrossNetwork (string name) {
-        playerNames.Add(name);
-        playerNameTextFields[playerNames.Count - 1].text = name;
-    }
         
 	public void updateIconSelect() {
-		//position the icon in front of the camera
-        int toDisable = currentIcon;
+        //  Move the previous icon away
+        playerIcons[currentIcon].transform.position = new Vector3(0, -20, 0);
+
+        //  Get the next icon
         currentIcon = (currentIcon + 1) % playerIcons.Length;
 
-
         //  Skip over icon already owned by another player
-        if (playerIcons[currentIcon].transform.parent != null) {//playerIcons
+        while (playerIcons[currentIcon].transform.parent != null) {//playerIcons
 			Debug.Log(playerIcons[currentIcon].name + " already owned!");
             currentIcon = (currentIcon + 1) % playerIcons.Length;
         }
 
+        //position the icon in front of the camera
 		playerIcons[currentIcon].transform.position =//playericons
             Camera.main.transform.position + Camera.main.transform.forward * .8f + new Vector3(0, -0.18f, 0);
 		spotlight.transform.position =
@@ -312,26 +310,13 @@ public class GameEngine : NetworkBehaviour {
             (Camera.main.transform.forward * -1/8f);    //  Move it forward a little so more light hits icon
         spotlight.transform.LookAt(playerIcons[currentIcon].transform);
 
-		//disable the previous icon
-        if (toDisable >= 0) {
-            playerIcons[toDisable].SetActive(false);
-        }
-	
-		//enable the current Icon
-		playerIcons[currentIcon].SetActive (true);
-        string name = playerIcons[currentIcon].name;
         //  Take out the (Clone) part of the name
+        string name = playerIcons[currentIcon].name;
         int i = name.IndexOf("(Clone)");
         if (i != -1) {
             name = name.Substring(0, i) + name.Substring(i + 7);
         }
         iconName.text = name;
-		
-		if (currentIcon == playerIcons.Length) {
-
-			currentIcon = 0;
-
-		}
 	}
 
 	public void saveIcon() {
@@ -340,21 +325,34 @@ public class GameEngine : NetworkBehaviour {
 		if (!iconNames.Contains (iconName.text)) {
 			iconNames.Add (iconName.text);
 
+            currEditedPlayer.playerIcon = playerIcons[currentIcon];
+            allPlayers.Add(new PlayerClass(currEditedPlayer));
+            Debug.Log("Added icon " + currEditedPlayer.playerIcon + " to player #" + currEditedPlayer.playerID);
+
             //  Update across network
             if (!this.isServer) {
-                myPlayer.GetComponent<PlayerNetworking>().sendIconToServer(iconName.text, currentIcon);
+                myPlayer.GetComponent<PlayerNetworking>().sendPlayerToServer(
+                    currEditedPlayer.playerName,
+                    currentIcon,
+                    currEditedPlayer.playerID
+                );
             }
             else {
-                myPlayer.GetComponent<PlayerNetworking>().receiveIconFromServer(iconName.text, currentIcon);
+                myPlayer.GetComponent<PlayerNetworking>().receivePlayerFromServer(
+                    currEditedPlayer.playerName,
+                    currentIcon,
+                    currEditedPlayer.playerID
+                );
             }
 
             currentPlayerIcons.Add(playerIcons[currentIcon]);
-            for (int i = 0; i < iconNames.Count; i++) {
-
+            //  Update the player text fields
+            for (int i = 0; i < allPlayers.Count; ++i) {
+                PlayerClass play = allPlayers[i];
                 /*playerNameTextFields refers to the summaryPanel in the PlayerInput Variables. It updates each block of text to a player
                 and its icon number*/
-                playerNameTextFields[i].text = "Player " + (i + 1) + " " + playerNames[i] + " - " + iconNames[i];
-
+                playerNameTextFields[i].text =
+                    "Player " + play.playerID + " " + play.playerName + " - " + iconNames[i];
             }
 
 			/* Turn the panel off. Discard animation. And set the players to false */
@@ -362,7 +360,9 @@ public class GameEngine : NetworkBehaviour {
 			animationPanel.discardPanel();
 			for (int i = 0; i < playerIcons.Length; i++) {
                 if (playerIcons[i].transform.parent == null) {
-                    playerIcons[i].SetActive(false);
+                    //playerIcons[i].SetActive(false);
+                    //  Move them out of view instead so they can still be found in script
+                    playerIcons[i].transform.position = new Vector3(0, -20, 0);
                 }
 			}
 
@@ -378,16 +378,25 @@ public class GameEngine : NetworkBehaviour {
 
 	}
     //  Update icons across network
-    public void updateIconAcrossNetwork (string iconName, int iconIndex) {
-        iconNames.Add(iconName);
+    public void updatePlayerAcrossNetwork (string playerName, int iconIndex, int playerID) {
+        //  Create and add the player
+        PlayerClass newPlayer = new PlayerClass(playerName, playerID);
+        newPlayer.playerIcon = playerIcons[iconIndex];
+
+        Debug.Log("Network creating player #" + playerID + " named " + playerName + " with icon " + newPlayer.playerIcon.name);
+
+        iconNames.Add(playerIcons[iconIndex].name);
         currentPlayerIcons.Add(playerIcons[iconIndex]);
 
-        for (int i = 0; i < iconNames.Count; i++) {
+        allPlayers.Add(newPlayer);
 
+        //  Update the player text fields
+        for (int i = 0; i < allPlayers.Count; ++i) {
+            PlayerClass play = allPlayers[i];
             /*playerNameTextFields refers to the summaryPanel in the PlayerInput Variables. It updates each block of text to a player
             and its icon number*/
-            playerNameTextFields[i].text = "Player " + (i + 1) + " " + playerNames[i] + " - " + iconNames[i];
-
+            playerNameTextFields[i].text =
+                "Player " + play.playerID + " " + play.playerName + " - " + iconNames[i];
         }
     }
     
@@ -454,16 +463,14 @@ public class GameEngine : NetworkBehaviour {
 			//set body by Kristen
 			//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
 
-			playerOneIcon.SetActive (true);
 			playerOneIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		}
-		if (this.isClient) {
+		else {
 			print ("CLIENT THOUGH");
             GameObject playerTwoIcon = currentPlayerIcons[playerTwoIconIndex];
 		    //myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerTwoIcon);
             player2.text = playerNames[playerTwoIconIndex];
-            playerTwoIcon.SetActive(true);
             playerTwoIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
 		}

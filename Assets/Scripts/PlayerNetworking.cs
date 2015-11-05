@@ -95,52 +95,28 @@ public class PlayerNetworking : NetworkBehaviour {
         CmdSetBodyIcon(icon.name);
     }
 
-    //  Send a new player name to the server game engine
-    public void sendNameToServer (string name) {
-        CmdSendNameToServer(name);
+    //  Send a new player to the server game engine
+    public void sendPlayerToServer (string playerName, int playerIconIndex, int playerID) {
+        CmdSendPlayerToServer(playerName, playerIconIndex, playerID);
     }
     //  The actual Command call
     [Command]
-    public void CmdSendNameToServer (string name) {
-        gameEngine.updateNamesAcrossNetwork(name);
+    public void CmdSendPlayerToServer (string playerName, int iconIndex, int playerID) {
+        gameEngine.updatePlayerAcrossNetwork(playerName, iconIndex, playerID);
     }
 
-    //  Send a new player icon to the server game engine
-    public void sendIconToServer (string name, int iconIndex) {
-        CmdSendIconToServer(name, iconIndex);
-    }
-    //  The actual Command call
-    [Command]
-    public void CmdSendIconToServer (string name, int iconIndex) {
-        gameEngine.updateIconAcrossNetwork(name, iconIndex);
-    }
-
-    //  Receive a new player name from server
-    public void receiveNameFromServer (string name) {
-        RpcReceiveNameFromServer(name);
+    //  Receive a new player from server
+    public void receivePlayerFromServer (string playerName, int playerIconIndex, int playerID) {
+        RpcReceivePlayerFromServer(playerName, playerIconIndex, playerID);
     }
     //  The actual RPC
     [ClientRpc]
-    public void RpcReceiveNameFromServer (string name) {
+    public void RpcReceivePlayerFromServer (string playerName, int iconIndex, int playerID) {
         if (this.isServer) {
             //  Don't do anything on the server's client
             return;
         }
-        gameEngine.updateNamesAcrossNetwork(name);
-    }
-
-    //  Receive a new player icon from server
-    public void receiveIconFromServer (string name, int iconIndex) {
-        RpcReceiveIconFromServer(name, iconIndex);
-    }
-    //  The actual RPC
-    [ClientRpc]
-    public void RpcReceiveIconFromServer (string name, int iconIndex) {
-        if (this.isServer) {
-            //  Don't do anything on the server's client
-            return;
-        }
-        gameEngine.updateIconAcrossNetwork(name, iconIndex);
+        gameEngine.updatePlayerAcrossNetwork(playerName, iconIndex, playerID);
     }
 
     //  Call to make server pick the random players
