@@ -19,6 +19,7 @@ public class GameEngine : NetworkBehaviour {
     public GameObject checkpointLocations;
     private List<Transform> allCheckpoints;
     private List<string> playerNames;
+    private List<int> playersChosenToPlay;
     private int currCheckpoint;
 
 	//---------------------------------------------
@@ -34,12 +35,17 @@ public class GameEngine : NetworkBehaviour {
 	public GameObject spotlight;
 	public GameObject summaryPanel;
 	public GameObject buttonAddPlayer;
+
 	public Text maxMessage;
 
     //---------------------------------------------
     //	Random player selection variables
     //---------------------------------------------
     [Header("Random Player Selection Variables")]
+    [HideInInspector]
+    public int playerOneIconIndex;
+    [HideInInspector]
+    public int playerTwoIconIndex;
     public GameObject choosePlayersPanel;
     public GameObject playersChosenPanel;
     public Text iconName;
@@ -52,7 +58,6 @@ public class GameEngine : NetworkBehaviour {
     //---------------------------------------------
     [Header("Wheel Spinning Variables")]
 
-    private List<string> randomPlayerNames;
 	private List<string> iconNames;
     private int currentIcon;
 	private static string[] scenariosList;
@@ -67,12 +72,28 @@ public class GameEngine : NetworkBehaviour {
 	//	Pro/Con variables
 	//---------------------------------------------
 	[Header("Pro & Con Variables")]
-	private List<string> answers;
+	public List<string> answers;
 	private string[] intentions;
 	public GameObject proConPanel;
+	public List<string> intentList;
+
+
+
+	[Header("Score Variables")]
+	public Text[] player1Answers;
+	public Text[] player2Answers;
+	public Text[] answerKey1;
+	public Text[] answerKey2;
+	public Text roundScore;
+	public Text totalScore;
+	public int score;
+	public int totalscore;
+	public GameObject scorePanel;
+	public ProsAndConsList pscript;
 
 	void Start () {
 		currCheckpoint = 0;
+        playerOneIconIndex = playerTwoIconIndex = -1;
 
         //  Add all checkpoints
         allCheckpoints = new List<Transform>();
@@ -84,9 +105,10 @@ public class GameEngine : NetworkBehaviour {
 		currentIcon = -1;
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
-		randomPlayerNames = new List<string> ();
+        playersChosenToPlay = new List<int>();
 		currentPlayerIcons = new List<GameObject> ();
-
+		intentList = new List<string> ();
+		answers = new List<string> ();
 		currIntentions = new string[2];
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
@@ -149,7 +171,6 @@ public class GameEngine : NetworkBehaviour {
 		choosePlayersPanel.SetActive (true);
 		print ("Activate Choose Players Panel");
 		roundNumber++;
-		//Disable player
 
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -163,7 +184,20 @@ public class GameEngine : NetworkBehaviour {
 
 	public void activateChosenPanel() {
 		playersChosenPanel.SetActive (true);
-		displayRandomPlayers ();
+
+        //  If client, call ServerChooseRandomPlayers() on the server game engine
+        if (this.isServer) {
+            //  If NOT null, the client already called choose random players
+            if (playerOneIconIndex == -1 && playerTwoIconIndex == -1) {
+                ServerChooseRandomPlayers(true);
+            }
+            else {
+                this.displayRandomPlayers();
+            }
+        }
+        else {
+            myPlayer.GetComponent<PlayerNetworking>().getRandomPlayersFromServer();
+        }
 
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -174,11 +208,13 @@ public class GameEngine : NetworkBehaviour {
 		//playerIcons [index2].SetActive (false);
 
         //  Enable player controls
+
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 	public void activateProConPanel() {
-
+		pscript.populateScrollList ("Avoiding");
 		proConPanel.SetActive (true);
+
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 
 	}
@@ -193,6 +229,32 @@ public class GameEngine : NetworkBehaviour {
 		
 		recapPanel.SetActive (true);
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		
+	}
+
+	public void deactivateRecapPanel() {
+		
+		recapPanel.SetActive (false);
+		myPlayer.GetComponent<FirstPersonController>().enabled = true;
+		
+		
+	}
+
+	public void activateScorePanel() {
+		
+		
+		scorePanel.SetActive (true);
+		checkAnswers ();
+		displayScore (); 
+		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		
+		
+	}
+	public void deactivateScorePanel() {
+		
+		scorePanel.SetActive (false);
+		myPlayer.GetComponent<FirstPersonController>().enabled = true;
+		
 		
 	}
 
@@ -214,9 +276,9 @@ public class GameEngine : NetworkBehaviour {
 			playerNameTextFields [playerNames.Count - 1].text = name.text;
 		
             //  Send to server if this is the client
-            if (!this.isServer) {
-                myPlayer.GetComponent<PlayerNetworking>().sendNameToServer(name.text);
-            }
+//            if (!this.isServer) {
+//                myPlayer.GetComponent<PlayerNetworking>().sendNameToServer(name.text);
+//            }
 
 			name.text = " ";
 			panelIconSelect.SetActive (true);
@@ -291,7 +353,7 @@ public class GameEngine : NetworkBehaviour {
 
             //  If client, update the icon on server too
             if (!this.isServer) {
-                myPlayer.GetComponent<PlayerNetworking>().sendIconToServer(iconName.text);
+                myPlayer.GetComponent<PlayerNetworking>().sendIconToServer(iconName.text, currentIcon);
             }
 
 			currentPlayerIcons.Add(playerIcons[currentIcon]);
@@ -324,11 +386,12 @@ public class GameEngine : NetworkBehaviour {
 
 	}
     //  Called by clients to update icon on server
-    public void updateIconFromClient (string iconName) {
+    public void updateIconFromClient (string iconName, int iconIndex) {
         Debug.Log("Adding icon info from client");
         iconNames.Add(iconName);
+        currentPlayerIcons.Add(playerIcons[iconIndex]);
     }
-
+    
 	public void donePlayerInput () {
 		summaryPanel.SetActive (false);
 
@@ -341,67 +404,129 @@ public class GameEngine : NetworkBehaviour {
 		nameInputPanel.SetActive (true);
 	}
 
-	public void displayRandomPlayers() {
+    //  Function that can only be run on server
+    [Server]
+	public void ServerChooseRandomPlayers (bool displayIcons) {
 
-		/*checks if we are in the first round or if the round is equal to the number of players the game has in order to filter 
-		 the randomization of players*/
-		if (roundNumber == playerNames.Count / 2 || roundNumber == 1) {
+        //  Check if all players have been chosen to play
+        if (playersChosenToPlay.Count >= playerNames.Count-1) {
+            //  Clear it out so they can be chosen again
+            playersChosenToPlay.Clear();
+        }
 
-			/*add every player to the list of the list that will soon be randomized */
-			for (int i = 0; i < playerNames.Count; i++) {
-				randomPlayerNames.Add(playerNames[i]);
-			}
-		}
-
-		/*assigns a random number to a index and assign corresponding text*/
-		int index = Random.Range (0, randomPlayerNames.Count - 1);
-		player1.text = randomPlayerNames [index];
+		/*assigns a random number to a index, assign corresponding text, and adds to list of players chosen*/
+		int index = Random.Range (0, playerNames.Count);
+        //  Make sure the index hasn't been picked already
+        while (playersChosenToPlay.Contains(index)) {
+            index = Random.Range(0, playerNames.Count);
+        }
+		player1.text = playerNames [index];
+        playersChosenToPlay.Add(index);
 	
-		/*set player1s icon to true and place in camera view */
-		currentPlayerIcons [index].SetActive (true);
-		currentPlayerIcons [index].transform.position = Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
-	
-		int index2 = Random.Range (0, randomPlayerNames.Count-1);
+		//  Set the player one icon variable
+        playerOneIconIndex = index;
 
-
-		/* checks if indecies are equal. If there are only 2 players, and the indecies, are equal index2 will be set to the
-		 only other choice. If more than 2, set it to a different random number*/ 
-		if (index == index2) {
-			 if(randomPlayerNames.Count == 2) {
-				index2 = index + 1;
-			}
-			else {
-			index2 =(index + 1)  % (randomPlayerNames.Count -1);
-			}
-		}
+        int index2 = Random.Range(0, playerNames.Count);
+        //  Loop and reroll for as long as you got the same roll or one that's been picked already
+        while (playersChosenToPlay.Contains(index2)) {
+            index2 = Random.Range(0, playerNames.Count);
+        }
 		player2.text = playerNames[index2];
-	
-		/*set player1s icon to true and place in camera view */
-		currentPlayerIcons [index2].SetActive (true);
-		currentPlayerIcons [index2].transform.position = Camera.main.transform.position + Camera.main.transform.right * .5f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+        playersChosenToPlay.Add(index2);
 
-		/*removes the players from the list so that they cannot be chose for the next round */
-		randomPlayerNames.Remove (playerNames [index]);
-		randomPlayerNames.Remove (playerNames [index2]);
+        //  Set the player one icon variable
+        playerTwoIconIndex = index2;
 
-
+        //  Must be separate function so this can be done from client side
+        if (displayIcons) {
+            //  Don't wanna display the client's icons, just server's
+            displayRandomPlayers();
+        }
 	}
+
+    //  Display the random players that have been chosen
+    public void displayRandomPlayers () {
+        if (playerOneIconIndex == -1 && playerTwoIconIndex == -1) {
+            Debug.LogError("Error: One of the player icons has not been set!");
+            return;
+        }
+		if (this.isServer) {
+			print ("SERVER THOUGH");
+			GameObject playerOneIcon = currentPlayerIcons [playerOneIconIndex];
+			//print ("The body is " + playerOneIcon.name);
+			//set body by Kristen
+			//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
+
+			playerOneIcon.SetActive (true);
+			playerOneIcon.transform.position =
+            Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+		}
+		if (this.isClient) {
+			print ("CLIENT THOUGH");
+        GameObject playerTwoIcon = currentPlayerIcons[playerTwoIconIndex];
+		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerTwoIcon);
+        playerTwoIcon.SetActive(true);
+        playerTwoIcon.transform.position =
+            Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
+		}
+	}
+
 	public void sendAnswers(List<string> ansList) {
-		answers = new List<string> ();
+		//answers = new List<string> ();
 
 		for (int i = 0; i < ansList.Count; i++) {
-
+			print (ansList[i]);
 			answers.Add(ansList[i]);
 		}
 
 
 
 	}
-	public void sendIntention(string[] intent){
-		intentions = new string[6];
-		for (int i = 0; i < intent.Length; i++) {
-			intentions [i] = intent [i];
+	public void checkAnswers() {
+		if (intentList == null || intentList.Count == 0) {
+
+			print ("NULL INTENTS");
+
 		}
+
+		else {
+		for (int i = 0; i < answers.Count; i++) {
+					
+			if (intentList.Contains (answers [i])) {
+				score++;
+				print ("SCORE IS " + score);
+				
+				
+			}
+			
+		}
+		}
+	}
+	public void displayScore() {
+		
+		for (int i = 0; i < 6; i++) {
+			print(answers[i] + " is first answer ");
+			player1Answers[i].text = answers[i];
+			answerKey1[i].text = intentList[i];
+			
+		}
+		
+		roundScore.text = "Round Score : " + score;
+		
+		totalScore.text = "Total Score : " + score;
+		
+	}
+	public void sendIntention(string[] intent){
+		print ("IM SENDING INTENTION");
+		//intentions = new string[6];
+		//intentList = new List<string> ();
+
+		for (int i = 0; i < intent.Length; i++) {
+			print (intent[i]);
+			//intentions [i] = intent [i];
+			intentList.Add(intent[i]);
+		}
+		print (intentList.Count + " is how big the list is");
 	}
 
 	public static void setIntention(int playerNumber, int intentionNumber) {
@@ -468,7 +593,9 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 5) {
 			this.activateProConPanel();
 		}
-
+		if (currCheckpoint == 6) {
+			this.activateScorePanel();
+		}
         //  Spawn next checkpoint
 		currCheckpoint++;
         if (currCheckpoint < allCheckpoints.Count) {
