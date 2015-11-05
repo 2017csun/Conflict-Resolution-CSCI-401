@@ -216,6 +216,7 @@ public class GameEngine : NetworkBehaviour {
 
         //  Update the player's body to be the icon
         GameObject myIcon = this.isServer ? playerOneClass.playerIcon : playerTwoClass.playerIcon;
+        Debug.Log("My icon is " + myIcon.name);
         myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
 
         //  Enable player controls

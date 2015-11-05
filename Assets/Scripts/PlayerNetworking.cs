@@ -42,12 +42,7 @@ public class PlayerNetworking : NetworkBehaviour {
     [Command]
     public void CmdSetBodyIcon (string iconName) {
         //  Get the icon being set
-        GameObject icon = null;
-        for (int i = 0; i < playerIcons.Length; ++i) {
-            if (playerIcons[i].name.Equals(iconName)) {
-                icon = playerIcons[i];
-            }
-        }
+        GameObject icon = GameObject.Find(iconName);
         if (icon == null) {
             Debug.LogError("Can't find the icon named " + iconName);
             return;
@@ -57,15 +52,14 @@ public class PlayerNetworking : NetworkBehaviour {
         icon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
 
         //  Set its layer and its children's layers to "Player" so camera can't see it
-        icon.layer = LayerMask.NameToLayer("Player");
-        gameEngine.fullChangeLayer(icon.transform, "Player");
+        icon.layer = LayerMask.NameToLayer("Icons");
+        gameEngine.fullChangeLayer(icon.transform, "Icons");
 
         icon.transform.parent = this.transform;
         icon.transform.localPosition = new Vector3(0, 0, 0);
         icon.transform.localRotation = Quaternion.Euler(0, 90, 0);
-        icon.SetActive(true);
 
-        //  Spawn on client and synch up the body
+        //  Synch up the body on client
         NetworkServer.Spawn(icon);
         RpcSyncIconBody(
             icon,
@@ -93,6 +87,11 @@ public class PlayerNetworking : NetworkBehaviour {
     //  Update the player's body to be the icon
     public void updateBodyToIcon (GameObject icon) {
         CmdSetBodyIcon(icon.name);
+
+        //  Destroy this local icon if client
+        if (!this.isServer) {
+            Destroy(icon);
+        }
     }
 
     //  Send a new player to the server game engine
