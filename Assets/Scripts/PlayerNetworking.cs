@@ -129,26 +129,31 @@ public class PlayerNetworking : NetworkBehaviour {
         gameEngine.ServerChooseRandomPlayers(false);
 
         //  Send the players to the client through RPC
-        RpcGetRandomPlayersFromServer(gameEngine.playerOneClass, gameEngine.playerTwoClass);
+        RpcGetRandomPlayersFromServer(gameEngine.playerOneClass.playerID, gameEngine.playerTwoClass.playerID);
     }
     //  RPC so client can get the picked players from the server
     [ClientRpc]
-    public void RpcGetRandomPlayersFromServer (PlayerClass playerOneIconIndex, PlayerClass playerTwoIconIndex) {
+    public void RpcGetRandomPlayersFromServer (int player1ID, int player2ID) {
         if (this.isServer) {
             //  Don't do anything on the server's client
             return;
         }
 
-        if (playerOneIconIndex == null || playerTwoIconIndex == null) {
-            Debug.LogError("It's null!!");
-            return;
+        //  Find the player class objects
+        PlayerClass p1 = null;
+        PlayerClass p2 = null;
+        foreach (PlayerClass play in gameEngine.allPlayers) {
+            if (play.playerID == player1ID) {
+                p1 = play;
+            }
+            if (play.playerID == player2ID) {
+                p2 = play;
+            }
         }
 
-        Debug.Log("Received from server: " + playerOneIconIndex + " and " + playerTwoIconIndex);
-
         //  Set the players on client game engine and render them
-        gameEngine.playerOneClass = playerOneIconIndex;
-        gameEngine.playerTwoClass = playerTwoIconIndex;
+        gameEngine.playerOneClass = p1;
+        gameEngine.playerTwoClass = p2;
         gameEngine.displayRandomPlayers();
     }
 

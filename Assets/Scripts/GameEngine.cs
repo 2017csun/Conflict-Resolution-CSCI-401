@@ -22,7 +22,8 @@ public class GameEngine : NetworkBehaviour {
     private List<int> playersChosenToPlay;
     private int currCheckpoint;
 
-    private List<PlayerClass> allPlayers;
+    [HideInInspector]
+    public List<PlayerClass> allPlayers;
     [SyncVar(hook = "onUpdateID")]
     [HideInInspector]
     public int currAvailableID = 1;
@@ -194,6 +195,7 @@ public class GameEngine : NetworkBehaviour {
 
         //  Check if players have already been chosen
         if (playerOneClass != null && playerTwoClass != null) {
+            Debug.Log("Players have already been chosen!");
             this.displayRandomPlayers();
         }
         else {
@@ -435,6 +437,10 @@ public class GameEngine : NetworkBehaviour {
     //  Function that can only be run on server
     [Server]
 	public void ServerChooseRandomPlayers (bool displayIcons) {
+        //  Don't do this if called by client but players have already been chosen
+        if (playerOneClass != null && playerTwoClass != null) {
+            return;
+        }
 
         //  Check if all players have been chosen to play
         if (playersChosenToPlay.Count >= allPlayers.Count - 1) {
@@ -570,6 +576,8 @@ public class GameEngine : NetworkBehaviour {
 	public static void setIntention(int playerNumber, int intentionNumber) {
 		currIntentions [0] = intentionsList [intentionNumber];
 		Debug.Log ("Set Player " + playerNumber + " to Intention " + intentionsList [intentionNumber]);
+	
+	
 	}
 
 	public static void setScenario(int scenarioNumber) {
