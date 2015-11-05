@@ -23,8 +23,9 @@ public class GameEngine : NetworkBehaviour {
     private int currCheckpoint;
 
     private List<PlayerClass> allPlayers;
-    [SyncVar]
-    private int currAvailableID = 1;
+    [SyncVar(hook = "onUpdateID")]
+    [HideInInspector]
+    public int currAvailableID = 1;
     private PlayerClass currEditedPlayer;   //  The player currently being modified from user input
 
 	//---------------------------------------------
@@ -48,9 +49,9 @@ public class GameEngine : NetworkBehaviour {
     //---------------------------------------------
     [Header("Random Player Selection Variables")]
     [HideInInspector]
-    public int playerOneIconIndex;
+    public PlayerClass playerOneClass;
     [HideInInspector]
-    public int playerTwoIconIndex;
+    public PlayerClass playerTwoClass;
     public GameObject choosePlayersPanel;
     public GameObject playersChosenPanel;
 	GameObject placeholderplayer1;
@@ -101,7 +102,6 @@ public class GameEngine : NetworkBehaviour {
 
 	void Start () {
 		currCheckpoint = 0;
-        playerOneIconIndex = playerTwoIconIndex = -1;
 
         //  Add all checkpoints
         allCheckpoints = new List<Transform>();
@@ -187,26 +187,23 @@ public class GameEngine : NetworkBehaviour {
 	}
 	public void deactivateChoosePlayerPanel() {
 		choosePlayersPanel.SetActive (false);
-
-        //  Enable player controls
-        myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 
 	public void activateChosenPanel() {
 		playersChosenPanel.SetActive (true);
 
-        //  If client, call ServerChooseRandomPlayers() on the server game engine
-        if (this.isServer) {
-            //  If NOT null, the client already called choose random players
-            if (playerOneIconIndex == -1 && playerTwoIconIndex == -1) {
+        //  Check if players have already been chosen
+        if (playerOneClass != null && playerTwoClass != null) {
+            this.displayRandomPlayers();
+        }
+        else {
+            //  If client, call ServerChooseRandomPlayers() on the server game engine
+            if (this.isServer) {
                 ServerChooseRandomPlayers(true);
             }
             else {
-                this.displayRandomPlayers();
+                myPlayer.GetComponent<PlayerNetworking>().getRandomPlayersFromServer();
             }
-        }
-        else {
-            myPlayer.GetComponent<PlayerNetworking>().getRandomPlayersFromServer();
         }
 
         //  Disable player controls
@@ -216,13 +213,7 @@ public class GameEngine : NetworkBehaviour {
 		playersChosenPanel.SetActive (false);
 
         //  Update the player's body to be the icon
-        GameObject myIcon = null;
-        if (this.isServer) {
-            myIcon = playerIcons[playerOneIconIndex];
-        }
-        else {
-            myIcon = playerIcons[playerTwoIconIndex];
-        }
+        GameObject myIcon = this.isServer ? playerOneClass.playerIcon : playerTwoClass.playerIcon;
         myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
 
         //  Enable player controls
@@ -286,6 +277,11 @@ public class GameEngine : NetworkBehaviour {
             currEditedPlayer.playerName = name.text;
             currAvailableID += 1;
             Debug.Log("ID updated to " + currAvailableID);
+
+            //  Must use command all to update ID from client to server
+            if (!this.isServer) {
+                myPlayer.GetComponent<PlayerNetworking>().updateCurrAvailableID(currAvailableID);
+            }
 
             Debug.Log("Created a player with ID: " + currEditedPlayer.playerID + " and name: " + currEditedPlayer.playerName);
 			
@@ -441,39 +437,33 @@ public class GameEngine : NetworkBehaviour {
 	public void ServerChooseRandomPlayers (bool displayIcons) {
 
         //  Check if all players have been chosen to play
-        if (playersChosenToPlay.Count >= playerNames.Count-1) {
+        if (playersChosenToPlay.Count >= allPlayers.Count - 1) {
             //  Clear it out so they can be chosen again
             playersChosenToPlay.Clear();
         }
 
 		/*assigns a random number to a index, assign corresponding text, and adds to list of players chosen*/
-		int index = Random.Range (0, playerNames.Count);
+        int index = Random.Range(0, allPlayers.Count);
         //  Make sure the index hasn't been picked already
         while (playersChosenToPlay.Contains(index)) {
-            index = Random.Range(0, playerNames.Count);
+            index = Random.Range(0, allPlayers.Count);
         }
 
-		if (this.isServer) {
-			player1.text = playerNames [index];
-		}
         playersChosenToPlay.Add(index);
 	
-		//  Set the player one icon variable
-        playerOneIconIndex = index;
+		//  Set the player one class variable
+        playerOneClass = allPlayers[index];
 
-        int index2 = Random.Range(0, playerNames.Count);
+        int index2 = Random.Range(0, allPlayers.Count);
         //  Loop and reroll for as long as you got the same roll or one that's been picked already
         while (playersChosenToPlay.Contains(index2)) {
-            index2 = Random.Range(0, playerNames.Count);
+            index2 = Random.Range(0, allPlayers.Count);
         }
 
-		if (!this.isServer) {
-			player2.text = playerNames [index2];
-		}
         playersChosenToPlay.Add(index2);
 
-        //  Set the player one icon variable
-        playerTwoIconIndex = index2;
+        //  Set the player two class variable
+        playerTwoClass = allPlayers[index2];
 
         //  Must be separate function so this can be done from client side
         if (displayIcons) {
@@ -484,24 +474,22 @@ public class GameEngine : NetworkBehaviour {
 
     //  Display the random players that have been chosen
     public void displayRandomPlayers () {
-        if (playerOneIconIndex == -1 && playerTwoIconIndex == -1) {
-            Debug.LogError("Error: One of the player icons has not been set!");
+        if (playerOneClass == null && playerTwoClass == null) {
+            Debug.LogError("Error: One of the players has not been set!");
             return;
         }
 
-		GameObject playerOneIcon = currentPlayerIcons [playerOneIconIndex];
+        //  Server is always player one
 		if (this.isServer) {
-			print ("SERVER");
-			playerOneIcon.SetActive (true);
-			playerOneIcon.transform.position =
+            player1.text = playerOneClass.playerName;
+            player2.text = "";
+			playerOneClass.playerIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		}
-
-        GameObject playerTwoIcon = currentPlayerIcons[playerTwoIconIndex];
-		if (!this.isServer) {
-			print ("CLIENT");
-            playerTwoIcon.SetActive(true);
-            playerTwoIcon.transform.position =
+        else {
+            player2.text = playerTwoClass.playerName;
+            player1.text = "";
+            playerTwoClass.playerIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
 		}
 	}
@@ -726,6 +714,12 @@ public class GameEngine : NetworkBehaviour {
             ) as GameObject;
         }
 	}
+
+    private void onUpdateID (int update) {
+        string which = this.isServer ? "server" : "client";
+        Debug.Log("On " + which + ". Updating ID from " + currAvailableID + " to " + update);
+        currAvailableID = update;
+    }
 
     //  Utility function for recursively changing a GameObject's layer
     public void fullChangeLayer (Transform obj, string layer) {

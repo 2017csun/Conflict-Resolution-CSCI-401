@@ -128,24 +128,36 @@ public class PlayerNetworking : NetworkBehaviour {
     public void CmdServerChooseRandomPlayers () {
         gameEngine.ServerChooseRandomPlayers(false);
 
-        Debug.Log("Icons chosen: " + gameEngine.playerOneIconIndex + " and " + gameEngine.playerTwoIconIndex);
-
         //  Send the players to the client through RPC
-        RpcGetRandomPlayersFromServer(gameEngine.playerOneIconIndex, gameEngine.playerTwoIconIndex);
+        RpcGetRandomPlayersFromServer(gameEngine.playerOneClass, gameEngine.playerTwoClass);
     }
     //  RPC so client can get the picked players from the server
     [ClientRpc]
-    public void RpcGetRandomPlayersFromServer (int playerOneIconIndex, int playerTwoIconIndex) {
+    public void RpcGetRandomPlayersFromServer (PlayerClass playerOneIconIndex, PlayerClass playerTwoIconIndex) {
         if (this.isServer) {
             //  Don't do anything on the server's client
+            return;
+        }
+
+        if (playerOneIconIndex == null || playerTwoIconIndex == null) {
+            Debug.LogError("It's null!!");
             return;
         }
 
         Debug.Log("Received from server: " + playerOneIconIndex + " and " + playerTwoIconIndex);
 
         //  Set the players on client game engine and render them
-        gameEngine.playerOneIconIndex = playerOneIconIndex;
-        gameEngine.playerTwoIconIndex = playerTwoIconIndex;
+        gameEngine.playerOneClass = playerOneIconIndex;
+        gameEngine.playerTwoClass = playerTwoIconIndex;
         gameEngine.displayRandomPlayers();
+    }
+
+    //  Update the synched var currAvailableID on server
+    public void updateCurrAvailableID (int newID) {
+        CmdUpdateCurrAvailableID(newID);
+    }
+    [Command]
+    public void CmdUpdateCurrAvailableID (int newID) {
+        gameEngine.currAvailableID = newID;
     }
 }
