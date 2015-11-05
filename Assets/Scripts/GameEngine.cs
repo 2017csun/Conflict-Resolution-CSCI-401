@@ -85,6 +85,7 @@ public class GameEngine : NetworkBehaviour {
 	//---------------------------------------------
 	[Header("Pro & Con Variables")]
 	public List<string> answers;
+	public List<string> answers2;
 	private string[] intentions;
 	public GameObject proConPanel;
 	public List<string> intentList;
@@ -119,6 +120,7 @@ public class GameEngine : NetworkBehaviour {
 		currentPlayerIcons = new List<GameObject> ();
 		intentList = new List<string> ();
 		answers = new List<string> ();
+		answers2 = new List<string> ();
 		currIntentions = new string[2];
 		playerRoles = new string[2];
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
@@ -224,7 +226,14 @@ public class GameEngine : NetworkBehaviour {
 	} 
 
 	public void activateProConPanel() {
-		pscript.populateScrollList ("Avoiding");
+		if (this.isServer) {
+			pscript.populateScrollList (currIntentions [0]);
+		}
+		
+		else {
+			
+			pscript.populateScrollList (currIntentions [0]);
+		}
 		proConPanel.SetActive (true);
 
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -521,7 +530,12 @@ public class GameEngine : NetworkBehaviour {
 
 		for (int i = 0; i < ansList.Count; i++) {
 			print (ansList[i]);
+			if (this.isServer) {
 			answers.Add(ansList[i]);
+			}
+			else {
+				answers2.Add(ansList[i]);
+			}
 		}
 
 
@@ -532,30 +546,50 @@ public class GameEngine : NetworkBehaviour {
 
 			print ("NULL INTENTS");
 
-		}
-
-		else {
-		for (int i = 0; i < answers.Count; i++) {
+		} else {
+			if (this.isServer) {
+				for (int i = 0; i < answers.Count; i++) {
 					
-			if (intentList.Contains (answers [i])) {
-				score++;
-				print ("SCORE IS " + score);
+					if (intentList.Contains (answers [i])) {
+						score++;
+						print ("SCORE IS " + score);
 				
 				
-			}
+					}
 			
-		}
+				}
+			} else {
+
+				for (int i = 0; i < answers2.Count; i++) {
+				
+					if (intentList.Contains (answers2 [i])) {
+						score++;
+						print ("SCORE IS " + score);
+					}
+				}
+			}
 		}
 	}
 	public void displayScore() {
-		
-		for (int i = 0; i < 6; i++) {
-			print(answers[i] + " is first answer ");
-			player1Answers[i].text = answers[i];
-			answerKey1[i].text = intentList[i];
+		//if (this.isServer) {
+			for (int i = 0; i < 6; i++) {
+				print (answers [i] + " is first answer ");
+				player1Answers [i].text = "-" + answers [i];
+				answerKey1 [i].text = "-" + intentList [i];
 			
-		}
-		
+			}
+		//} else {
+
+
+
+			for (int i = 0; i < 6; i++) {
+				print (answers [i] + " is first answer ");
+				player2Answers [i].text = "-" + answers [i];
+				answerKey2 [i].text = "-" + intentList [i];
+				
+			}
+
+		//}
 		roundScore.text = "Round Score : " + score;
 		
 		totalScore.text = "Total Score : " + score;
