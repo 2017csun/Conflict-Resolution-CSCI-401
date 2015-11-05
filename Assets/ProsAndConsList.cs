@@ -183,7 +183,7 @@ public class ProsAndConsList : MonoBehaviour {
 			compromiseList [i] = generalProConList [i + 24];
 		}
 
-		populateScrollList ("Compromising");
+		//populateScrollList (currentIntention1);
 	}
 
 	void Update(){
@@ -249,11 +249,11 @@ public class ProsAndConsList : MonoBehaviour {
 				//tempList2.Remove (competingList[i]);
 
 				tempPro.Remove (competingList[i]);
-				tempCon.Remove (competingList[i]);
+				tempCon.Remove (competingList[i + 3]);
 
-				gameEngine.sendIntention(competingList);
+
 			}
-
+			gameEngine.sendIntention(competingList);
 		}
 
 		if (intention.Equals ("Accomodating")) {
@@ -267,10 +267,10 @@ public class ProsAndConsList : MonoBehaviour {
 			for (int i = 0; i < 3; i++) {
 				
 				tempPro.Remove (accomList[i]);
-				tempCon.Remove (accomList[i]);
-				gameEngine.sendIntention(accomList);
+				tempCon.Remove (accomList[i + 3]);
+
 			}
-			
+			gameEngine.sendIntention(accomList);
 		}
 		if (intention.Equals ("Collaborating")) {
 			
@@ -285,10 +285,10 @@ public class ProsAndConsList : MonoBehaviour {
 				addTempCon.Add(collabList[5]);
 				
 				tempPro.Remove (collabList[i]);
-				tempCon.Remove (collabList[i]);
-				gameEngine.sendIntention(collabList);
+				tempCon.Remove (collabList[i + 3]);
+
 			}
-			
+			gameEngine.sendIntention(collabList);
 		}
 		if (intention.Equals ("Avoiding")) {
 
@@ -301,12 +301,12 @@ public class ProsAndConsList : MonoBehaviour {
 			
 			for (int i = 0; i < 3; i++) {
 				
-				tempPro.Remove (avoidList [i]);
-				tempCon.Remove (avoidList[i]);
-				gameEngine.sendIntention(avoidList);
+				tempPro.Remove (avoidList[i]);
+				tempCon.Remove (avoidList[i + 3]);
+			
 
 			}
-			
+			gameEngine.sendIntention(avoidList);
 		}
 		if (intention.Equals ("Compromising")) {
 			
@@ -320,11 +320,11 @@ public class ProsAndConsList : MonoBehaviour {
 
 
 				tempPro.Remove (compromiseList [i]);
-				tempCon.Remove (compromiseList[i]);
+				tempCon.Remove (compromiseList[i + 3]);
 
-				gameEngine.sendIntention(compromiseList);
+
 			}
-			
+			gameEngine.sendIntention(compromiseList);
 		}
 
 		/*for the remaining values in the pros and cons list to possibily be displayed, scroll though and assign index to it */
@@ -344,9 +344,10 @@ public class ProsAndConsList : MonoBehaviour {
 		for (int i = 0; i < 6; i++) {
 			
 			int ind = Random.Range(0, tempCon.Count - 1);
-			
+			print (tempCon.Count + " is the current tempConcount");
 			addTempCon.Add (tempCon[ind]);
 			tempCon.Remove(tempCon[ind]);
+			//print ("Removed " + tempCon[ind] + " from list");
 		}
 
 		//print (tempList.Count - 1);
@@ -360,17 +361,17 @@ public class ProsAndConsList : MonoBehaviour {
 		}*/
 
 		/*with the new list that is added go through the list and start assigning it to list of addPros/Cons*/
-		for (int i = 0; i < proConsList1.Length; i++) {
+		for (int i = 0; i < proConsList2.Length; i++) {
 
-			
+
 			int index = Random.Range (0, addTempPro.Count - 1);
-			print ("index was " + index);
+			//print ("index was " + index);
 			
 			proConsList2 [i].text = addTempPro[index];
 			addTempPro.Remove(addTempPro[index]);
 		}
 
-		for (int i = 0; i < proConsList2.Length; i++) {
+		for (int i = 0; i < proConsList1.Length; i++) {
 
 			int index = Random.Range (0, addTempCon.Count - 1);
 			
@@ -385,7 +386,7 @@ public class ProsAndConsList : MonoBehaviour {
 			if (proConsList1[i].color.Equals(Color.blue)) {
 
 				savedAnswers.Add (proConsList1[i].text);
-
+				print (savedAnswers.Count +  " saved Answers Count");
 
 
 			}
@@ -396,11 +397,11 @@ public class ProsAndConsList : MonoBehaviour {
 				
 				savedAnswers.Add (proConsList2[i].text);
 				
-				
+				print (savedAnswers.Count +  " saved Answers Count");
 				
 			}
 		}
-
+	
 		gameEngine.sendAnswers (savedAnswers);
 	}
 	

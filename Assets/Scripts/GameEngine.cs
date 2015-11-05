@@ -71,9 +71,10 @@ public class GameEngine : NetworkBehaviour {
 	//	Pro/Con variables
 	//---------------------------------------------
 	[Header("Pro & Con Variables")]
-	private List<string> answers;
+	public List<string> answers;
 	private string[] intentions;
 	public GameObject proConPanel;
+	public List<string> intentList;
 
 
 
@@ -87,6 +88,7 @@ public class GameEngine : NetworkBehaviour {
 	public int score;
 	public int totalscore;
 	public GameObject scorePanel;
+	public ProsAndConsList pscript;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -104,7 +106,8 @@ public class GameEngine : NetworkBehaviour {
 		iconNames = new List<string> ();
         playersChosenToPlay = new List<int>();
 		currentPlayerIcons = new List<GameObject> ();
-
+		intentList = new List<string> ();
+		answers = new List<string> ();
 		currIntentions = new string[2];
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
@@ -208,8 +211,9 @@ public class GameEngine : NetworkBehaviour {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 	public void activateProConPanel() {
-
+		pscript.populateScrollList ("Avoiding");
 		proConPanel.SetActive (true);
+
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 
 	}
@@ -224,6 +228,8 @@ public class GameEngine : NetworkBehaviour {
 		
 		
 		scorePanel.SetActive (true);
+		checkAnswers ();
+		displayScore (); 
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		
 		
@@ -427,39 +433,83 @@ public class GameEngine : NetworkBehaviour {
             Debug.LogError("Error: One of the player icons has not been set!");
             return;
         }
+		if (this.isServer) {
+			print ("SERVER THOUGH");
+			GameObject playerOneIcon = currentPlayerIcons [playerOneIconIndex];
+			//print ("The body is " + playerOneIcon.name);
+			//set body by Kristen
+			//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
 
-        GameObject playerOneIcon = playerIcons[playerOneIconIndex];
-		print ("The body is " + playerOneIcon.name);
-		//set body by Kristen
-		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
-
-        playerOneIcon.SetActive(true);
-        playerOneIcon.transform.position =
+			playerOneIcon.SetActive (true);
+			playerOneIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
-
-        GameObject playerTwoIcon = playerIcons[playerTwoIconIndex];
+		}
+		if (this.isClient) {
+			print ("CLIENT THOUGH");
+        GameObject playerTwoIcon = currentPlayerIcons[playerTwoIconIndex];
 		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerTwoIcon);
         playerTwoIcon.SetActive(true);
         playerTwoIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
-    }
+		}
+	}
 
 	public void sendAnswers(List<string> ansList) {
-		answers = new List<string> ();
+		//answers = new List<string> ();
 
 		for (int i = 0; i < ansList.Count; i++) {
-
+			print (ansList[i]);
 			answers.Add(ansList[i]);
 		}
 
 
 
 	}
-	public void sendIntention(string[] intent){
-		intentions = new string[6];
-		for (int i = 0; i < intent.Length; i++) {
-			intentions [i] = intent [i];
+	public void checkAnswers() {
+		if (intentList == null || intentList.Count == 0) {
+
+			print ("NULL INTENTS");
+
 		}
+
+		else {
+		for (int i = 0; i < answers.Count; i++) {
+					
+			if (intentList.Contains (answers [i])) {
+				score++;
+				print ("SCORE IS " + score);
+				
+				
+			}
+			
+		}
+		}
+	}
+	public void displayScore() {
+		
+		for (int i = 0; i < 6; i++) {
+			print(answers[i] + " is first answer ");
+			player1Answers[i].text = answers[i];
+			answerKey1[i].text = intentList[i];
+			
+		}
+		
+		roundScore.text = "Round Score : " + score;
+		
+		totalScore.text = "Total Score : " + score;
+		
+	}
+	public void sendIntention(string[] intent){
+		print ("IM SENDING INTENTION");
+		//intentions = new string[6];
+		//intentList = new List<string> ();
+
+		for (int i = 0; i < intent.Length; i++) {
+			print (intent[i]);
+			//intentions [i] = intent [i];
+			intentList.Add(intent[i]);
+		}
+		print (intentList.Count + " is how big the list is");
 	}
 
 	public static void setIntention(int playerNumber, int intentionNumber) {
