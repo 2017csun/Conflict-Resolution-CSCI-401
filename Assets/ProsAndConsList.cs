@@ -45,11 +45,11 @@ public class ProsAndConsList : MonoBehaviour {
 		collabList = new string[6];
 		avoidList = new string[6];
 		compromiseList = new string[6];
-		currentIntention1 = "Avoiding";
+		//currentIntention1 = "Avoiding";
 		 masterProList = new List<string> ();
 		masterConList = new List<string> ();
 		displayText.text = displayText.text + " " + currentIntention1;
-		intentText.text = currentIntention1;
+		//intentText.text = currentIntention1;
 		//competing pros
 		generalProConList.Add ("Asserting your positions so ideas are taken seriously");
 		generalProConList.Add ("Making quick decisions or achieving quick victory");
@@ -233,7 +233,7 @@ public class ProsAndConsList : MonoBehaviour {
 
 		/*check the list that contains the intetnion and att it to a list of pros. Remove it from a copy of the list of the overall pros*/
 		if (intention.Equals ("Competing")) {
-
+			intentText.text = "Competing";
 			addTempPro.Add(competingList[0]);
 			addTempPro.Add(competingList[1]);
 			addTempPro.Add(competingList[2]);
@@ -257,6 +257,7 @@ public class ProsAndConsList : MonoBehaviour {
 		}
 
 		if (intention.Equals ("Accomodating")) {
+			intentText.text = "Accomodating";
 			addTempPro.Add(accomList[0]);
 			addTempPro.Add(accomList[1]);
 			addTempPro.Add(accomList[2]);
@@ -273,7 +274,7 @@ public class ProsAndConsList : MonoBehaviour {
 			gameEngine.sendIntention(accomList);
 		}
 		if (intention.Equals ("Collaborating")) {
-			
+			intentText.text = "Collaborating";
 			for (int i = 0; i < 3; i++) {
 
 
@@ -291,7 +292,7 @@ public class ProsAndConsList : MonoBehaviour {
 			gameEngine.sendIntention(collabList);
 		}
 		if (intention.Equals ("Avoiding")) {
-
+			intentText.text = "Avoiding";
 			addTempPro.Add(avoidList[0]);
 			addTempPro.Add(avoidList[1]);
 			addTempPro.Add(avoidList[2]);
@@ -309,7 +310,7 @@ public class ProsAndConsList : MonoBehaviour {
 			gameEngine.sendIntention(avoidList);
 		}
 		if (intention.Equals ("Compromising")) {
-			
+			intentText.text = "Compromising";
 			addTempPro.Add(compromiseList[0]);
 			addTempPro.Add(compromiseList[1]);
 			addTempPro.Add(compromiseList[2]);
