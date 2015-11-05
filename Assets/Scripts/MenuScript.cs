@@ -20,6 +20,7 @@ public class MenuScript : MonoBehaviour {
 	public Button hostGameCancelButton;
 	public Button joinGameCancelButton;
 
+	public Canvas helpMenu;
 	public Canvas hostGameMenu;
 	public Canvas joinGameMenu;
 	// Use this for initialization
@@ -50,8 +51,12 @@ public class MenuScript : MonoBehaviour {
 		joinButton = joinButton.GetComponent<Button> ();
 
 
-		// help and exit
+		// help
 		helpButton = helpButton.GetComponent<Button> ();
+		helpMenu = helpMenu.GetComponent<Canvas> ();
+		helpMenu.enabled = false;
+
+		// exit
 		exitButton = exitButton.GetComponent<Button> ();
 
 	}
@@ -63,6 +68,7 @@ public class MenuScript : MonoBehaviour {
 	public void CancelPressed() {
 		hostGameMenu.enabled = false;
 		joinGameMenu.enabled = false;
+		helpMenu.enabled = false;
 		hostGameButton.enabled = true;
 		joinGameButton.enabled = true;
 		helpButton.enabled = true;
@@ -70,11 +76,11 @@ public class MenuScript : MonoBehaviour {
 	}
 	
 	public void HelpPressed() {
-		/*
-		button1Button.enabled = false;
-		button2Button.enabled = false;
+		hostGameButton.enabled = false;
+		joinGameButton.enabled = false;
 		helpButton.enabled = false;
-		*/
+		exitButton.enabled = false;
+		helpMenu.enabled = true;
 	}
 	
 	public void HostGamePressed() {

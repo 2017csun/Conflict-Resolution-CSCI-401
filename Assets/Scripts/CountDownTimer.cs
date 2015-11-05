@@ -5,8 +5,8 @@ using UnityEngine.UI;
 public class CountDownTimer : MonoBehaviour {
 
 	// change these two values accordingly
-	const int PLANNING_TIME = 10; // in number of seconds
-	const int ROLEPLAYING_TIME = 10; // in number of seconds
+	const int PLANNING_TIME = 25; // in number of seconds
+	const int ROLEPLAYING_TIME = 25; // in number of seconds
 
 	public Button competingButton;
 	public Button compromisingButton;

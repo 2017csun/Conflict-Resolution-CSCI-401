@@ -53,6 +53,8 @@ public class GameEngine : NetworkBehaviour {
     public int playerTwoIconIndex;
     public GameObject choosePlayersPanel;
     public GameObject playersChosenPanel;
+	GameObject placeholderplayer1;
+	GameObject placeholderplayer2;
     public Text iconName;
     public Text player1;
     public Text player2;
@@ -71,6 +73,10 @@ public class GameEngine : NetworkBehaviour {
 	private static string currScenarioTitle;
 	private static string[] intentionsList;
 	private static string[] currIntentions;
+	public GameObject recapPanel;
+	private static string P1Recap;
+	private static string P2Recap;
+	private static string[] playerRoles;
 
 	//---------------------------------------------
 	//	Pro/Con variables
@@ -113,6 +119,7 @@ public class GameEngine : NetworkBehaviour {
 		intentList = new List<string> ();
 		answers = new List<string> ();
 		currIntentions = new string[2];
+		playerRoles = new string[2];
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
 
@@ -220,18 +227,34 @@ public class GameEngine : NetworkBehaviour {
 
         //  Enable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
-	}
+	} 
+
 	public void activateProConPanel() {
 		pscript.populateScrollList ("Avoiding");
 		proConPanel.SetActive (true);
 
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 
-	}
+	} 
 	public void deactivateProConPanel() {
 		
 		proConPanel.SetActive (false);
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
+		
+	}
+
+	public void activateRecapPanel() {
+		
+		recapPanel.SetActive (true);
+		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		
+	}
+
+	public void deactivateRecapPanel() {
+		
+		recapPanel.SetActive (false);
+		myPlayer.GetComponent<FirstPersonController>().enabled = true;
+		
 		
 	}
 
@@ -252,6 +275,7 @@ public class GameEngine : NetworkBehaviour {
 		
 		
 	}
+
     public void nameSave(InputField name) {
         animationPanel.discardPanel();
 
@@ -428,6 +452,10 @@ public class GameEngine : NetworkBehaviour {
         while (playersChosenToPlay.Contains(index)) {
             index = Random.Range(0, playerNames.Count);
         }
+
+		if (this.isServer) {
+			player1.text = playerNames [index];
+		}
         playersChosenToPlay.Add(index);
 	
 		//  Set the player one icon variable
@@ -438,6 +466,10 @@ public class GameEngine : NetworkBehaviour {
         while (playersChosenToPlay.Contains(index2)) {
             index2 = Random.Range(0, playerNames.Count);
         }
+
+		if (!this.isServer) {
+			player2.text = playerNames [index2];
+		}
         playersChosenToPlay.Add(index2);
 
         //  Set the player one icon variable
@@ -456,24 +488,37 @@ public class GameEngine : NetworkBehaviour {
             Debug.LogError("Error: One of the player icons has not been set!");
             return;
         }
-		if (this.isServer) {
-			print ("SERVER THOUGH");
-			GameObject playerOneIcon = currentPlayerIcons [playerOneIconIndex];
-			//print ("The body is " + playerOneIcon.name);
-			//set body by Kristen
-			//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
 
+		GameObject playerOneIcon = currentPlayerIcons [playerOneIconIndex];
+		if (this.isServer) {
+			print ("SERVER");
+			playerOneIcon.SetActive (true);
 			playerOneIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		}
-		else {
-			print ("CLIENT THOUGH");
-            GameObject playerTwoIcon = currentPlayerIcons[playerTwoIconIndex];
-		    //myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerTwoIcon);
-            player2.text = playerNames[playerTwoIconIndex];
+
+        GameObject playerTwoIcon = currentPlayerIcons[playerTwoIconIndex];
+		if (!this.isServer) {
+			print ("CLIENT");
+            playerTwoIcon.SetActive(true);
             playerTwoIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
 		}
+	}
+
+	public void updatePlayers() {
+		P1Recap = player1.text;
+		P2Recap = player2.text;
+		Debug.Log (P1Recap);
+		Debug.Log (P2Recap);
+	}
+
+	static public string getPlayer1() {
+		return P1Recap;
+	}
+
+	static public string getPlayer2() {
+		return P2Recap;
 	}
 
 	public void sendAnswers(List<string> ansList) {
@@ -543,6 +588,67 @@ public class GameEngine : NetworkBehaviour {
 		currScenario = scenariosList [scenarioNumber];
 		currScenarioTitle = scenariosTitles [scenarioNumber];
 		Debug.Log ("Set scenario to " + currScenarioTitle);
+		setRoles (scenarioNumber);
+	}
+
+	static private void setRoles(int scenarioNumber) {
+		if(scenarioNumber == 0) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Captain";
+			if (selected == 0)
+				playerRoles[1] = "Cadet";
+			else
+				playerRoles[0] = "Cadet";
+		} else if(scenarioNumber == 1) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Lieutenant of Communications";
+			if (selected == 0)
+				playerRoles[1] = "Lieutenant of Navigation";
+			else
+				playerRoles[0] = "Lieutenant of Navigation";
+		} else if(scenarioNumber == 2) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Lieutenant Commander of Weapons";
+			if (selected == 0)
+				playerRoles[1] = "Ensign";
+			else
+				playerRoles[0] = "Ensign";
+		} else if(scenarioNumber == 3) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Captain";
+			if (selected == 0)
+				playerRoles[1] = "Chief Officer";
+			else
+				playerRoles[0] = "Chief Officer";
+		} else if(scenarioNumber == 4) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Staff Officer of Communication";
+			if (selected == 0)
+				playerRoles[1] = "Staff Officer of Technology";
+			else
+				playerRoles[0] = "Staff Officer of Technology";
+		} else if(scenarioNumber == 5) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Physician's Assistant";
+			if (selected == 0)
+				playerRoles[1] = "Lead Nurse";
+			else
+				playerRoles[0] = "Lead Nurse";
+		} else if(scenarioNumber == 6) {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Chief Officer";
+			if (selected == 0)
+				playerRoles[1] = "Captain";
+			else
+				playerRoles[0] = "Captain";
+		} else {
+			int selected = Random.Range(0,1);
+			playerRoles[selected] = "Fleet Commander";
+			if (selected == 0)
+				playerRoles[1] = "Captain";
+			else
+				playerRoles[0] = "Captain";
+		}
 	}
 
 	private void instantiateScenarios() {
@@ -576,6 +682,10 @@ public class GameEngine : NetworkBehaviour {
 		return currScenario;
 	}
 
+	public static string[] getRoles() {
+		return playerRoles;
+	}
+
 	public static string[] getIntentions() {
 		return currIntentions;
 	}
@@ -589,11 +699,21 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 1) {
 			this.activateChoosePlayerPanel ();
 		}
+		// Checkpoint == 2 is wheels
 
-		if (currCheckpoint == 2) {
+		if (currCheckpoint == 3) {
+			updatePlayers();
+			this.activateRecapPanel();
+		}
+
+		if (currCheckpoint == 4) {
+			//Planning stuff
+		}
+
+		if (currCheckpoint == 5) {
 			this.activateProConPanel();
 		}
-		if (currCheckpoint == 3) {
+		if (currCheckpoint == 6) {
 			this.activateScorePanel();
 		}
         //  Spawn next checkpoint
