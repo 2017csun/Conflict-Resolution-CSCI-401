@@ -198,13 +198,20 @@ public class GameEngine : NetworkBehaviour {
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
 	}
-	public void deactivateChosenPanel() {
+	public void deactivateChosenPanelAndStartRound() {
 		playersChosenPanel.SetActive (false);
-		//playerIcons [index].SetActive (false);
-		//playerIcons [index2].SetActive (false);
+
+        //  Update the player's body to be the icon
+        GameObject myIcon = null;
+        if (this.isServer) {
+            myIcon = playerIcons[playerOneIconIndex];
+        }
+        else {
+            myIcon = playerIcons[playerTwoIconIndex];
+        }
+        myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
 
         //  Enable player controls
-
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
 	public void activateProConPanel() {
@@ -252,9 +259,12 @@ public class GameEngine : NetworkBehaviour {
 	
 			playerNameTextFields [playerNames.Count - 1].text = name.text;
 		
-            //  Send to server if this is the client
+            //  Send across network
             if (!this.isServer) {
                 myPlayer.GetComponent<PlayerNetworking>().sendNameToServer(name.text);
+            }
+            else {
+                myPlayer.GetComponent<PlayerNetworking>().receiveNameFromServer(name.text);
             }
 
 			name.text = " ";
@@ -270,8 +280,8 @@ public class GameEngine : NetworkBehaviour {
 		}
 	}
 
-    //  Called by clients to update name on server
-    public void updateNamesFromClient (string name) {
+    //  Called to update names across network
+    public void updateNamesAcrossNetwork (string name) {
         playerNames.Add(name);
         playerNameTextFields[playerNames.Count - 1].text = name;
     }
@@ -319,28 +329,27 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	public void saveIcon() {
-        //  Update the player's body to be the icon
-        //GameObject myIcon = playerIcons[currentIcon];
-        //myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
-
         /* If the currentIcon , "iconName" that just got saved is not the iconNames list (which contains the selected iconNames) 
          then add it to the list. Add it also to the GameObject List of actual icons (currentPlayer Icons)*/
 		if (!iconNames.Contains (iconName.text)) {
 			iconNames.Add (iconName.text);
 
-            //  If client, update the icon on server too
+            //  Update across network
             if (!this.isServer) {
                 myPlayer.GetComponent<PlayerNetworking>().sendIconToServer(iconName.text, currentIcon);
             }
+            else {
+                myPlayer.GetComponent<PlayerNetworking>().receiveIconFromServer(iconName.text, currentIcon);
+            }
 
-			currentPlayerIcons.Add(playerIcons[currentIcon]);
-			for (int i = 0; i < iconNames.Count; i++) {
+            currentPlayerIcons.Add(playerIcons[currentIcon]);
+            for (int i = 0; i < iconNames.Count; i++) {
 
-				/*playerNameTextFields refers to the summaryPanel in the PlayerInput Variables. It updates each block of text to a player
-				and its icon number*/
-				playerNameTextFields [i].text = "Player " + (i + 1) + " " + playerNames [i] + " - " + iconNames [i];
+                /*playerNameTextFields refers to the summaryPanel in the PlayerInput Variables. It updates each block of text to a player
+                and its icon number*/
+                playerNameTextFields[i].text = "Player " + (i + 1) + " " + playerNames[i] + " - " + iconNames[i];
 
-			}
+            }
 
 			/* Turn the panel off. Discard animation. And set the players to false */
 			panelIconSelect.SetActive (false);
@@ -362,11 +371,18 @@ public class GameEngine : NetworkBehaviour {
 		}
 
 	}
-    //  Called by clients to update icon on server
-    public void updateIconFromClient (string iconName, int iconIndex) {
-        Debug.Log("Adding icon info from client");
+    //  Update icons across network
+    public void updateIconAcrossNetwork (string iconName, int iconIndex) {
         iconNames.Add(iconName);
         currentPlayerIcons.Add(playerIcons[iconIndex]);
+
+        for (int i = 0; i < iconNames.Count; i++) {
+
+            /*playerNameTextFields refers to the summaryPanel in the PlayerInput Variables. It updates each block of text to a player
+            and its icon number*/
+            playerNameTextFields[i].text = "Player " + (i + 1) + " " + playerNames[i] + " - " + iconNames[i];
+
+        }
     }
     
 	public void donePlayerInput () {
@@ -397,7 +413,6 @@ public class GameEngine : NetworkBehaviour {
         while (playersChosenToPlay.Contains(index)) {
             index = Random.Range(0, playerNames.Count);
         }
-		player1.text = playerNames [index];
         playersChosenToPlay.Add(index);
 	
 		//  Set the player one icon variable
@@ -408,7 +423,6 @@ public class GameEngine : NetworkBehaviour {
         while (playersChosenToPlay.Contains(index2)) {
             index2 = Random.Range(0, playerNames.Count);
         }
-		player2.text = playerNames[index2];
         playersChosenToPlay.Add(index2);
 
         //  Set the player one icon variable
@@ -433,12 +447,14 @@ public class GameEngine : NetworkBehaviour {
 		//set body by Kristen
 		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
 
+        player1.text = playerNames[playerOneIconIndex];
         playerOneIcon.SetActive(true);
         playerOneIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 
         GameObject playerTwoIcon = playerIcons[playerTwoIconIndex];
 		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerTwoIcon);
+        player2.text = playerNames[playerTwoIconIndex];
         playerTwoIcon.SetActive(true);
         playerTwoIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
@@ -534,4 +550,12 @@ public class GameEngine : NetworkBehaviour {
             ) as GameObject;
         }
 	}
+
+    //  Utility function for recursively changing a GameObject's layer
+    public void fullChangeLayer (Transform obj, string layer) {
+        foreach (Transform child in obj) {
+            child.gameObject.layer = LayerMask.NameToLayer(layer);
+            fullChangeLayer(child, layer);
+        }
+    }
 }

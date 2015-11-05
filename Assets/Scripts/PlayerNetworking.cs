@@ -6,8 +6,20 @@ public class PlayerNetworking : NetworkBehaviour {
 
     private GameObject[] playerIcons;
 
+    private GameEngine gameEngine;
+
     [SerializeField]
     Camera FPSCharacterCam;
+
+    void Start () {
+        GameObject go = GameObject.FindGameObjectWithTag("Engine");
+        if (go == null) {
+            Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
+            return;
+        }
+
+        gameEngine = go.GetComponent<GameEngine>();
+    }
 
     [SerializeField]
     AudioListener audioListener;
@@ -44,8 +56,9 @@ public class PlayerNetworking : NetworkBehaviour {
         icon.transform.localScale += new Vector3(.2f, .2f, .2f);
         icon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
 
-        //  Set its layer to "Player" so camera can't see it
+        //  Set its layer and its children's layers to "Player" so camera can't see it
         icon.layer = LayerMask.NameToLayer("Player");
+        gameEngine.fullChangeLayer(icon.transform, "Player");
 
         icon.transform.parent = this.transform;
         icon.transform.localPosition = new Vector3(0, 0, 0);
@@ -65,6 +78,11 @@ public class PlayerNetworking : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcSyncIconBody (GameObject icon, GameObject parent, Vector3 localPos, Quaternion localRote, Vector3 localScale) {
+        if (this.isServer) {
+            //  Don't do anything on the server's client
+            return;
+        }
+
         icon.transform.parent = parent.transform;
         icon.transform.localPosition = localPos;
         icon.transform.localRotation = localRote;
@@ -84,13 +102,7 @@ public class PlayerNetworking : NetworkBehaviour {
     //  The actual Command call
     [Command]
     public void CmdSendNameToServer (string name) {
-        GameObject engine = GameObject.FindGameObjectWithTag("Engine");
-        if (engine == null) {
-            Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
-            return;
-        }
-
-        engine.GetComponent<GameEngine>().updateNamesFromClient(name);
+        gameEngine.updateNamesAcrossNetwork(name);
     }
 
     //  Send a new player icon to the server game engine
@@ -100,13 +112,35 @@ public class PlayerNetworking : NetworkBehaviour {
     //  The actual Command call
     [Command]
     public void CmdSendIconToServer (string name, int iconIndex) {
-        GameObject engine = GameObject.FindGameObjectWithTag("Engine");
-        if (engine == null) {
-            Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
+        gameEngine.updateIconAcrossNetwork(name, iconIndex);
+    }
+
+    //  Receive a new player name from server
+    public void receiveNameFromServer (string name) {
+        RpcReceiveNameFromServer(name);
+    }
+    //  The actual RPC
+    [ClientRpc]
+    public void RpcReceiveNameFromServer (string name) {
+        if (this.isServer) {
+            //  Don't do anything on the server's client
             return;
         }
+        gameEngine.updateNamesAcrossNetwork(name);
+    }
 
-        engine.GetComponent<GameEngine>().updateIconFromClient(name, iconIndex);
+    //  Receive a new player icon from server
+    public void receiveIconFromServer (string name, int iconIndex) {
+        RpcReceiveIconFromServer(name, iconIndex);
+    }
+    //  The actual RPC
+    [ClientRpc]
+    public void RpcReceiveIconFromServer (string name, int iconIndex) {
+        if (this.isServer) {
+            //  Don't do anything on the server's client
+            return;
+        }
+        gameEngine.updateIconAcrossNetwork(name, iconIndex);
     }
 
     //  Call to make server pick the random players
@@ -116,20 +150,12 @@ public class PlayerNetworking : NetworkBehaviour {
     //  Command call for server to pick the random players
     [Command]
     public void CmdServerChooseRandomPlayers () {
-        GameObject engineGO = GameObject.FindGameObjectWithTag("Engine");
-        if (engineGO == null) {
-            Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
-            return;
-        }
+        gameEngine.ServerChooseRandomPlayers(false);
 
-        //  Pick the players
-        GameEngine engine = engineGO.GetComponent<GameEngine>();
-        engine.ServerChooseRandomPlayers(false);
-
-        Debug.Log("Icons chosen: " + engine.playerOneIconIndex + " and " + engine.playerTwoIconIndex);
+        Debug.Log("Icons chosen: " + gameEngine.playerOneIconIndex + " and " + gameEngine.playerTwoIconIndex);
 
         //  Send the players to the client through RPC
-        RpcGetRandomPlayersFromServer(engine.playerOneIconIndex, engine.playerTwoIconIndex);
+        RpcGetRandomPlayersFromServer(gameEngine.playerOneIconIndex, gameEngine.playerTwoIconIndex);
     }
     //  RPC so client can get the picked players from the server
     [ClientRpc]
@@ -139,18 +165,11 @@ public class PlayerNetworking : NetworkBehaviour {
             return;
         }
 
-        GameObject engineGO = GameObject.FindGameObjectWithTag("Engine");
-        if (engineGO == null) {
-            Debug.LogError("Error: Game Engine object has not been tagged as 'Engine'");
-            return;
-        }
-        GameEngine engine = engineGO.GetComponent<GameEngine>();
-
         Debug.Log("Received from server: " + playerOneIconIndex + " and " + playerTwoIconIndex);
 
         //  Set the players on client game engine and render them
-        engine.playerOneIconIndex = playerOneIconIndex;
-        engine.playerTwoIconIndex = playerTwoIconIndex;
-        engine.displayRandomPlayers();
+        gameEngine.playerOneIconIndex = playerOneIconIndex;
+        gameEngine.playerTwoIconIndex = playerTwoIconIndex;
+        gameEngine.displayRandomPlayers();
     }
 }
