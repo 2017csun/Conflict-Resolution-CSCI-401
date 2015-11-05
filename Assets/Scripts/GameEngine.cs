@@ -565,6 +565,8 @@ public class GameEngine : NetworkBehaviour {
 	public static void setIntention(int playerNumber, int intentionNumber) {
 		currIntentions [0] = intentionsList [intentionNumber];
 		Debug.Log ("Set Player " + playerNumber + " to Intention " + intentionsList [intentionNumber]);
+	
+	
 	}
 
 	public static void setScenario(int scenarioNumber) {

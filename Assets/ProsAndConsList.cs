@@ -361,21 +361,21 @@ public class ProsAndConsList : MonoBehaviour {
 		}*/
 
 		/*with the new list that is added go through the list and start assigning it to list of addPros/Cons*/
-		for (int i = 0; i < proConsList2.Length; i++) {
+		for (int i = 0; i < proConsList1.Length; i++) {
 
 
 			int index = Random.Range (0, addTempPro.Count - 1);
 			//print ("index was " + index);
 			
-			proConsList2 [i].text = addTempPro[index];
+			proConsList1 [i].text = addTempPro[index];
 			addTempPro.Remove(addTempPro[index]);
 		}
 
-		for (int i = 0; i < proConsList1.Length; i++) {
+		for (int i = 0; i < proConsList2.Length; i++) {
 
 			int index = Random.Range (0, addTempCon.Count - 1);
 			
-			proConsList1 [i].text = addTempCon [index];
+			proConsList2 [i].text = addTempCon [index];
 			addTempCon.Remove(addTempCon[index]);
 		}
 	}
