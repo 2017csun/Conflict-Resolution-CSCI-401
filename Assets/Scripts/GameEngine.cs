@@ -48,6 +48,8 @@ public class GameEngine : NetworkBehaviour {
     public int playerTwoIconIndex;
     public GameObject choosePlayersPanel;
     public GameObject playersChosenPanel;
+	GameObject placeholderplayer1;
+	GameObject placeholderplayer2;
     public Text iconName;
     public Text player1;
     public Text player2;
@@ -212,7 +214,12 @@ public class GameEngine : NetworkBehaviour {
 		//playerIcons [index2].SetActive (false);
 
         //  Enable player controls
+		if (this.isServer) {
+			myPlayer.GetComponent<PlayerNetworking> ().updateBodyToIcon (placeholderplayer1);
+		} else {
 
+			myPlayer.GetComponent<PlayerNetworking> ().updateBodyToIcon (placeholderplayer2);
+		}
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	} 
 
@@ -425,7 +432,9 @@ public class GameEngine : NetworkBehaviour {
         while (playersChosenToPlay.Contains(index)) {
             index = Random.Range(0, playerNames.Count);
         }
-		player1.text = playerNames [index];
+		if (this.isServer) {
+			player1.text = playerNames [index];
+		}
         playersChosenToPlay.Add(index);
 	
 		//  Set the player one icon variable
@@ -436,7 +445,9 @@ public class GameEngine : NetworkBehaviour {
         while (playersChosenToPlay.Contains(index2)) {
             index2 = Random.Range(0, playerNames.Count);
         }
-		player2.text = playerNames[index2];
+		if (!this.isServer) {
+			player2.text = playerNames [index2];
+		}
         playersChosenToPlay.Add(index2);
 
         //  Set the player one icon variable
@@ -455,21 +466,23 @@ public class GameEngine : NetworkBehaviour {
             Debug.LogError("Error: One of the player icons has not been set!");
             return;
         }
-		if (this.isServer) {
-			print ("SERVER THOUGH");
+
 			GameObject playerOneIcon = currentPlayerIcons [playerOneIconIndex];
 			//print ("The body is " + playerOneIcon.name);
 			//set body by Kristen
 			//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerOneIcon);
-
+			placeholderplayer1 = playerOneIcon;
+		if (this.isServer) {
+			print ("SERVER");
 			playerOneIcon.SetActive (true);
 			playerOneIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		}
-		if (this.isClient) {
-			print ("CLIENT THOUGH");
+
         GameObject playerTwoIcon = currentPlayerIcons[playerTwoIconIndex];
 		//myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(playerTwoIcon);
+		if (!this.isServer) {
+			print ("CLIENT");
         playerTwoIcon.SetActive(true);
         playerTwoIcon.transform.position =
             Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
