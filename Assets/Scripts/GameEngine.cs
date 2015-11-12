@@ -760,11 +760,6 @@ public class GameEngine : NetworkBehaviour {
 			this.activateChoosePlayerPanel ();
 		}
 		// Checkpoint == 2 is wheels
-		if (currCheckpoint == 2) {
-			//	This is temporary
-			Debug.Log("Activating vote panel");
-			this.activateVotePanel();
-		}
 
 		if (currCheckpoint == 3) {
 			updatePlayers();
@@ -779,9 +774,13 @@ public class GameEngine : NetworkBehaviour {
 		}
 
 		if (currCheckpoint == 5) {
+			this.activateVotePanel();
+		}
+
+		if (currCheckpoint == 6) {
 			this.activateProConPanel();
 		}
-		if (currCheckpoint == 6) {
+		if (currCheckpoint == 7) {
 			this.activateScorePanel();
 		}
         //  Spawn next checkpoint
