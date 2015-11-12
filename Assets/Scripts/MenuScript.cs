@@ -53,6 +53,7 @@ public class MenuScript : MonoBehaviour {
 		joinLoadMenu.enabled = false;
 		joinFailOKButton = joinFailOKButton.GetComponent<Button> ();
 		joinFailOKButton.enabled = false;
+		joinFailOKButton.gameObject.SetActive (false);
 		joinLoadText = joinLoadText.GetComponent<Text> ();
 
 
@@ -155,6 +156,7 @@ public class MenuScript : MonoBehaviour {
 
 	public void JoinFailed() {
 		joinLoadText.text = "Joining failed!";
+		joinFailOKButton.gameObject.SetActive (true);
 		joinFailOKButton.enabled = true;
 	}
 

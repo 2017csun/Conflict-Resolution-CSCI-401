@@ -81,7 +81,8 @@ public class GameEngine : NetworkBehaviour {
 	private static string[] playerRoles;
 
 	// Planning and Role-playing
-	public Canvas helpMenu;
+	public Canvas timerMenu;
+	public CountDownTimer countDownTimer;
 	//---------------------------------------------
 	//	Pro/Con variables
 	//---------------------------------------------
@@ -128,8 +129,8 @@ public class GameEngine : NetworkBehaviour {
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
 
-		helpMenu = helpMenu.GetComponent<Canvas> ();
-		helpMenu.enabled = false;
+		timerMenu = timerMenu.GetComponent<Canvas> ();
+		timerMenu.enabled = false;
 
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
@@ -228,6 +229,11 @@ public class GameEngine : NetworkBehaviour {
         //  Enable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	} 
+
+	public void finishTimer() {
+		timerMenu.enabled = false;
+		myPlayer.GetComponent<FirstPersonController> ().enabled = true;
+	}
 
 	public void activateProConPanel() {
 		if (this.isServer) {
@@ -754,7 +760,9 @@ public class GameEngine : NetworkBehaviour {
 
 		if (currCheckpoint == 4) {
 			//Planning stuff
-			helpMenu.enabled = true;
+			timerMenu.enabled = true;
+			countDownTimer.StartTimer ();
+			myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		}
 
 		if (currCheckpoint == 5) {
