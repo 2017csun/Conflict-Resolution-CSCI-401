@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class IntentionsSpin : MonoBehaviour {
-
+public class IntentionsSpin : NetworkBehaviour {
+	
 	private bool spinning = false;
 	private float currentSpeed = 0;
 	public int currentRoll = 0;
@@ -31,14 +32,19 @@ public class IntentionsSpin : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyUp ("return")) {
-			if (!spinning) {
+		if (Input.GetKeyUp ("return") && !spinning) {
+			Debug.Log ("Rolling time");
+			if ((this.isServer && GameEngine.allowP1IntentionSpin) || (GameEngine.allowP2IntentionSpin)) {
 				int roll = Random.Range (0, 4);
-				if(Network.isServer) {
+				Debug.Log ("Rolled " + currentRoll);
+				if(this.isServer) {
 					GameEngine.setIntention(0, roll);
+					GameEngine.allowP1IntentionSpin = false;
 				} else {
+					Debug.Log ("In Client");
 					GameEngine.setIntention(1, roll);
-				}
+					GameEngine.allowP2IntentionSpin = false;
+				} 
 				int equivAngle;
 				if (currentRoll > roll) {
 					equivAngle = (calculateAngle (roll) + 360) - calculateAngle (currentRoll);
@@ -47,7 +53,7 @@ public class IntentionsSpin : MonoBehaviour {
 				}
 				int rotations = Random.Range (2, 5);
 //				Debug.Log ("IntInit: " + currentRoll);
-				Debug.Log ("IntCurr: " + roll);
+//				Debug.Log ("IntCurr: " + roll);
 //				Debug.Log ("IntAngle: " + equivAngle);
 //				Debug.Log ("IntRotations: " + rotations);
 				currentSpeed = (-10 + Mathf.Sqrt (100f + 160f*(360f*(float)(rotations)+(float)(equivAngle))))/2f;

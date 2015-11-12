@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class ScenarioSpin : MonoBehaviour {
-
+public class ScenarioSpin : NetworkBehaviour {
+	
 	private bool spinning = false;
 	private float currentSpeed = 0;
 	public int currentRoll = 0;
@@ -33,14 +34,18 @@ public class ScenarioSpin : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyUp ("space")) {
+		if (Input.GetKeyUp ("space") && GameEngine.allowScenarioSpin) {
+			Debug.Log("Here");
 			if (!spinning) {
+				Debug.Log("But not here?");
+				GameEngine.allowScenarioSpin = false;
 				int roll = Random.Range (0, 8);
-				if(Network.isServer) {
+				GameEngine.setScenario(roll);
+/*				if(Network.isServer) {
 					GameEngine.setScenario(roll);
 				} else {
 					GameEngine.setScenario(roll);
-				}
+				} */
 				int equivAngle;
 				if (currentRoll > roll) {
 					equivAngle = (calculateAngle (roll) + 360) - calculateAngle (currentRoll);
@@ -49,7 +54,7 @@ public class ScenarioSpin : MonoBehaviour {
 				}
 				int rotations = Random.Range (2, 5);
 //				Debug.Log ("Init: " + currentRoll);
-				Debug.Log ("Curr: " + roll);
+//				Debug.Log ("Curr: " + roll);
 //				Debug.Log ("Angle: " + equivAngle);
 //				Debug.Log ("Rotations: " + rotations);
 				currentSpeed = (-10 + Mathf.Sqrt (100f + 160f*(360f*(float)(rotations)+(float)(equivAngle))))/2f;

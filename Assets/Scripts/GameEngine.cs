@@ -69,6 +69,9 @@ public class GameEngine : NetworkBehaviour {
 
 	private List<string> iconNames;
     private int currentIcon;
+	public static bool allowP1IntentionSpin;
+	public static bool allowP2IntentionSpin;
+	public static bool allowScenarioSpin;
 	private static string[] scenariosList;
 	private static string[] scenariosTitles;
 	private static string currScenario;
@@ -76,8 +79,8 @@ public class GameEngine : NetworkBehaviour {
 	private static string[] intentionsList;
 	private static string[] currIntentions;
 	public GameObject recapPanel;
-	private static string P1Recap;
-	private static string P2Recap;
+	public Text P1Recap;
+	public Text P2Recap;
 	private static string[] playerRoles;
 
 	// Planning and Role-playing
@@ -132,6 +135,9 @@ public class GameEngine : NetworkBehaviour {
 		playerRoles = new string[2];
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
+		allowP1IntentionSpin = false;
+		allowP1IntentionSpin = false;
+		allowScenarioSpin = false;
 
 		timerMenu = timerMenu.GetComponent<Canvas> ();
 		timerMenu.enabled = false;
@@ -534,24 +540,9 @@ public class GameEngine : NetworkBehaviour {
                 Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
 		}
 	}
-
-	public void updatePlayers() {
-		P1Recap = player1.text;
-		P2Recap = player2.text;
-		Debug.Log (P1Recap);
-		Debug.Log (P2Recap);
-	}
-
+	
 	public void activateVotePanel () {
 		voteManager.GetComponent<VoteManager>().openVotePanel();
-	}
-
-	static public string getPlayer1() {
-		return P1Recap;
-	}
-
-	static public string getPlayer2() {
-		return P2Recap;
 	}
 
 	public void sendAnswers(List<string> ansList) {
@@ -638,7 +629,7 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	public static void setIntention(int playerNumber, int intentionNumber) {
-		currIntentions [0] = intentionsList [intentionNumber];
+		currIntentions [playerNumber] = intentionsList [intentionNumber];
 		Debug.Log ("Set Player " + playerNumber + " to Intention " + intentionsList [intentionNumber]);
 	
 	
@@ -733,6 +724,19 @@ public class GameEngine : NetworkBehaviour {
 			"Confidentiality Breach"
 		};
 	}
+	
+	public static void updateServerSpin() {
+		//		IntentionsSpin script = intentionWheel.GetComponent(IntentionsSpin);
+		//		script.allowP1Spin = true;
+		allowP1IntentionSpin = true;
+		allowScenarioSpin = true;
+	}
+	
+	public static void updateClientSpin() {
+		//		IntentionsSpin script = intentionWheel.GetComponent(IntentionsSpin);
+		//		script.allowP2Spin = true;
+		allowP2IntentionSpin = true;
+	}
 
 	public static string getScenarioTitle() {
 		return currScenarioTitle;
@@ -759,10 +763,18 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 1) {
 			this.activateChoosePlayerPanel ();
 		}
-		// Checkpoint == 2 is wheels
+
+		if (currCheckpoint == 2) {
+			if(this.isServer){
+				updateServerSpin();
+			} else {
+				updateClientSpin();
+			}
+		}
 
 		if (currCheckpoint == 3) {
-			updatePlayers();
+			P1Recap.text = playerOneClass.playerName;
+			P2Recap.text = playerTwoClass.playerName;
 			this.activateRecapPanel();
 		}
 
