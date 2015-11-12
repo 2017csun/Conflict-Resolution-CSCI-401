@@ -225,6 +225,18 @@ public class GameEngine : NetworkBehaviour {
 	public void deactivateChosenPanelAndStartRound() {
 		playersChosenPanel.SetActive (false);
 
+		//	Set the right layers for each icon
+		playerOneClass.playerIcon.layer = LayerMask.NameToLayer("Player1");
+		this.fullChangeLayer(playerOneClass.playerIcon.transform, "Player1");
+		playerTwoClass.playerIcon.layer = LayerMask.NameToLayer("Player2");
+		this.fullChangeLayer(playerTwoClass.playerIcon.transform, "Player2");
+		if (this.isServer) {
+			Camera.main.cullingMask = Camera.main.cullingMask | 1 << LayerMask.NameToLayer("Player2");
+		}
+		else {
+			Camera.main.cullingMask = Camera.main.cullingMask | 1 << LayerMask.NameToLayer("Player1");
+		}
+
         //  Update the player's body to be the icon
         GameObject myIcon = this.isServer ? playerOneClass.playerIcon : playerTwoClass.playerIcon;
         Debug.Log("My icon is " + myIcon.name);
