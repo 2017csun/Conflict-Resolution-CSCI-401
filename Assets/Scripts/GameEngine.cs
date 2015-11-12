@@ -760,11 +760,11 @@ public class GameEngine : NetworkBehaviour {
 			this.activateNameInputPanel ();
 		}
 
-		if (currCheckpoint == 1) {
+		if (currCheckpoint == 2) {
 			this.activateChoosePlayerPanel ();
 		}
 
-		if (currCheckpoint == 2) {
+		if (currCheckpoint == 6) {
 			if(this.isServer){
 				updateServerSpin();
 			} else {
@@ -772,27 +772,27 @@ public class GameEngine : NetworkBehaviour {
 			}
 		}
 
-		if (currCheckpoint == 3) {
+		if (currCheckpoint == 13) {
 			P1Recap.text = playerOneClass.playerName;
 			P2Recap.text = playerTwoClass.playerName;
 			this.activateRecapPanel();
 		}
 
-		if (currCheckpoint == 4) {
+		if (currCheckpoint == 15) {
 			//Planning stuff
 			timerMenu.enabled = true;
 			countDownTimer.StartTimer ();
 			myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		}
 
-		if (currCheckpoint == 5) {
+		if (currCheckpoint == 16) {
 			this.activateVotePanel();
 		}
 
-		if (currCheckpoint == 6) {
+		if (currCheckpoint == 19) {
 			this.activateProConPanel();
 		}
-		if (currCheckpoint == 7) {
+		if (currCheckpoint == 24) {
 			this.activateScorePanel();
 		}
         //  Spawn next checkpoint
