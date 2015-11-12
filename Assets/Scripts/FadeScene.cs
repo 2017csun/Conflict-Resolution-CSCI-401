@@ -15,6 +15,7 @@ public class FadeScene : MonoBehaviour {
         fadingIn = false;
         myImage = this.GetComponent<Image>();
         myColor = myImage.color;
+		Invoke ("fadeIn", timeBeforeFadeIn);
 	}
 
 	void Update () {
@@ -23,8 +24,8 @@ public class FadeScene : MonoBehaviour {
             if (myColor.a <= 0) {
                 fadingIn = false;
                 myColor.a = 0;
+				this.gameObject.SetActive(false);
             }
-
             myImage.color = myColor;
         }
 	}

@@ -359,7 +359,13 @@ public class GameEngine : NetworkBehaviour {
         /* If the currentIcon , "iconName" that just got saved is not the iconNames list (which contains the selected iconNames) 
          then add it to the list. Add it also to the GameObject List of actual icons (currentPlayer Icons)*/
 		if (!iconNames.Contains (iconName.text)) {
-			iconNames.Add (iconName.text);
+			//	Take out (Clone) from icon name
+			string name = iconName.text;
+			int cloneIndex = name.IndexOf("(Clone)");
+			if (cloneIndex != -1) {
+				name = name.Substring(0, cloneIndex) + name.Substring(cloneIndex + 7);
+			}
+			iconNames.Add (name);
 
             currEditedPlayer.playerIcon = playerIcons[currentIcon];
             allPlayers.Add(new PlayerClass(currEditedPlayer));
@@ -396,7 +402,6 @@ public class GameEngine : NetworkBehaviour {
 			animationPanel.discardPanel();
 			for (int i = 0; i < playerIcons.Length; i++) {
                 if (playerIcons[i].transform.parent == null) {
-                    //playerIcons[i].SetActive(false);
                     //  Move them out of view instead so they can still be found in script
                     playerIcons[i].transform.position = new Vector3(0, -20, 0);
                 }
@@ -421,7 +426,13 @@ public class GameEngine : NetworkBehaviour {
 
         Debug.Log("Network creating player #" + playerID + " named " + playerName + " with icon " + newPlayer.playerIcon.name);
 
-        iconNames.Add(playerIcons[iconIndex].name);
+		//	Take out (Clone) from icon name
+		string name = playerIcons[iconIndex].name;
+		int cloneIndex = name.IndexOf("(Clone)");
+		if (cloneIndex != -1) {
+			name = name.Substring(0, cloneIndex) + name.Substring(cloneIndex + 7);
+		}
+        iconNames.Add(name);
         currentPlayerIcons.Add(playerIcons[iconIndex]);
 
         allPlayers.Add(newPlayer);
