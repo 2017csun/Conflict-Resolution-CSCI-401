@@ -46,7 +46,8 @@ public class VoteManager : MonoBehaviour {
 			}
 			else if (up == down) {
 				report.text = "You all don't know how to feel but that's okay!";
-				reportC = textC = Color.blue;
+				reportC = Color.white;
+				textC = Color.black;
 				text.text = "OK";
 			}
 			else {
