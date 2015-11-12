@@ -82,6 +82,10 @@ public class GameEngine : NetworkBehaviour {
 
 	// Planning and Role-playing
 	public Canvas helpMenu;
+
+	[Header("Vote Variables")]
+	public GameObject voteManager;
+
 	//---------------------------------------------
 	//	Pro/Con variables
 	//---------------------------------------------
@@ -532,6 +536,10 @@ public class GameEngine : NetworkBehaviour {
 		Debug.Log (P2Recap);
 	}
 
+	public void activateVotePanel () {
+		voteManager.GetComponent<VoteManager>().openVotePanel();
+	}
+
 	static public string getPlayer1() {
 		return P1Recap;
 	}
@@ -746,6 +754,11 @@ public class GameEngine : NetworkBehaviour {
 			this.activateChoosePlayerPanel ();
 		}
 		// Checkpoint == 2 is wheels
+		if (currCheckpoint == 2) {
+			//	This is temporary
+			Debug.Log("Activating vote panel");
+			this.activateVotePanel();
+		}
 
 		if (currCheckpoint == 3) {
 			updatePlayers();
