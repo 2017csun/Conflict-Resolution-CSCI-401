@@ -8,8 +8,8 @@ public class MenuScript : MonoBehaviour {
 
     public GameObject networkManagerPrefab;
     NetworkMatcher networkMatcher;
-	public Text gameTitleText;
 	public Text keyText;
+	public Text joinLoadText;
 	public InputField keyInputField;
 	public Button exitButton;
 	public Button helpButton;
@@ -19,18 +19,17 @@ public class MenuScript : MonoBehaviour {
 	public Button startButton;
 	public Button hostGameCancelButton;
 	public Button joinGameCancelButton;
+	public Button joinFailOKButton;
 
 	public Canvas helpMenu;
 	public Canvas hostGameMenu;
 	public Canvas joinGameMenu;
+	public Canvas joinLoadMenu;
 	// Use this for initialization
 	void Start () {
 
 		// networkmanager
         networkMatcher = networkManagerPrefab.GetComponent<NetworkMatcher>();
-
-		// game title
-		gameTitleText = gameTitleText.GetComponent<Text> ();
 
 		// host game
 		hostGameButton = hostGameButton.GetComponent<Button> ();
@@ -47,8 +46,14 @@ public class MenuScript : MonoBehaviour {
 		joinGameMenu = joinGameMenu.GetComponent<Canvas> ();
 		keyInputField = keyInputField.GetComponent<InputField> ();
 		joinGameMenu.enabled = false;
-
 		joinButton = joinButton.GetComponent<Button> ();
+
+		
+		joinLoadMenu = joinLoadMenu.GetComponent<Canvas> ();
+		joinLoadMenu.enabled = false;
+		joinFailOKButton = joinFailOKButton.GetComponent<Button> ();
+		joinFailOKButton.enabled = false;
+		joinLoadText = joinLoadText.GetComponent<Text> ();
 
 
 		// help
@@ -104,6 +109,7 @@ public class MenuScript : MonoBehaviour {
 		joinGameButton.enabled = false;
 		helpButton.enabled = false;
 		exitButton.enabled = false;
+		joinLoadMenu.enabled = false;
 		joinButton.enabled = true;
 		joinGameCancelButton.enabled = true;
 	}
@@ -133,16 +139,23 @@ public class MenuScript : MonoBehaviour {
 	}
 
 	public void JoinPressed() {
-		joinGameMenu.enabled = true;
 		hostGameButton.enabled = false;
 		joinGameButton.enabled = false;
 		helpButton.enabled = false;
 		exitButton.enabled = false;
 		joinButton.enabled = false;
 		joinGameCancelButton.enabled = false;
+
+		joinLoadMenu.enabled = true;
+		joinGameMenu.enabled = false;
 		
 		string inputKey = keyInputField.text;
 		networkMatcher.connectToServer(inputKey);
+	}
+
+	public void JoinFailed() {
+		joinLoadText.text = "Joining failed!";
+		joinFailOKButton.enabled = true;
 	}
 
 

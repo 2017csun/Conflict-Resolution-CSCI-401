@@ -7,8 +7,8 @@ public class CountDownTimer : MonoBehaviour {
 	public Canvas timerMenu;
 
 	// change these two values accordingly
-	const int PLANNING_TIME = 25; // in number of seconds
-	const int ROLEPLAYING_TIME = 25; // in number of seconds
+	const int PLANNING_TIME = 5; // in number of seconds
+	const int ROLEPLAYING_TIME = 8; // in number of seconds
 
 	public Button competingButton;
 	public Button compromisingButton;
@@ -21,6 +21,7 @@ public class CountDownTimer : MonoBehaviour {
 	public Canvas collaboratingInfoCanvas;
 	public Canvas avoidingInfoCanvas;
 	public Canvas accommodatingInfoCanvas;
+	public Canvas instructionCanvas;
 	/*
 	public Text competingText;
 	public Text collaboratingText;
@@ -38,7 +39,7 @@ public class CountDownTimer : MonoBehaviour {
 	
 	void Start () {
 		timerMenu = timerMenu.GetComponent<Canvas> ();
-		timerMenu.enabled = false;
+		//timerMenu.enabled = false;
 		// buttons for intentions
 		competingButton = competingButton.GetComponent<Button> ();
 		competingButton.GetComponentInChildren<Text> ().text = "Competing";
@@ -60,6 +61,12 @@ public class CountDownTimer : MonoBehaviour {
 		accommodatingButton.GetComponentInChildren<Text> ().text = "Accommodating";
 		accommodatingButton.GetComponentInChildren<Text> ().fontSize = 25;
 
+		competingButton.enabled = true;
+		compromisingButton.enabled = true;
+		collaboratingButton.enabled = true;
+		avoidingButton.enabled = true;
+		accommodatingButton.enabled = true;
+
 		// intention popups
 		competingInfoCanvas = competingInfoCanvas.GetComponent<Canvas> ();
 		competingInfoCanvas.enabled = false;
@@ -75,6 +82,9 @@ public class CountDownTimer : MonoBehaviour {
 
 		accommodatingInfoCanvas = accommodatingInfoCanvas.GetComponent<Canvas> ();
 		accommodatingInfoCanvas.enabled = false;
+
+		instructionCanvas = instructionCanvas.GetComponent<Canvas> ();
+		instructionCanvas.enabled = true;
 
 
 		/*
@@ -119,16 +129,23 @@ public class CountDownTimer : MonoBehaviour {
 
 
 		// timer initialization
+		/*
 		timerText = timerText.GetComponent<Text> ();
 		int numMin = timeRemaining / 60;
 		int numSec = timeRemaining % 60;
 		timerText.text = "0" + numMin + ":" + numSec;
-		if (timerMenu.enabled)
+		*/
+		timerText.text = "02:00";
+		//comment/uncomment this to start timer testing
 		InvokeRepeating("CountDown", (float)1.0, (float)1.0);
 	}
 	// do not need to use Update
 	void Update () {
 
+	}
+
+	public void StartTimer() {
+		InvokeRepeating ("CountDown", (float)1.0, (float)1.0);
 	}
 
 	// function to count down the timer
@@ -147,11 +164,18 @@ public class CountDownTimer : MonoBehaviour {
 
 		} else if (timeRemaining == 0 && !donePlanning && !doneRolePlaying) {
 			// planning has ended
+			instructionCanvas.enabled = false;
+			competingButton.gameObject.SetActive(false);
+			compromisingButton.gameObject.SetActive(false);
+			collaboratingButton.gameObject.SetActive(false);
+			avoidingButton.gameObject.SetActive(false);
+			accommodatingButton.gameObject.SetActive(false);
+
 			timerAlarm.Play ();
 			donePlanning = true;
 			timeRemaining = ROLEPLAYING_TIME;
 
-
+			// disable all the buttons
 
 
 		} else if (timeRemaining == 0 && donePlanning && !doneRolePlaying) {
@@ -160,6 +184,8 @@ public class CountDownTimer : MonoBehaviour {
 			doneRolePlaying = true;
 			timeRemaining = 0;
 			timerMenu.enabled = false;
+
+
 		}
 	}
 
@@ -203,7 +229,14 @@ public class CountDownTimer : MonoBehaviour {
 		accommodatingInfoCanvas.enabled = true;
 	}
 
+	// may not need this function.
 	public void OKPressed() {
+		competingButton.enabled = true;
+		compromisingButton.enabled = true;
+		collaboratingButton.enabled = true;
+		avoidingButton.enabled = true;
+		accommodatingButton.enabled = true;
+
 		competingInfoCanvas.enabled = false;
 		compromisingInfoCanvas.enabled = false;
 		collaboratingInfoCanvas.enabled = false;
