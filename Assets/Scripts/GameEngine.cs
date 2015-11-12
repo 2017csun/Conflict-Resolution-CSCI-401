@@ -797,7 +797,7 @@ public class GameEngine : NetworkBehaviour {
 			myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		}
 
-		if (currCheckpoint == 16) {
+		if (currCheckpoint == 16 && this.isServer) {
 			this.activateVotePanel();
 		}
 
