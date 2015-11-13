@@ -176,4 +176,13 @@ public class PlayerNetworking : NetworkBehaviour {
     public void CmdUpdateCurrAvailableID (int newID) {
         gameEngine.currAvailableID = newID;
     }
+	public void updateScore(int score){
+		CmdSetScore (score);
+		
+		
+	}
+	public void CmdSetScore(int score) {
+		
+		gameEngine.updateScoreToClient (score);
+	}
 }

@@ -98,7 +98,7 @@ public class GameEngine : NetworkBehaviour {
 	public List<string> answers2;
 	private string[] intentions;
 	public GameObject proConPanel;
-	public List<string> intentList;
+	//public List<string> intentList;
 	public List<string> intentListPro;
 	public List<string> intentListCon;
 
@@ -134,7 +134,8 @@ public class GameEngine : NetworkBehaviour {
 		currentPlayerIcons = new List<GameObject> ();
 		intentListPro = new List<string> ();
 		intentListCon = new List<string> ();
-		intentList = new List<string> ();
+		wrongList = new List<string> ();
+		//intentList = new List<string> ();
 		answers = new List<string> ();
 		answers2 = new List<string> ();
 		currIntentions = new string[2];
@@ -580,7 +581,7 @@ public class GameEngine : NetworkBehaviour {
 
 	}
 	public void checkAnswers() {
-		if (intentList == null || intentList.Count == 0) {
+		/*if (intentList == null || intentList.Count == 0) {
 
 			print ("NULL INTENTS");
 
@@ -607,9 +608,9 @@ public class GameEngine : NetworkBehaviour {
 				}
 			}
 		}
+		*/
 
-
-		/*if (intentListPro == null || intentListPro.Count == 0 || intentListCon == null || intentListCon.Count == 0 ) {
+		if (intentListPro == null || intentListPro.Count == 0 || intentListCon == null || intentListCon.Count == 0 ) {
 
 			print ("NULL INTENTS");
 
@@ -646,8 +647,9 @@ public class GameEngine : NetworkBehaviour {
 			}
 
 
-		 */
+
 	}
+	/*
 	public void displayScore() {
 		//if (this.isServer) {
 			for (int i = 0; i < 6; i++) {
@@ -686,9 +688,9 @@ public class GameEngine : NetworkBehaviour {
 		print (intentList.Count + " is how big the list is");
 	}
 
+	*/
 
-
-	/*public void displayScore() {
+	public void displayScore() {
 		if (this.isServer) {
 			for (int i = 0; i < 6; i++) {
 				print (answers [i] + " is first answer ");
@@ -820,7 +822,7 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 
-	 * */
+
 
 	public static void setIntention(int playerNumber, int intentionNumber) {
 		currIntentions [playerNumber] = intentionsList [intentionNumber];
