@@ -99,6 +99,8 @@ public class GameEngine : NetworkBehaviour {
 	private string[] intentions;
 	public GameObject proConPanel;
 	public List<string> intentList;
+	public List<string> intentListPro;
+	public List<string> intentListCon;
 
 	[Header("Score Variables")]
 	public Text[] player1Answers;
@@ -107,10 +109,12 @@ public class GameEngine : NetworkBehaviour {
 	public Text[] answerKey2;
 	public Text roundScore;
 	public Text totalScore;
+	[SyncVar]
 	public int score;
 	public int totalscore;
 	public GameObject scorePanel;
 	public ProsAndConsList pscript;
+	private List<string> wrongList;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -128,6 +132,8 @@ public class GameEngine : NetworkBehaviour {
 		iconNames = new List<string> ();
         playersChosenToPlay = new List<int>();
 		currentPlayerIcons = new List<GameObject> ();
+		intentListPro = new List<string> ();
+		intentListCon = new List<string> ();
 		intentList = new List<string> ();
 		answers = new List<string> ();
 		answers2 = new List<string> ();
@@ -601,6 +607,46 @@ public class GameEngine : NetworkBehaviour {
 				}
 			}
 		}
+
+
+		/*if (intentListPro == null || intentListPro.Count == 0 || intentListCon == null || intentListCon.Count == 0 ) {
+
+			print ("NULL INTENTS");
+
+		}  else {
+			if (this.isServer) {
+				for (int i = 0; i < answers.Count; i++) {
+					
+					if (intentListPro.Contains (answers [i]) || intentListCon.Contains(answers[i])){
+						score++;
+
+						print ("SCORE IS " + score);
+					}
+					else {
+				
+						wrongList.Add(answers[i]);
+					}
+				}  
+			}else {
+
+				for (int i = 0; i < answers2.Count; i++) {
+				
+					if (intentListPro.Contains (answers2 [i]) || intentListCon.Contains(answers2[i])) {
+						score++;
+						myPlayer.GetComponent<PlayerNetworking>().updateScore(score);
+						print ("SCORE2 IS " + score);
+					}
+						else {
+							
+							wrongList.Add(answers2[i]);
+						}
+				}
+			}
+		
+			}
+
+
+		 */
 	}
 	public void displayScore() {
 		//if (this.isServer) {
@@ -639,6 +685,142 @@ public class GameEngine : NetworkBehaviour {
 		}
 		print (intentList.Count + " is how big the list is");
 	}
+
+
+
+	/*public void displayScore() {
+		if (this.isServer) {
+			for (int i = 0; i < 6; i++) {
+				print (answers [i] + " is first answer ");
+				if (wrongList.Contains (answers [i])) {
+					player1Answers [i].color = Color.red;
+				}
+				player1Answers [i].text = "-" + answers [i];
+
+				if (i < 3) {
+				answerKey1 [i].text = "-" + intentListPro [i];
+
+				}
+				if (i >= 3){
+				answerKey1 [i].text = "-" + intentListCon [i - 3];
+				}
+			
+			}
+
+
+
+		}  else {
+
+
+
+			for (int i = 0; i < 6; i++) {
+				print (answers2 [i] + " is first answer ");
+				if (wrongList.Contains (answers2 [i])) {
+					player1Answers [i].color = Color.red;
+				}
+				player1Answers [i].text = "-" + answers2 [i];
+
+				if (i < 3) {
+					answerKey1 [i].text = "-" + intentListPro [i + 3];
+					
+				}
+				if (i >= 3){
+					answerKey1 [i].text = "-" + intentListCon [i];
+				}
+
+			}
+
+			}
+
+			roundScore.text = "Round Score : " + score;
+		
+			totalScore.text = "Total Score : " + score;
+				
+	}
+
+	public void displayScore2() {
+		//print ("IM UP IN DISPLAY SCORE 2");
+		//if (answers2 != null || answers2.Count > 0) {
+			print ("Displaying score 2");
+
+				for (int i = 0; i < 6; i++) {
+			
+					print (answers2 [i] + " is first answer ");
+					if (wrongList.Contains (answers2 [i])) {
+						player1Answers [i].color = Color.red;
+					}
+					player1Answers [i].text = "-" + answers2 [i];
+					if (i >= 3) {
+						answerKey1 [i].text = "-" + intentListCon [i];
+					
+					}
+					if (i < 3) {
+						answerKey1 [i].text = "-" + intentListPro [i + 3];
+					}
+				
+				}
+
+			
+			
+				for (int i = 0; i < 6; i++) {
+					print (answers [i] + " is first answer ");
+					if (wrongList.Contains (answers [i])) {
+						player1Answers [i].color = Color.red;
+					}
+					player1Answers [i].text = "-" + answers [i];
+					if (i >= 3) {
+						answerKey1 [i].text = "-" + intentListCon [i - 3];
+					
+					}
+					if (i < 3) {
+						answerKey1 [i].text = "-" + intentListPro [i];
+					}
+				
+				}
+			
+
+			roundScore.text = "Round Score : " + score;
+		
+			totalScore.text = "Total Score : " + score;
+
+
+		//}
+
+
+
+
+}
+	public void sendIntention(string[] intent){
+		print ("IM SENDING INTENTION");
+		//intentions = new string[6];
+		//intentList = new List<string> ();
+
+			for (int i = 0; i < intent.Length; i++) {
+			print (intent [i]);
+			//intentions [i] = intent [i];
+
+			if (i >= 3) {
+				intentListCon.Add (intent [i]);
+			}
+			if (i < 3) {
+
+				intentListPro.Add (intent [i]);
+			}
+
+		}
+		//print (intentList.Count + " is how big the list is");
+	}
+
+
+	public void updateScoreToClient(int score) {
+
+		this.score = score;
+
+
+	}
+
+
+	 * */
 
 	public static void setIntention(int playerNumber, int intentionNumber) {
 		currIntentions [playerNumber] = intentionsList [intentionNumber];
