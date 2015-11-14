@@ -61,10 +61,10 @@ public class ProsAndConsList : MonoBehaviour {
 		//competing cons
 		generalProConList.Add ("Straining work relationships as people develop resentment");
 		generalProConList.Add ("Not exchanging information freely");
-		generalProConList.Add ("Creating escalation and deadlock negotiations by using extreme tactics");
+		generalProConList.Add ("Escalation conflict and creating and deadlock negotiations by using extreme tactics");
 		masterConList.Add ("Straining work relationships as people develop resentment");
 		masterConList.Add ("Not exchanging information freely");
-		masterConList.Add ("Creating escalation and deadlock negotiations by using extreme tactics");
+		masterConList.Add ("Escalation conflict and creating and deadlock negotiations by using extreme tactics");
 		
 		//collaborative pros
 		generalProConList.Add ("Seeking innovative solutions and creating synergy through the exchange of ideas");
@@ -78,18 +78,18 @@ public class ProsAndConsList : MonoBehaviour {
 		//collaborative cons
 		generalProConList.Add ("Involving a lot of time, full concentration, and creativity");
 		generalProConList.Add ("Psychologically demanding to be open to new ideas");
-		generalProConList.Add ("Working through sensitive issues and resolve hurt feelings");
+		generalProConList.Add ("Causing hurt feelings by discussing sensitive issues");
 		masterConList.Add ("Involving a lot of time, full concentration, and creativity");
 		masterConList.Add ("Psychologically demanding to be open to new ideas");
-		masterConList.Add ("Working through sensitive issues and resolve hurt feelings");
+		masterConList.Add ("Causing hurt feelings by discussing sensitive issues");
 
 		
 		
 		//compromising pros
-		generalProConList.Add ("Getting to a deal that is good enough");
+		generalProConList.Add ("Getting to a situation that is good enough");
 		generalProConList.Add ("Providing equal gains and losses for both people");
 		generalProConList.Add ("Meeting half way to reduce relationship strain");
-		masterProList.Add ("Getting to a deal that is good enough");
+		masterProList.Add ("Getting to a situation that is good enough");
 		masterProList.Add ("Providing equal gains and losses for both people");
 		masterProList.Add ("Meeting half way to reduce relationship strain");
 		
@@ -134,53 +134,53 @@ public class ProsAndConsList : MonoBehaviour {
 		masterConList.Add ("Responding with less motivation because agreeing to things that are not of interest");
 		masterConList.Add ("Losing people’s respect because constantly agreeing and not challenging");
 	
-		 competingList[0] = masterProList[0];
+		competingList[0] = masterProList[0];
 		competingList[1] = masterProList [1];
 		competingList[2] = masterProList [2];
 		competingList[3] = masterConList [0];
 		competingList[4] = masterConList [1];
 		competingList[5] = masterConList [2];
-		accomList[0] = masterProList [3];
-		accomList[1] = masterProList [4];
-		accomList[2] = masterProList [5];
-		accomList[3] = masterConList [3];
-		accomList[4] = masterConList [4];
-		accomList[5] = masterConList [5];
-		collabList[0] = masterProList [6];
-		collabList[1] = masterProList [7];
-		collabList[2] = masterProList [8];
-		collabList[3] = masterConList [6];
-		collabList[4] = masterConList [7];
-		collabList[5] = masterConList [8];
+		collabList[0] = masterProList [3];
+		collabList[1] = masterProList [4];
+		collabList[2] = masterProList [5];
+		collabList[3] = masterConList [3];
+		collabList[4] = masterConList [4];
+		collabList[5] = masterConList [5];
+		compromiseList[0] = masterProList [6];
+		compromiseList[1] = masterProList [7];
+		compromiseList[2] = masterProList [8];
+		compromiseList[3] = masterConList [6];
+		compromiseList[4] = masterConList [7];
+		compromiseList[5] = masterConList [8];
 		avoidList[0] = masterProList [9];
 		avoidList[1] = masterProList [10];
 		avoidList[2] = masterProList [11];
 		avoidList[3] = masterConList [9];
 		avoidList[4] = masterConList [10];
 		avoidList[5] = masterConList [11];
-		compromiseList[0] = masterProList [12];
-		compromiseList[1] = masterProList [13];
-		compromiseList[2] = masterProList [14];
-		compromiseList[3] = masterConList [12];
-		compromiseList[4] = masterConList [13];
-		compromiseList[5] = masterConList [14];
+		accomList[0] = masterProList [12];
+		accomList[1] = masterProList [13];
+		accomList[2] = masterProList [14];
+		accomList[3] = masterConList [12];
+		accomList[4] = masterConList [13];
+		accomList[5] = masterConList [14];
 		for (int i = 0; i < 6; i++) {
 			competingList [i] = generalProConList [i];
 
 		}
 
 		for (int i = 0; i < 6; i++) {
-			accomList [i] = generalProConList [i + 6];
+			collabList [i] = generalProConList [i + 6];
 		}
 
 		for (int i = 0; i < 6; i++) {
-			collabList [i] = generalProConList [i + 12];
+			compromiseList [i] = generalProConList [i + 12];
 		}
 		for (int i = 0; i < 6; i++) {
 			avoidList [i] = generalProConList [i + 18];
 		}
 		for (int i = 0; i < 6; i++) {
-			compromiseList [i] = generalProConList [i + 24];
+			accomList [i] = generalProConList [i + 24];
 		}
 
 		//populateScrollList (currentIntention1);
