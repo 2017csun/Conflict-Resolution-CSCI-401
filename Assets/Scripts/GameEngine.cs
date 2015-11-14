@@ -30,6 +30,12 @@ public class GameEngine : NetworkBehaviour {
     public int currAvailableID = 1;
     private PlayerClass currEditedPlayer;   //  The player currently being modified from user input
 
+
+	//---------------------------------------------
+	// Gui Guide Variables
+	//---------------------------------------------
+	public GameObject welcomePanel;
+
 	//---------------------------------------------
 	//	Player input variables
 	//---------------------------------------------
@@ -110,7 +116,10 @@ public class GameEngine : NetworkBehaviour {
 	public Text[] answerKey2;
 	public Text roundScore;
 	public Text totalScore;
-
+	public Text intentScoreText;
+	public Text intentScoreText2;
+	public Text scoreName1;
+	public Text scoreName2;
 	[SyncVar]
 	public int score;
 	public int totalscore;
@@ -188,7 +197,12 @@ public class GameEngine : NetworkBehaviour {
             }
         }
     }
+	public void deactivateWelcomePanel() {
 
+		welcomePanel.SetActive (false);
+
+
+	}
     public void activateNameInputPanel () {
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -271,11 +285,17 @@ public class GameEngine : NetworkBehaviour {
 	public void activateProConPanel() {
 		if (this.isServer) {
 			pscript.populateScrollList (currIntentions [0]);
+
+			intentScoreText.text = currIntentions[0];
+			//activate in score panel
+			//update in score panel the intention
+		
 		}
 		
 		else {
 			
 			pscript.populateScrollList (currIntentions [0]);
+			intentScoreText2.text = currIntentions[0];
 		}
 		proConPanel.SetActive (true);
 
@@ -563,13 +583,22 @@ public class GameEngine : NetworkBehaviour {
 		if (this.isServer) {
             player1.text = playerOneClass.playerName;
             player2.text = "";
+
+			//also updatename in score panel
+			scoreName1.text = playerOneClass.playerName;
+			scoreName2.text = playerTwoClass.playerName;
 			playerOneClass.playerIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		}
         else {
             player2.text = playerTwoClass.playerName;
             player1.text = "";
-            playerTwoClass.playerIcon.transform.position =
+
+			//updatename in score panel
+			scoreName2.text = playerOneClass.playerName;
+			scoreName1.text = playerTwoClass.playerName;
+
+			playerTwoClass.playerIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
 		}
 	}
@@ -842,6 +871,8 @@ public class GameEngine : NetworkBehaviour {
 	public static void setIntention(int playerNumber, int intentionNumber) {
 		currIntentions [playerNumber] = intentionsList [intentionNumber];
 		Debug.Log ("Set Player " + playerNumber + " to Intention " + intentionsList [intentionNumber]);
+
+
 	
 	
 	}
