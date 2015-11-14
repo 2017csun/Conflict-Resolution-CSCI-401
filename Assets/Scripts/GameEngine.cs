@@ -436,6 +436,9 @@ public class GameEngine : NetworkBehaviour {
         //position the icon in front of the camera
 		playerIcons[currentIcon].transform.position =//playericons
             Camera.main.transform.position + Camera.main.transform.forward * .8f + new Vector3(0, -0.18f, 0);
+
+
+
 		spotlight.transform.position =
 			playerIcons [currentIcon].transform.position +//playerIcons
             new Vector3 (0, 0.8f, 0) +
@@ -901,6 +904,7 @@ public class GameEngine : NetworkBehaviour {
 			player2IntentionStatic = intentionsList [intentionNumber];
 		}
 		Debug.Log ("Set Player " + playerNumber + " to Intention " + intentionsList [intentionNumber]);
+		Debug.Log (player1IntentionStatic + " is the static ");
 	}
 
 	public static void setScenario(int scenarioNumber) {
@@ -1075,6 +1079,12 @@ public class GameEngine : NetworkBehaviour {
 		}
 
 		if (currCheckpoint == 7) {
+
+			//updateSyncedPlayerVariables();
+		}
+
+		if (currCheckpoint == 8) {
+
 			updateSyncedPlayerVariables();
 		}
 
@@ -1083,7 +1093,9 @@ public class GameEngine : NetworkBehaviour {
 			player2NameText.text = playerTwoClass.playerName;
 			player1RoleText.text = player1Role;
 			player2RoleText.text = player2Role;
+
 			player1IntentionText.text = player1Intention;
+			Debug.Log (player1Intention + " is that intention though ");
 			player2IntentionText.text = player2Intention;
 			scenarioText.text = currScenario;
 			scenarioTitleText.text = currScenarioTitle;
