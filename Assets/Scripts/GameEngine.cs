@@ -109,12 +109,15 @@ public class GameEngine : NetworkBehaviour {
 	public Text[] answerKey2;
 	public Text roundScore;
 	public Text totalScore;
+
 	[SyncVar]
 	public int score;
 	public int totalscore;
 	public GameObject scorePanel;
 	public ProsAndConsList pscript;
 	private List<string> wrongList;
+	public GameObject Player1ProCon; // text containing
+	public GameObject Player2ProCon;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -304,11 +307,18 @@ public class GameEngine : NetworkBehaviour {
 		
 		
 		scorePanel.SetActive (true);
+		Player1ProCon.SetActive (true);
 		checkAnswers ();
 		displayScore (); 
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		
 		
+	}
+	public void activateSecondScorePanel() {
+		Player1ProCon.SetActive (false);
+		Player2ProCon.SetActive (true);
+
+
 	}
 	public void deactivateScorePanel() {
 		
@@ -550,13 +560,13 @@ public class GameEngine : NetworkBehaviour {
             player1.text = playerOneClass.playerName;
             player2.text = "";
 			playerOneClass.playerIcon.transform.position =
-                Camera.main.transform.position + Camera.main.transform.right * -.6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
+                Camera.main.transform.position + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		}
         else {
             player2.text = playerTwoClass.playerName;
             player1.text = "";
             playerTwoClass.playerIcon.transform.position =
-                Camera.main.transform.position + Camera.main.transform.right * .6f + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
+                Camera.main.transform.position + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
 		}
 	}
 	
@@ -691,48 +701,49 @@ public class GameEngine : NetworkBehaviour {
 	*/
 
 	public void displayScore() {
-		if (this.isServer) {
-			for (int i = 0; i < 6; i++) {
-				print (answers [i] + " is first answer ");
-				if (wrongList.Contains (answers [i])) {
-					player1Answers [i].color = Color.red;
-				}
-				player1Answers [i].text = "-" + answers [i];
 
-				if (i < 3) {
+		for (int i = 0; i < 6; i++) {
+			print (answers [i] + " is first answer ");
+			if (!wrongList.Contains (answers [i])) {
+				//Color greenish = new Color(0.0,0.6,0.0,1.0);
+				player1Answers [i].color = new Color((float)0.0,(float)0.6,(float)0.0,(float)1.0);//set color to green because the answer is right
+			}
+			player1Answers [i].text = "-" + answers [i];
+
+			if (i < 3) {
 				answerKey1 [i].text = "-" + intentListPro [i];
 
-				}
-				if (i >= 3){
-				answerKey1 [i].text = "-" + intentListCon [i - 3];
-				}
-			
 			}
+			if (i >= 3) {
+				answerKey1 [i].text = "-" + intentListCon [i - 3];
+			}
+			
+		}
 
-
-
-		}  else {
-
-
+		if (answers2.Count != 0) {
+			Debug.Log (" the count for answers two is " + answers2.Count);
 
 			for (int i = 0; i < 6; i++) {
+		
 				print (answers2 [i] + " is first answer ");
-				if (wrongList.Contains (answers2 [i])) {
-					player1Answers [i].color = Color.red;
+				if (!wrongList.Contains (answers2 [i])) {
+					//Color greenish = new Color(0.0,0.6,0.0,1.0);
+					player2Answers [i].color = new Color((float)0.0,(float)0.6,(float)0.0,(float)1.0); //set color to green because the answer is right
 				}
-				player1Answers [i].text = "-" + answers2 [i];
+				player2Answers [i].text = "-" + answers2 [i];
 
 				if (i < 3) {
-					answerKey1 [i].text = "-" + intentListPro [i + 3];
+					answerKey2 [i].text = "-" + intentListPro [i + 3];
 					
 				}
-				if (i >= 3){
-					answerKey1 [i].text = "-" + intentListCon [i];
+				if (i >= 3) {
+					answerKey2 [i].text = "-" + intentListCon [i];
 				}
 
 			}
 
-			}
+		}	
+	
 
 			roundScore.text = "Round Score : " + score;
 		
