@@ -81,14 +81,22 @@ public class GameEngine : NetworkBehaviour {
 	public static bool allowScenarioSpin;
 	private static string[] scenariosList;
 	private static string[] scenariosTitles;
-	private static string currScenario;
-	private static string currScenarioTitle;
 	private static string[] intentionsList;
-	private static string[] currIntentions;
+	private static string player1IntentionStatic;
+	private static string player2IntentionStatic;
+	private static string player1RoleStatic;
+	private static string player2RoleStatic;
+	private static string currScenarioStatic;
+	private static string currScenarioTitleStatic;
 	public GameObject recapPanel;
-	public Text P1Recap;
-	public Text P2Recap;
-	private static string[] playerRoles;
+	public Text player1NameText;
+	public Text player2NameText;
+	public Text player1RoleText;
+	public Text player2RoleText;
+	public Text player1IntentionText;
+	public Text player2IntentionText;
+	public Text scenarioTitleText;
+	public Text scenarioText;
 
 	// Planning and Role-playing
 	[Header("Vote Variables")]
@@ -128,6 +136,18 @@ public class GameEngine : NetworkBehaviour {
 	private List<string> wrongList;
 	public GameObject Player1ProCon; // text containing
 	public GameObject Player2ProCon;
+	[SyncVar]
+	private string currScenario;
+	[SyncVar]
+	private string currScenarioTitle;
+	[SyncVar]
+	private string player1Intention;
+	[SyncVar]
+	private string player2Intention;
+	[SyncVar]
+	private string player1Role;
+	[SyncVar]
+	private string player2Role;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -151,8 +171,12 @@ public class GameEngine : NetworkBehaviour {
 		//intentList = new List<string> ();
 		answers = new List<string> ();
 		answers2 = new List<string> ();
-		currIntentions = new string[2];
-		playerRoles = new string[2];
+		player1IntentionStatic = "";
+		player2IntentionStatic = "";
+		player1RoleStatic = "";
+		player2RoleStatic = "";
+		currScenarioStatic = "";
+		currScenarioTitleStatic = "";
 		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
 		instantiateScenarios ();
 		allowP1IntentionSpin = false;
@@ -284,18 +308,17 @@ public class GameEngine : NetworkBehaviour {
 
 	public void activateProConPanel() {
 		if (this.isServer) {
-			pscript.populateScrollList (currIntentions [0]);
-
-			intentScoreText.text = currIntentions[0];
+//			pscript.populateScrollList (currIntentions [0]);
+			pscript.populateScrollList (player1Intention);
+			intentScoreText.text = player1Intention;
 			//activate in score panel
 			//update in score panel the intention
-		
 		}
 		
 		else {
-			
-			pscript.populateScrollList (currIntentions [0]);
-			intentScoreText2.text = currIntentions[0];
+			pscript.populateScrollList (player2Intention);
+//			pscript.populateScrollList (currIntentions [0]);
+			intentScoreText2.text = player2Intention;
 		}
 		proConPanel.SetActive (true);
 
@@ -309,16 +332,23 @@ public class GameEngine : NetworkBehaviour {
 		
 	}
 
-	public void activateRecapPanel() {
-		
-		recapPanel.SetActive (true);
+	public void activateRecapPanel () {
+		//  Disable player controls
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
-		
+		//  Start up the panel animation
+		animationPanel.beginAnimation(1200, 550, 0.9f);
+		//  Wait for animation to finish before displaying UI
+		Invoke("actuallyActivateRecapPanel", animationPanel.animationTime);
+	}
+	private void actuallyActivateRecapPanel () {
+		//  Display the UI
+		recapPanel.SetActive(true);
 	}
 
 	public void deactivateRecapPanel() {
 		
 		recapPanel.SetActive (false);
+		animationPanel.discardPanel();
 		myPlayer.GetComponent<FirstPersonController>().enabled = true;
 		
 		
@@ -834,7 +864,6 @@ public class GameEngine : NetworkBehaviour {
 
 
 
-
 }
 	public void sendIntention(string[] intent){
 		print ("IM SENDING INTENTION");
@@ -865,82 +894,95 @@ public class GameEngine : NetworkBehaviour {
 
 	}
 
-
-
-
 	public static void setIntention(int playerNumber, int intentionNumber) {
-		currIntentions [playerNumber] = intentionsList [intentionNumber];
+		if (playerNumber == 0) {
+			player1IntentionStatic = intentionsList [intentionNumber];
+		} else {
+			player2IntentionStatic = intentionsList [intentionNumber];
+		}
 		Debug.Log ("Set Player " + playerNumber + " to Intention " + intentionsList [intentionNumber]);
-
-
-	
-	
 	}
 
 	public static void setScenario(int scenarioNumber) {
-		currScenario = scenariosList [scenarioNumber];
-		currScenarioTitle = scenariosTitles [scenarioNumber];
-		Debug.Log ("Set scenario to " + currScenarioTitle);
+		currScenarioStatic = scenariosList [scenarioNumber];
+		currScenarioTitleStatic = scenariosTitles [scenarioNumber];
+		Debug.Log ("Set scenario to " + currScenarioTitleStatic);
 		setRoles (scenarioNumber);
 	}
 
 	static private void setRoles(int scenarioNumber) {
 		if(scenarioNumber == 0) {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Captain";
-			if (selected == 0)
-				playerRoles[1] = "Cadet";
-			else
-				playerRoles[0] = "Cadet";
+			if(selected == 0) {
+				player1RoleStatic = "Captain";
+				player2RoleStatic = "Cadet";
+			} else {
+				player2RoleStatic = "Captain";
+				player1RoleStatic = "Cadet";
+			}
 		} else if(scenarioNumber == 1) {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Lieutenant of Communications";
-			if (selected == 0)
-				playerRoles[1] = "Lieutenant of Navigation";
-			else
-				playerRoles[0] = "Lieutenant of Navigation";
+			if(selected == 0) {
+				player1RoleStatic = "Lieutenant of Communications";
+				player2RoleStatic = "Lieutenant of Navigation";
+			} else {
+				player2RoleStatic = "Lieutenant of Communications";
+				player1RoleStatic = "Lieutenant of Navigation";
+			}
 		} else if(scenarioNumber == 2) {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Lieutenant Commander of Weapons";
-			if (selected == 0)
-				playerRoles[1] = "Ensign";
-			else
-				playerRoles[0] = "Ensign";
+			if(selected == 0) {
+				player1RoleStatic = "Lieutenant Commander of Weapons";
+				player2RoleStatic = "Ensign";
+			} else {
+				player2RoleStatic = "Lieutenant Commander of Weapons";
+				player1RoleStatic = "Ensign";
+			}
 		} else if(scenarioNumber == 3) {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Captain";
-			if (selected == 0)
-				playerRoles[1] = "Chief Officer";
-			else
-				playerRoles[0] = "Chief Officer";
+			if(selected == 0) {
+				player1RoleStatic = "Captain";
+				player2RoleStatic = "Chief Officer";
+			} else {
+				player2RoleStatic = "Captain";
+				player1RoleStatic = "Chief Officer";
+			}
 		} else if(scenarioNumber == 4) {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Staff Officer of Communication";
-			if (selected == 0)
-				playerRoles[1] = "Staff Officer of Technology";
-			else
-				playerRoles[0] = "Staff Officer of Technology";
+			if(selected == 0) {
+				player1RoleStatic = "Staff Officer of Communication";
+				player2RoleStatic = "Staff Officer of Technology";
+			} else {
+				player2RoleStatic = "Staff Officer of Communication";
+				player1RoleStatic = "Staff Officer of Technology";
+			}
 		} else if(scenarioNumber == 5) {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Physician's Assistant";
-			if (selected == 0)
-				playerRoles[1] = "Lead Nurse";
-			else
-				playerRoles[0] = "Lead Nurse";
+			if(selected == 0) {
+				player1RoleStatic = "Physician's Assistant";
+				player2RoleStatic = "Lead Nurse";
+			} else {
+				player2RoleStatic = "Physician's Assistant";
+				player1RoleStatic = "Lead Nurse";
+			}
 		} else if(scenarioNumber == 6) {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Chief Officer";
-			if (selected == 0)
-				playerRoles[1] = "Captain";
-			else
-				playerRoles[0] = "Captain";
+			if(selected == 0) {
+				player1RoleStatic = "Chief Officer";
+				player2RoleStatic = "Captain";
+			} else {
+				player2RoleStatic = "Chief Officer";
+				player1RoleStatic = "Captain";
+			}
 		} else {
 			int selected = Random.Range(0,1);
-			playerRoles[selected] = "Fleet Commander";
-			if (selected == 0)
-				playerRoles[1] = "Captain";
-			else
-				playerRoles[0] = "Captain";
+			if(selected == 0) {
+				player1RoleStatic = "Fleet Commander";
+				player2RoleStatic = "Captain";
+			} else {
+				player2RoleStatic = "Fleet Commander";
+				player1RoleStatic = "Captain";
+			}
 		}
 	}
 
@@ -968,32 +1010,29 @@ public class GameEngine : NetworkBehaviour {
 	}
 	
 	public static void updateServerSpin() {
-		//		IntentionsSpin script = intentionWheel.GetComponent(IntentionsSpin);
-		//		script.allowP1Spin = true;
 		allowP1IntentionSpin = true;
 		allowScenarioSpin = true;
 	}
 	
 	public static void updateClientSpin() {
-		//		IntentionsSpin script = intentionWheel.GetComponent(IntentionsSpin);
-		//		script.allowP2Spin = true;
 		allowP2IntentionSpin = true;
 	}
 
 	public static string getScenarioTitle() {
-		return currScenarioTitle;
+		return currScenarioTitleStatic;
 	}
-
+	
 	public static string getScenario() {
-		return currScenario;
+		return currScenarioStatic;
 	}
 
-	public static string[] getRoles() {
-		return playerRoles;
-	}
-
-	public static string[] getIntentions() {
-		return currIntentions;
+	private void updateSyncedPlayerVariables() {
+		player1Intention = player1IntentionStatic;
+		player2Intention = player2IntentionStatic;
+		player1Role = player1RoleStatic;
+		player2Role = player2RoleStatic;
+		currScenario = currScenarioStatic;
+		currScenarioTitle = currScenarioTitleStatic;
 	}
 
     //  These are for loading new rounds
@@ -1012,6 +1051,11 @@ public class GameEngine : NetworkBehaviour {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
     }
 
+	public void resetVars() {
+
+
+
+	}
     public void checkpointHit() {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
@@ -1030,9 +1074,19 @@ public class GameEngine : NetworkBehaviour {
 			}
 		}
 
+		if (currCheckpoint == 7) {
+			updateSyncedPlayerVariables();
+		}
+
 		if (currCheckpoint == 13) {
-			P1Recap.text = playerOneClass.playerName;
-			P2Recap.text = playerTwoClass.playerName;
+			player1NameText.text = playerOneClass.playerName;
+			player2NameText.text = playerTwoClass.playerName;
+			player1RoleText.text = player1Role;
+			player2RoleText.text = player2Role;
+			player1IntentionText.text = player1Intention;
+			player2IntentionText.text = player2Intention;
+			scenarioText.text = currScenario;
+			scenarioTitleText.text = currScenarioTitle;
 			this.activateRecapPanel();
 		}
 
@@ -1063,6 +1117,7 @@ public class GameEngine : NetworkBehaviour {
             Invoke("movePlayerToStart", 6);
             Invoke("whiteFadeIn", 6.5f);
             Invoke("reactivatePlayerControls", 8);
+			resetVars();
         }
         //  Spawn next checkpoint
 		currCheckpoint++;
