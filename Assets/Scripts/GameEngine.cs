@@ -1012,6 +1012,11 @@ public class GameEngine : NetworkBehaviour {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
     }
 
+	public void resetVars() {
+
+
+
+	}
     public void checkpointHit() {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
@@ -1063,6 +1068,7 @@ public class GameEngine : NetworkBehaviour {
             Invoke("movePlayerToStart", 6);
             Invoke("whiteFadeIn", 6.5f);
             Invoke("reactivatePlayerControls", 8);
+			resetVars();
         }
         //  Spawn next checkpoint
 		currCheckpoint++;
