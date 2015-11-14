@@ -46,8 +46,7 @@ public class VoteManager : MonoBehaviour {
 			}
 			else if (up == down) {
 				report.text = "You all don't know how to feel but that's okay!";
-				reportC = Color.white;
-				textC = Color.black;
+				reportC = textC = Color.blue;
 				text.text = "OK";
 			}
 			else {
@@ -80,7 +79,7 @@ public class VoteManager : MonoBehaviour {
 		//	Disable player
 		engine.myPlayer.GetComponent<FirstPersonController>().enabled = false;
 
-		animPanel.beginAnimation(Screen.currentResolution.width - 200, Screen.currentResolution.height, 0.5f);
+		animPanel.beginAnimation(Screen.currentResolution.width - 300, Screen.currentResolution.height - 200, 0.5f);
 		Invoke("actuallyActivateVotePanel", animPanel.animationTime);
 	}
 	private void actuallyActivateVotePanel() {

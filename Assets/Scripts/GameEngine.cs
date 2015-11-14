@@ -17,6 +17,7 @@ public class GameEngine : NetworkBehaviour {
     public AnimationPanel animationPanel;
     public GameObject checkpointFab;
     public GameObject checkpointLocations;
+    public FadeScene fadeScene;
     private List<Transform> allCheckpoints;
     private List<string> playerNames;
     private List<int> playersChosenToPlay;
@@ -491,7 +492,10 @@ public class GameEngine : NetworkBehaviour {
 
 	public void addPlayerInput () {
 		summaryPanel.SetActive (false);
-		nameInputPanel.SetActive (true);
+        //  Start up the panel animation
+        animationPanel.beginAnimation(250, 275, 0.9f);
+        //  Wait for animation to finish before displaying UI
+        Invoke("actuallyActivateNameInputPanel", animationPanel.animationTime);
 	}
 
     //  Function that can only be run on server
@@ -950,10 +954,26 @@ public class GameEngine : NetworkBehaviour {
 		return currIntentions;
 	}
 
+    //  These are for loading new rounds
+    public void whiteFadeOut () {
+        fadeScene.whiteFadeOut();
+    }
+    public void whiteFadeIn () {
+        fadeScene.fadeIn();
+    }
+    public void movePlayerToStart () {
+        GameObject spawnLoc = GameObject.FindGameObjectWithTag("PlayerSpawn");
+        myPlayer.transform.position = spawnLoc.transform.position;
+        myPlayer.transform.rotation = spawnLoc.transform.rotation;
+    }
+    public void reactivatePlayerControls () {
+        myPlayer.GetComponent<FirstPersonController>().enabled = true;
+    }
+
     public void checkpointHit() {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
-			this.activateNameInputPanel ();
+            this.activateNameInputPanel ();
 		}
 
 		if (currCheckpoint == 2) {
@@ -991,6 +1011,17 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 24) {
 			this.activateScorePanel();
 		}
+        if (currCheckpoint == 26) {
+            myPlayer.GetComponent<FirstPersonController>().enabled = false;
+            myPlayer.GetComponent<AnimateRotateCamera>().beginRotation(
+               Quaternion.LookRotation(Vector3.left),
+               2
+            );
+            Invoke("whiteFadeOut", 2.5f);
+            Invoke("movePlayerToStart", 6);
+            Invoke("whiteFadeIn", 6.5f);
+            Invoke("reactivatePlayerControls", 8);
+        }
         //  Spawn next checkpoint
 		currCheckpoint++;
         if (currCheckpoint < allCheckpoints.Count) {
