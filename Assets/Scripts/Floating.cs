@@ -10,7 +10,8 @@ public class Floating : MonoBehaviour {
     public float bobRadius;
     public float bobSpeed;
 
-    private Vector3 startPoint;
+	[HideInInspector]
+    public Vector3 startPoint;
     private bool goingUp;
 
 	void Start () {
