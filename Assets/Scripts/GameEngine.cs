@@ -1022,7 +1022,7 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 24) {
 			this.activateScorePanel();
 		}
-        if (currCheckpoint == 26) {
+        if (currCheckpoint == 27) {
             myPlayer.GetComponent<FirstPersonController>().enabled = false;
             myPlayer.GetComponent<AnimateRotateCamera>().beginRotation(
                Quaternion.LookRotation(Vector3.left),
