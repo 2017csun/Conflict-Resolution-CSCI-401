@@ -8,7 +8,7 @@ public class CountDownTimer : MonoBehaviour {
 
 	// change these two values accordingly
 	const int PLANNING_TIME = 15; // in number of seconds
-	const int ROLEPLAYING_TIME = 12; // in number of seconds
+	const int ROLEPLAYING_TIME = 15; // in number of seconds
 
 	public Button competingButton;
 	public Button compromisingButton;
@@ -23,7 +23,9 @@ public class CountDownTimer : MonoBehaviour {
 	public Canvas avoidingInfoCanvas;
 	public Canvas accommodatingInfoCanvas;
 	public Canvas instructionCanvas;
+	public Text instructionText;
 	public Canvas scenarioCanvas;
+	public Text scenarioText;
 	/*
 	public Text competingText;
 	public Text collaboratingText;
@@ -33,44 +35,21 @@ public class CountDownTimer : MonoBehaviour {
 	*/
 
 	// variables for timer
-	private int timeRemaining = PLANNING_TIME;
+	private int timeRemaining;
 	public Text timerText;
 	public AudioSource timerAlarm;
 	bool donePlanning = false;
 	bool doneRolePlaying = false;
+	bool timeStarted = false;
 	
 	void Start () {
 		timerMenu = timerMenu.GetComponent<Canvas> ();
-		//timerMenu.enabled = false;
 		// buttons for intentions
 		competingButton = competingButton.GetComponent<Button> ();
-		competingButton.GetComponentInChildren<Text> ().text = "Competing";
-		competingButton.GetComponentInChildren<Text> ().fontSize = 25;
-
 		compromisingButton = compromisingButton.GetComponent<Button> ();
-		compromisingButton.GetComponentInChildren<Text> ().text = "Compromising";
-		compromisingButton.GetComponentInChildren<Text> ().fontSize = 25;
-
 		collaboratingButton = collaboratingButton.GetComponent<Button> ();
-		collaboratingButton.GetComponentInChildren<Text> ().text = "Collaborating";
-		collaboratingButton.GetComponentInChildren<Text> ().fontSize = 25;
-
 		avoidingButton = avoidingButton.GetComponent<Button> ();
-		avoidingButton.GetComponentInChildren<Text> ().text = "Avoiding";
-		avoidingButton.GetComponentInChildren<Text> ().fontSize = 25;
-
 		accommodatingButton = accommodatingButton.GetComponent<Button> ();
-		accommodatingButton.GetComponentInChildren<Text> ().text = "Accommodating";
-		accommodatingButton.GetComponentInChildren<Text> ().fontSize = 25;
-
-		continueButton = continueButton.GetComponent<Button> ();
-
-		competingButton.enabled = true;
-		compromisingButton.enabled = true;
-		collaboratingButton.enabled = true;
-		avoidingButton.enabled = true;
-		accommodatingButton.enabled = true;
-		continueButton.enabled = true;
 
 		// intention popups
 		competingInfoCanvas = competingInfoCanvas.GetComponent<Canvas> ();
@@ -89,68 +68,27 @@ public class CountDownTimer : MonoBehaviour {
 		accommodatingInfoCanvas.enabled = false;
 
 		scenarioCanvas = scenarioCanvas.GetComponent<Canvas> ();
+		scenarioText = scenarioText.GetComponent<Text> ();
 		scenarioCanvas.enabled = false;
 
 		instructionCanvas = instructionCanvas.GetComponent<Canvas> ();
+		instructionText = instructionText.GetComponent<Text> ();
 		instructionCanvas.enabled = false;
-		
-		continueButton.gameObject.SetActive (false);
+
+		continueButton = continueButton.GetComponent<Button> ();
 
 		timerMenu.enabled = false;
-		// StartTimer ();
 
+		// for testing, comment the line for final version
+		//StartTimer ();
+		
 
-		/*
-		// info card initialization
-		competingText = competingText.GetComponent<Text> ();
-		competingText.supportRichText = true;
-
-		competingText.text = "<size=25><b>Competing</b></size>\n" +
-			"You are very competitive, serious, and defensive. " +
-			"However, it may be too extreme that you start affecting your relationship " +
-			"with others as well as hindering communication and negotiation.";
-
-		collaboratingText = collaboratingText.GetComponent<Text> ();
-		collaboratingText.supportRichText = true;
-		collaboratingText.text = "<size=25><b>Collaborating</b></size>\n" +
-			"You seek to create positive relationships through solving problems for " +
-			"not just yourself but others by communicating. It requires a lot of " +
-			"effort especially when it involves new or sensitive ideas.";
-
-
-		compromosingText = compromosingText.GetComponent<Text> ();
-		compromosingText.supportRichText = true;
-		compromosingText.text = "<size=25><b>Compromosing</b></size>\n" +
-			"Your goal is to make sure both parties feel fair and satisfied enough. " +
-			"The conclusion could be a lack of understanding and quality, which could also " +
-			"lead to frustration because the problem may not be fully resolved.";
-
-		accommodatingText = accommodatingText.GetComponent<Text> ();
-		accommodatingText.supportRichText = true;
-		accommodatingText.text = "<size=25><b>Accommodating</b></size>\n" +
-			"You help others and do them favors, thereby developing your relationship with them. " +
-			"By always agreeing, you lose motivation and respect as others do not see you as a " +
-			"challenge. You may be too self-sacrificing.";
-
-		avoidingText = avoidingText.GetComponent<Text> ();
-		avoidingText.supportRichText = true;
-		avoidingText.text = "<size=25><b>Avoiding</b></size>\n" +
-			"You avoid problems to reduce distraction and stress. While this approach does " +
-			"not mean to cause problems, it leads to a lack of communication, negative work " +
-			"environment, and delay on projects.";
-		*/
-
-
-		// timer initialization
 		/*
 		timerText = timerText.GetComponent<Text> ();
 		int numMin = timeRemaining / 60;
 		int numSec = timeRemaining % 60;
 		timerText.text = "0" + numMin + ":" + numSec;
 		*/
-		timerText.text = "02:00";
-		//comment/uncomment this to start timer testing
-		//InvokeRepeating("CountDown", (float)1.0, (float)1.0);
 	}
 	// do not need to use Update
 	void Update () {
@@ -158,10 +96,28 @@ public class CountDownTimer : MonoBehaviour {
 	}
 
 	public void StartTimer() {
-		timerMenu.enabled = true;
+		// start buttons
+		competingButton.gameObject.SetActive (true);
+		compromisingButton.gameObject.SetActive (true);
+		collaboratingButton.gameObject.SetActive (true);
+		avoidingButton.gameObject.SetActive (true);
+		accommodatingButton.gameObject.SetActive (true);
+		
+		instructionText.text = "Click on your intention below to learn more about them!";
 		instructionCanvas.enabled = true;
+		scenarioText.text = GameEngine.getScenarioTitle () + "\n"
+			+ GameEngine.getScenario ();
 		scenarioCanvas.enabled = true;
-		InvokeRepeating ("CountDown", (float)1.0, (float)1.0);
+		donePlanning = false;
+		doneRolePlaying = false;
+		continueButton.gameObject.SetActive (false);
+		timeRemaining = PLANNING_TIME;
+		timerText.text = "02:00";
+		timerMenu.enabled = true;
+		if (!timeStarted) {
+			InvokeRepeating ("CountDown", (float)1.0, (float)1.0);
+			timeStarted = true;
+		}
 	}
 
 	// function to count down the timer
@@ -181,7 +137,6 @@ public class CountDownTimer : MonoBehaviour {
 
 		} else if (timeRemaining == 0 && !donePlanning && !doneRolePlaying) {
 			// planning has ended
-			instructionCanvas.enabled = false;
 			competingButton.gameObject.SetActive(false);
 			compromisingButton.gameObject.SetActive(false);
 			collaboratingButton.gameObject.SetActive(false);
@@ -193,7 +148,7 @@ public class CountDownTimer : MonoBehaviour {
 			collaboratingInfoCanvas.enabled = false;
 			avoidingInfoCanvas.enabled = false;
 			accommodatingInfoCanvas.enabled = false;
-			instructionCanvas.enabled = false;
+			instructionText.text = "Role-play the scenario with your partner!";
 
 			timerAlarm.Play ();
 			donePlanning = true;
@@ -207,12 +162,10 @@ public class CountDownTimer : MonoBehaviour {
 			timerAlarm.Play ();
 			doneRolePlaying = true;
 			timeRemaining = 0;
-			//timerMenu.enabled = false;
-			instructionCanvas.enabled = false;
 			scenarioCanvas.enabled = false;
+			instructionCanvas.enabled = false;
 			continueButton.gameObject.SetActive (true);
 			continueButton.enabled = true;
-
 		}
 	}
 
