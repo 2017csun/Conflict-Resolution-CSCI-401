@@ -1035,16 +1035,12 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	public static string getScenarioTitle() {
-		if (!this.isServer) {
-			currScenarioTitleStatic = currScenarioTitle;
-		}
+		currScenarioTitleStatic = currScenarioTitle;
 		return currScenarioTitleStatic;
 	}
 	
 	public static string getScenario() {
-		if (!this.isServer) {
-			currScenarioStatic = currScenario;
-		}
+		currScenarioStatic = currScenario;
 		return currScenarioStatic;
 	}
 
