@@ -4,6 +4,10 @@ using System.Collections;
 
 public class GUIArrow : MonoBehaviour {
 	private GameObject goTarget;
+
+	void Start () {
+		this.gameObject.GetComponent<Image>().enabled = false;
+	}
 	
 	void Update () {
 		if (goTarget != null) {
@@ -63,11 +67,22 @@ public class GUIArrow : MonoBehaviour {
 		this.transform.position = new Vector3(u * Screen.width, v * Screen.height, 0);
 
 		//	Set rotation
-		Quaternion v3Quat = Quaternion.FromToRotation(
-			Vector3.right,
-			new Vector3(u - 0.5f, v - 0.5f, 0)
-		);
-        RectTransform rectTrans = this.gameObject.GetComponent<RectTransform>();
-		rectTrans.rotation = Quaternion.Euler(0, 0, v3Quat.eulerAngles.z - 90);
+		RectTransform rectTrans = this.gameObject.GetComponent<RectTransform>();
+		if (u == 1) {
+			//	On right side
+			rectTrans.rotation = Quaternion.Euler(0, 0, -90);
+		}
+		if (v == 1) {
+			//	On top
+			rectTrans.rotation = Quaternion.Euler(0, 0, 0);
+		}
+		if (u == 0) {
+			//	On left side
+			rectTrans.rotation = Quaternion.Euler(0, 0, 90);
+		}
+		if (v == 0) {
+			//	On bottom
+			rectTrans.rotation = Quaternion.Euler(0, 0, 180);
+		}
 	}
 }
