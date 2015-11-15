@@ -35,6 +35,8 @@ public class ProsAndConsList : MonoBehaviour {
 
 	public Vector2 scr = Vector2.zero;
 	int numClicked = 0;
+	int numClickedPro = 0;
+	int numClickedCon = 0;
 	//private string innerText = "Found me!";
 	void Start() {
 		//Initialize the ConflictStyle/IntentionLists
@@ -187,12 +189,12 @@ public class ProsAndConsList : MonoBehaviour {
 	}
 
 	void Update(){
-		if (numClicked == 6) {
+		if (numClickedPro == 3 && numClickedCon == 3) {
 
 			chooseButton.SetActive(true);
 		}
-
-		if (numClicked > 6  || numClicked < 6) {
+		else {
+		//if (numClickedPro > 3  || numClickedPro < 3 || numClickedCon > 3 || numClickedCon < 3) {
 			
 			chooseButton.SetActive(false);
 		}
@@ -411,13 +413,24 @@ public class ProsAndConsList : MonoBehaviour {
 	public void changeTheColor(Text t) {
 		if (t.color.Equals (Color.black)) {
 			t.color = Color.blue;
-				numClicked++;
+
+			if(proConsList1.Contains(t)) {
+				numClickedPro++;
+			}
+			else {
+				numClickedCon++;
+			}
 		}
 		else {
 
 			if (t.color.Equals (Color.blue)) {
 				t.color = Color.black;
-					numClicked--;
+				if(proConsList1.Contains(t)) {
+					numClickedPro--;
+				}
+				else {
+					numClickedCon--;
+				}
 			}
 
 
