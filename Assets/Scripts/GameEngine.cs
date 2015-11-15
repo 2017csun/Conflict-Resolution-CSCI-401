@@ -128,8 +128,12 @@ public class GameEngine : NetworkBehaviour {
 	//	Pro/Con variables
 	//---------------------------------------------
 	[Header("Pro & Con Variables")]
+
 	public List<string> answers;
+
+
 	public List<string> answers2;
+
 	private string[] intentions;
 	public GameObject proConPanel;
 	//public List<string> intentList;
@@ -661,34 +665,6 @@ public class GameEngine : NetworkBehaviour {
 
 	}
 	public void checkAnswers() {
-		/*if (intentList == null || intentList.Count == 0) {
-
-			print ("NULL INTENTS");
-
-		} else {
-			if (this.isServer) {
-				for (int i = 0; i < answers.Count; i++) {
-					
-					if (intentList.Contains (answers [i])) {
-						score++;
-						print ("SCORE IS " + score);
-				
-				
-					}
-			
-				}
-			} else {
-
-				for (int i = 0; i < answers2.Count; i++) {
-				
-					if (intentList.Contains (answers2 [i])) {
-						score++;
-						print ("SCORE IS " + score);
-					}
-				}
-			}
-		}
-		*/
 
 		if (intentListPro == null || intentListPro.Count == 0 || intentListCon == null || intentListCon.Count == 0 ) {
 
@@ -696,6 +672,7 @@ public class GameEngine : NetworkBehaviour {
 
 		}  else {
 			if (this.isServer) {
+				//if we are on the servers side than we must scroll through the answers and increment score
 				for (int i = 0; i < answers.Count; i++) {
 					
 					if (intentListPro.Contains (answers [i]) || intentListCon.Contains(answers[i])){
@@ -708,9 +685,10 @@ public class GameEngine : NetworkBehaviour {
 						wrongList.Add(answers[i]);
 					}
 				}  
-			}else {
+			}else { //if we are not on the servers side 
 
-				for (int i = 0; i < answers2.Count; i++) {
+				for (int i = 0; i < answers2.Count; i++) {//scroll through the answers and allow score to be 
+					//updated
 				
 					if (intentListPro.Contains (answers2 [i]) || intentListCon.Contains(answers2[i])) {
 						score++;
@@ -729,95 +707,66 @@ public class GameEngine : NetworkBehaviour {
 
 
 	}
-	/*
-	public void displayScore() {
-		//if (this.isServer) {
-			for (int i = 0; i < 6; i++) {
-				print (answers [i] + " is first answer ");
-				player1Answers [i].text = "-" + answers [i];
-				answerKey1 [i].text = "-" + intentList [i];
-			
-			}
-		//} else {
 
-
-
-			for (int i = 0; i < 6; i++) {
-				print (answers [i] + " is first answer ");
-				player2Answers [i].text = "-" + answers [i];
-				answerKey2 [i].text = "-" + intentList [i];
-				
-			}
-
-		//}
-		roundScore.text = "Round Score : " + score;
-		
-		totalScore.text = "Total Score : " + score;
-		
-	}
-	public void sendIntention(string[] intent){
-		print ("IM SENDING INTENTION");
-		//intentions = new string[6];
-		//intentList = new List<string> ();
-
-		for (int i = 0; i < intent.Length; i++) {
-			print (intent[i]);
-			//intentions [i] = intent [i];
-			intentList.Add(intent[i]);
-		}
-		print (intentList.Count + " is how big the list is");
-	}
-
-	*/
 
 	public void displayScore() {
-
-		for (int i = 0; i < 6; i++) {
-			print (answers [i] + " is first answer ");
-			if (!wrongList.Contains (answers [i])) {
-				//Color greenish = new Color(0.0,0.6,0.0,1.0);
-				player1Answers [i].color = new Color((float)0.0,(float)0.6,(float)0.0,(float)1.0);//set color to green because the answer is right
-			}
-			player1Answers [i].text = "-" + answers [i];
-
-			if (i < 3) {
-				answerKey1 [i].text = "-" + intentListPro [i];
-
-			}
-			if (i >= 3) {
-				answerKey1 [i].text = "-" + intentListCon [i - 3];
-			}
-			
-		}
-
-		if (answers2.Count != 0) {
-			Debug.Log (" the count for answers two is " + answers2.Count);
-
+		Debug.Log (score + " is the score");
+		if (this.isServer) {
 			for (int i = 0; i < 6; i++) {
-		
-				print (answers2 [i] + " is first answer ");
-				if (!wrongList.Contains (answers2 [i])) {
+				print (answers [i] + " is first answer ");
+				if (!wrongList.Contains (answers [i])) {
 					//Color greenish = new Color(0.0,0.6,0.0,1.0);
-					player2Answers [i].color = new Color((float)0.0,(float)0.6,(float)0.0,(float)1.0); //set color to green because the answer is right
+					player1Answers [i].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 				}
-				player2Answers [i].text = "-" + answers2 [i];
+				player1Answers [i].text = "-" + answers [i];
 
 				if (i < 3) {
-					answerKey2 [i].text = "-" + intentListPro [i + 3];
-					
+
+					answerKey1 [i].text = "-" + intentListPro [i];
+
 				}
 				if (i >= 3) {
-					answerKey2 [i].text = "-" + intentListCon [i];
+					answerKey1 [i].text = "-" + intentListCon [i - 3];
+				}
+			
+			}
+			roundScore.text = "Round Score : " + score;
+			
+			totalScore.text = "Total Score : " + score;
+			
+
+		} else {
+			if (answers2.Count != 0) {
+				Debug.Log (" the count for answers two is " + answers2.Count);
+
+				for (int i = 0; i < 6; i++) {
+		
+					print (answers2 [i] + " is first answer ");
+					if (!wrongList.Contains (answers2 [i])) {
+						//Color greenish = new Color(0.0,0.6,0.0,1.0);
+						player1Answers [i].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
+					}
+					player1Answers [i].text = "-" + answers2 [i];
+
+					if (i < 3) {
+						Debug.Log (intentListPro.Count + " is intent pros count" );
+						Debug.Log ("it also contains " + intentListPro[i + 3]);
+						answerKey1 [i].text = "-" + intentListPro [i + 3];
+					
+					}
+					if (i >= 3) {
+						answerKey1 [i].text = "-" + intentListCon [i];
+					}
+
 				}
 
-			}
-
-		}	
-	
-
+			}	
 			roundScore.text = "Round Score : " + score;
+			
+			totalScore.text = "Total Score : " + score;	
 		
-			totalScore.text = "Total Score : " + score;
+		}
+	
 				
 	}
 
