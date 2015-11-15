@@ -22,6 +22,8 @@ public class GameEngine : NetworkBehaviour {
     private List<string> playerNames;
     private List<int> playersChosenToPlay;
     private int currCheckpoint;
+	private int numPlayersHitCheckpoint;
+	public GameObject waitingForOtherPlayerPanel;
 
     [HideInInspector]
     public List<PlayerClass> allPlayers;
@@ -1033,10 +1035,16 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	public static string getScenarioTitle() {
+		if (!this.isServer) {
+			currScenarioTitleStatic = currScenarioTitle;
+		}
 		return currScenarioTitleStatic;
 	}
 	
 	public static string getScenario() {
+		if (!this.isServer) {
+			currScenarioStatic = currScenario;
+		}
 		return currScenarioStatic;
 	}
 
