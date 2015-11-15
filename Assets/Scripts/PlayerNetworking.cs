@@ -194,4 +194,23 @@ public class PlayerNetworking : NetworkBehaviour {
 	public void CmdUpdatePlayer2Intention (string intention) {
 		gameEngine.syncPlayer2Intention(intention);
 	}
+
+	public void updatePlayer2Hit () {
+		CmdUpdatePlayer2Hit();
+	}
+
+	[Command]
+	public void CmdUpdatePlayer2Hit () {
+		gameEngine.numPlayersHitCheckpoint++;
+	}
+
+	public void updateBothPlayersHit () {
+		CmdUpdateBothPlayersHit();
+	}
+	
+	[Command]
+	public void CmdUpdateBothPlayersHit () {
+		gameEngine.numPlayersHitCheckpoint = 0;
+		gameEngine.checkpointCleared = false;
+	}
 }

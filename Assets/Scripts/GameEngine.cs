@@ -1163,6 +1163,7 @@ public class GameEngine : NetworkBehaviour {
 				updateServerSpin();
 			} else {
 				updateClientSpin();
+//				Skip checkpoint for client
 			}
 		}
 
