@@ -185,4 +185,13 @@ public class PlayerNetworking : NetworkBehaviour {
 		
 		gameEngine.updateScoreToClient (score);
 	}
+
+	public void sendPlayer2Intention () {
+		CmdUpdatePlayer2Intention(gameEngine.getPlayer2Intention());
+	}
+
+	[Command]
+	public void CmdUpdatePlayer2Intention (string intention) {
+		gameEngine.syncPlayer2Intention(intention);
+	}
 }

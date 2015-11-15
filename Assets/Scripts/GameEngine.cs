@@ -22,6 +22,8 @@ public class GameEngine : NetworkBehaviour {
     private List<string> playerNames;
     private List<int> playersChosenToPlay;
     private int currCheckpoint;
+	private int numPlayersHitCheckpoint;
+	public GameObject waitingForOtherPlayerPanel;
 
     [HideInInspector]
     public List<PlayerClass> allPlayers;
@@ -82,6 +84,24 @@ public class GameEngine : NetworkBehaviour {
 	private static string[] scenariosList;
 	private static string[] scenariosTitles;
 	private static string[] intentionsList;
+	
+
+	//---------------------------------------------
+	//	Recap variables
+	//---------------------------------------------
+	[Header("Recap Screen Variables")]
+	[SyncVar]
+	private string currScenario;
+	[SyncVar]
+	private string currScenarioTitle;
+	[SyncVar]
+	private string player1Intention;
+	[SyncVar]
+	private string player2Intention;
+	[SyncVar]
+	private string player1Role;
+	[SyncVar]
+	private string player2Role;
 	private static string player1IntentionStatic;
 	private static string player2IntentionStatic;
 	private static string player1RoleStatic;
@@ -136,18 +156,6 @@ public class GameEngine : NetworkBehaviour {
 	private List<string> wrongList;
 	public GameObject Player1ProCon; // text containing
 	public GameObject Player2ProCon;
-	[SyncVar]
-	private string currScenario;
-	[SyncVar]
-	private string currScenarioTitle;
-	[SyncVar]
-	private string player1Intention;
-	[SyncVar]
-	private string player2Intention;
-	[SyncVar]
-	private string player1Role;
-	[SyncVar]
-	private string player2Role;
 
 	void Start () {
 		currCheckpoint = 0;
@@ -907,6 +915,10 @@ public class GameEngine : NetworkBehaviour {
 		Debug.Log (player1IntentionStatic + " is the static ");
 	}
 
+	public void syncPlayer2Intention(string intention) {
+		player2Intention = intention;
+	}
+
 	public static void setScenario(int scenarioNumber) {
 		currScenarioStatic = scenariosList [scenarioNumber];
 		currScenarioTitleStatic = scenariosTitles [scenarioNumber];
@@ -1030,13 +1042,21 @@ public class GameEngine : NetworkBehaviour {
 		return currScenarioStatic;
 	}
 
+	public string getPlayer2Intention() {
+		return player2Intention;
+	}
+
 	private void updateSyncedPlayerVariables() {
-		player1Intention = player1IntentionStatic;
-		player2Intention = player2IntentionStatic;
-		player1Role = player1RoleStatic;
-		player2Role = player2RoleStatic;
-		currScenario = currScenarioStatic;
-		currScenarioTitle = currScenarioTitleStatic;
+		if (this.isServer) {
+			player1Intention = player1IntentionStatic;
+			player1Role = player1RoleStatic;
+			player2Role = player2RoleStatic;
+			currScenario = currScenarioStatic;
+			currScenarioTitle = currScenarioTitleStatic;
+		} else {
+			player2Intention = player2IntentionStatic;
+			myPlayer.GetComponent<PlayerNetworking> ().sendPlayer2Intention ();
+		}
 	}
 
     //  These are for loading new rounds
@@ -1078,13 +1098,7 @@ public class GameEngine : NetworkBehaviour {
 			}
 		}
 
-		if (currCheckpoint == 7) {
-
-			//updateSyncedPlayerVariables();
-		}
-
 		if (currCheckpoint == 8) {
-
 			updateSyncedPlayerVariables();
 		}
 
@@ -1093,12 +1107,12 @@ public class GameEngine : NetworkBehaviour {
 			player2NameText.text = playerTwoClass.playerName;
 			player1RoleText.text = player1Role;
 			player2RoleText.text = player2Role;
-
 			player1IntentionText.text = player1Intention;
-			Debug.Log (player1Intention + " is that intention though ");
 			player2IntentionText.text = player2Intention;
 			scenarioText.text = currScenario;
 			scenarioTitleText.text = currScenarioTitle;
+			currScenarioTitleStatic = currScenarioTitle;
+			currScenarioStatic = currScenario;
 			this.activateRecapPanel();
 		}
 
