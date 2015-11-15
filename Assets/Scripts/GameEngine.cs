@@ -1035,12 +1035,10 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	public static string getScenarioTitle() {
-		currScenarioTitleStatic = currScenarioTitle;
 		return currScenarioTitleStatic;
 	}
 	
 	public static string getScenario() {
-		currScenarioStatic = currScenario;
 		return currScenarioStatic;
 	}
 
@@ -1113,6 +1111,8 @@ public class GameEngine : NetworkBehaviour {
 			player2IntentionText.text = player2Intention;
 			scenarioText.text = currScenario;
 			scenarioTitleText.text = currScenarioTitle;
+			currScenarioTitleStatic = currScenarioTitle;
+			currScenarioStatic = currScenario;
 			this.activateRecapPanel();
 		}
 
