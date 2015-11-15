@@ -22,9 +22,14 @@ public class GameEngine : NetworkBehaviour {
     private List<string> playerNames;
     private List<int> playersChosenToPlay;
     private int currCheckpoint;
-	private int numPlayersHitCheckpoint;
 	public GameObject waitingForOtherPlayerPanel;
-
+	[HideInInspector]
+	[SyncVar]
+	public bool checkpointCleared;
+	[HideInInspector]
+	[SyncVar]
+	public int numPlayersHitCheckpoint;
+	
     [HideInInspector]
     public List<PlayerClass> allPlayers;
     [SyncVar(hook = "onUpdateID")]
@@ -179,17 +184,8 @@ public class GameEngine : NetworkBehaviour {
 		//intentList = new List<string> ();
 		answers = new List<string> ();
 		answers2 = new List<string> ();
-		player1IntentionStatic = "";
-		player2IntentionStatic = "";
-		player1RoleStatic = "";
-		player2RoleStatic = "";
-		currScenarioStatic = "";
-		currScenarioTitleStatic = "";
-		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
+		instantiateVariables ();
 		instantiateScenarios ();
-		allowP1IntentionSpin = false;
-		allowP1IntentionSpin = false;
-		allowScenarioSpin = false;
 
 		timerMenu = timerMenu.GetComponent<Canvas> ();
 		timerMenu.enabled = false;
@@ -340,7 +336,37 @@ public class GameEngine : NetworkBehaviour {
 		
 	}
 
+	public void activateWaitingForOtherPlayerPanel () {
+		//  Disable player controls
+		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		//  Start up the panel animation
+		animationPanel.beginAnimation(310, 100, 0.9f);
+		//  Wait for animation to finish before displaying UI
+		Invoke("actuallyActivateWaitingForOtherPlayerPanel", animationPanel.animationTime);
+	}
+	
+	private void actuallyActivateWaitingForOtherPlayerPanel () {
+		//  Display the UI
+		waitingForOtherPlayerPanel.SetActive(true);
+	}
+	
+	public void deactivateWaitingForOtherPlayerPanel() {
+		waitingForOtherPlayerPanel.SetActive (false);
+		animationPanel.discardPanel();
+		myPlayer.GetComponent<FirstPersonController>().enabled = true;
+	}
+
 	public void activateRecapPanel () {
+		player1NameText.text = playerOneClass.playerName;
+		player2NameText.text = playerTwoClass.playerName;
+		player1RoleText.text = player1Role;
+		player2RoleText.text = player2Role;
+		player1IntentionText.text = player1Intention;
+		player2IntentionText.text = player2Intention;
+		scenarioText.text = currScenario;
+		scenarioTitleText.text = currScenarioTitle;
+		currScenarioTitleStatic = currScenarioTitle;
+		currScenarioStatic = currScenario;
 		//  Disable player controls
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		//  Start up the panel animation
@@ -348,18 +374,16 @@ public class GameEngine : NetworkBehaviour {
 		//  Wait for animation to finish before displaying UI
 		Invoke("actuallyActivateRecapPanel", animationPanel.animationTime);
 	}
+
 	private void actuallyActivateRecapPanel () {
 		//  Display the UI
 		recapPanel.SetActive(true);
 	}
 
 	public void deactivateRecapPanel() {
-		
 		recapPanel.SetActive (false);
 		animationPanel.discardPanel();
 		myPlayer.GetComponent<FirstPersonController>().enabled = true;
-		
-		
 	}
 
 	public void activateScorePanel() {
@@ -911,8 +935,6 @@ public class GameEngine : NetworkBehaviour {
 		} else {
 			player2IntentionStatic = intentionsList [intentionNumber];
 		}
-		Debug.Log ("Set Player " + playerNumber + " to Intention " + intentionsList [intentionNumber]);
-		Debug.Log (player1IntentionStatic + " is the static ");
 	}
 
 	public void syncPlayer2Intention(string intention) {
@@ -922,7 +944,6 @@ public class GameEngine : NetworkBehaviour {
 	public static void setScenario(int scenarioNumber) {
 		currScenarioStatic = scenariosList [scenarioNumber];
 		currScenarioTitleStatic = scenariosTitles [scenarioNumber];
-		Debug.Log ("Set scenario to " + currScenarioTitleStatic);
 		setRoles (scenarioNumber);
 	}
 
@@ -1002,7 +1023,22 @@ public class GameEngine : NetworkBehaviour {
 		}
 	}
 
-	private void instantiateScenarios() {
+	private void instantiateVariables() {
+		player1IntentionStatic = "";
+		player2IntentionStatic = "";
+		player1RoleStatic = "";
+		player2RoleStatic = "";
+		currScenarioStatic = "";
+		currScenarioTitleStatic = "";
+		numPlayersHitCheckpoint = 0;
+		checkpointCleared = false;
+		intentionsList = new string[]{"Competing","Compromising","Avoiding","Accomodating","Collaborating"};
+		allowP1IntentionSpin = false;
+		allowP1IntentionSpin = false;
+		allowScenarioSpin = false;
+	}
+		
+		private void instantiateScenarios() {
 		scenariosList = new string[] {
 			"Two weeks ago, the Captain asked the Cadet to prepare a report on the number of enemy invasions. The Manager plans to share the report at the quarterly intergalactic meeting. The Cadet procrastinates doing the work and plans to complete the report the morning of the meeting. When the Cadet reports to work, there is a system failure with the computer and the system will be down all day for repairs. When the Captain asks for the report for the meeting that will occur in an hour, the Cadet does not have the report to give to the Captain. What’s the Captain to do? What is the Cadet’s response when the Captain comes to ask for the report?", 
 			"The new Lieutenant of Communications instructs the Lieutenant of Navigation to inform the staff of the new meeting location change from conference room to the flight deck. The Lieutenant of Navigation did not share the information with everyone. Some people show up at the conference room for the meeting and some show up on the flight deck. After the initial confusion, the meeting occurs on the flight deck. This isn’t the first time the Lieutenant of Navigation has made this mistake. After the meeting, the Lieutenant of Communications schedules a meeting with the Lieutenant of Navigation to resolve the miscommunication issue. What will the Lieutenant of Communications say? How will the Lieutenant of Navigation respond?", 
@@ -1076,10 +1112,76 @@ public class GameEngine : NetworkBehaviour {
     }
 
 	public void resetVars() {
-
-
+		resetPlayersHit ();
+		currCheckpoint = 1;
 
 	}
+
+	private void bothPlayersHit() {
+		checkpointCleared = true;
+		deactivateWaitingForOtherPlayerPanel ();
+		CancelInvoke ();
+	}
+
+	private void resetPlayersHit() {
+		if (this.isServer) {
+			numPlayersHitCheckpoint = 0;
+			checkpointCleared = false;
+		} else {
+			myPlayer.GetComponent<PlayerNetworking> ().updateBothPlayersHit ();
+		}
+	}
+
+	private void waitingToChoosePlayer() {
+		if (numPlayersHitCheckpoint >= 2) {
+			bothPlayersHit();
+			this.activateChoosePlayerPanel ();
+		}
+	}
+
+	private void waitingToRecap() {
+		if (numPlayersHitCheckpoint >= 2) {
+			bothPlayersHit();
+			this.activateRecapPanel ();
+		}
+	}
+
+	private void waitingForTimer() {
+		if (numPlayersHitCheckpoint >= 2) {
+			bothPlayersHit();
+			timerMenu.enabled = true;
+			countDownTimer.StartTimer ();
+			myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		}
+	}
+
+	private void waitingForScore() {
+		if (numPlayersHitCheckpoint >= 2) {
+			bothPlayersHit();
+			this.activateScorePanel();
+		}
+	}
+
+	private void waitingToResetGame() {
+		if (numPlayersHitCheckpoint >= 2) {
+			bothPlayersHit();
+			this.activateReset();
+		}
+	}
+
+	private void activateReset() {
+		myPlayer.GetComponent<FirstPersonController> ().enabled = false;
+		myPlayer.GetComponent<AnimateRotateCamera> ().beginRotation (
+			Quaternion.LookRotation (Vector3.left),
+			2
+		);
+		Invoke ("whiteFadeOut", 2.5f);
+		Invoke ("movePlayerToStart", 6);
+		Invoke ("whiteFadeIn", 6.5f);
+		Invoke ("reactivatePlayerControls", 8);
+		resetVars ();
+	}
+
     public void checkpointHit() {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
@@ -1087,7 +1189,24 @@ public class GameEngine : NetworkBehaviour {
 		}
 
 		if (currCheckpoint == 2) {
-			this.activateChoosePlayerPanel ();
+//			this.activateChoosePlayerPanel ();
+			if(this.isServer) {
+				numPlayersHitCheckpoint++;
+			} else {
+				myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
+			}
+			if(checkpointCleared) {
+				this.activateChoosePlayerPanel ();
+			} else {
+				activateWaitingForOtherPlayerPanel();
+				InvokeRepeating ("waitingToChoosePlayer", 0.5f, 0.5f);
+			}
+		}
+
+		if (currCheckpoint == 3) {
+			if(checkpointCleared) {
+				resetPlayersHit();
+			}
 		}
 
 		if (currCheckpoint == 6) {
@@ -1103,38 +1222,97 @@ public class GameEngine : NetworkBehaviour {
 		}
 
 		if (currCheckpoint == 13) {
-			player1NameText.text = playerOneClass.playerName;
-			player2NameText.text = playerTwoClass.playerName;
-			player1RoleText.text = player1Role;
-			player2RoleText.text = player2Role;
-			player1IntentionText.text = player1Intention;
-			player2IntentionText.text = player2Intention;
-			scenarioText.text = currScenario;
-			scenarioTitleText.text = currScenarioTitle;
-			currScenarioTitleStatic = currScenarioTitle;
-			currScenarioStatic = currScenario;
-			this.activateRecapPanel();
+			if(this.isServer) {
+				numPlayersHitCheckpoint++;
+			} else {
+				myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
+			}
+			if(checkpointCleared) {
+				this.activateRecapPanel();
+			} else {
+				activateWaitingForOtherPlayerPanel();
+				InvokeRepeating ("waitingToRecap", 0.5f, 0.5f);
+			}
+//			this.activateRecapPanel();
+		}
+
+		if (currCheckpoint == 14) {
+			if(checkpointCleared) {
+				resetPlayersHit();
+			}
 		}
 
 		if (currCheckpoint == 15) {
 			//Planning stuff
-			timerMenu.enabled = true;
-			countDownTimer.StartTimer ();
-			myPlayer.GetComponent<FirstPersonController>().enabled = false;
+			if(this.isServer) {
+				numPlayersHitCheckpoint++;
+			} else {
+				myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
+			}
+			if(checkpointCleared) {
+				timerMenu.enabled = true;
+				countDownTimer.StartTimer ();
+				myPlayer.GetComponent<FirstPersonController>().enabled = false;
+			} else {
+				activateWaitingForOtherPlayerPanel();
+				InvokeRepeating ("waitingForTimer", 0.1f, 0.1f);
+			}
+//			timerMenu.enabled = true;
+//			countDownTimer.StartTimer ();
+//			myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		}
 
-		if (currCheckpoint == 16 && this.isServer) {
-			this.activateVotePanel();
+		if (currCheckpoint == 16) {
+			if(checkpointCleared) {
+				resetPlayersHit();
+			}
+			if(this.isServer) {
+				this.activateVotePanel();
+			}
 		}
+
+/*		if (currCheckpoint == 16 && this.isServer) {
+			this.activateVotePanel();
+		} */
 
 		if (currCheckpoint == 19) {
 			this.activateProConPanel();
 		}
+
 		if (currCheckpoint == 24) {
-			this.activateScorePanel();
+			if(this.isServer) {
+				numPlayersHitCheckpoint++;
+			} else {
+				myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
+			}
+			if(checkpointCleared) {
+				this.activateScorePanel();
+			} else {
+				activateWaitingForOtherPlayerPanel();
+				InvokeRepeating ("waitingForScore", 0.5f, 0.5f);
+			}
+//			this.activateScorePanel();
 		}
-        if (currCheckpoint == 27) {
-            myPlayer.GetComponent<FirstPersonController>().enabled = false;
+
+		if (currCheckpoint == 25) {
+			if(checkpointCleared) {
+				resetPlayersHit();
+			}
+		}
+
+		if (currCheckpoint == 26 && !this.isServer) {
+			currCheckpoint++;
+		}
+
+        if (currCheckpoint == 27 && this.isServer) {
+			numPlayersHitCheckpoint++;
+			if(checkpointCleared) {
+				this.activateReset();
+			} else {
+				activateWaitingForOtherPlayerPanel();
+				InvokeRepeating ("waitingToResetGame", 0.5f, 0.5f);
+			}
+/*            myPlayer.GetComponent<FirstPersonController>().enabled = false;
             myPlayer.GetComponent<AnimateRotateCamera>().beginRotation(
                Quaternion.LookRotation(Vector3.left),
                2
@@ -1143,8 +1321,19 @@ public class GameEngine : NetworkBehaviour {
             Invoke("movePlayerToStart", 6);
             Invoke("whiteFadeIn", 6.5f);
             Invoke("reactivatePlayerControls", 8);
-			resetVars();
+			resetVars(); */
         }
+
+		if (currCheckpoint == 28) {
+			myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
+			if(checkpointCleared) {
+				this.activateReset();
+			} else {
+				activateWaitingForOtherPlayerPanel();
+				InvokeRepeating ("waitingToResetGame", 0.5f, 0.5f);
+			}
+		}
+
         //  Spawn next checkpoint
 		currCheckpoint++;
         if (currCheckpoint < allCheckpoints.Count) {
