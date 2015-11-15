@@ -49,7 +49,8 @@ public class GUIArrow : MonoBehaviour {
 		Debug.Log("Need to rotate: " + yRote);
 		Quaternion forward = Camera.main.transform.rotation;
 		forward *= Quaternion.AngleAxis(yRote, Vector3.up);
-		fromTo = Quaternion.Angle(forward, vecToTarget);
+//		DELETE THIS COMMENT MARKING RIGHT BELOW TO FIX
+//		fromTo = Quaternion.Angle(forward, vecToTarget);
 		Debug.Log(fromTo.eulerAngles);
 //		forward *= Quaternion.AngleAxis(yRote, Vector3.up);
 //		Camera.main.transform.rotation = forward;
