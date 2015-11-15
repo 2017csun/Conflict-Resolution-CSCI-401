@@ -287,10 +287,8 @@ public class GameEngine : NetworkBehaviour {
 		playersChosenPanel.SetActive (false);
 
 		//	Set the right layers for each icon
-		Debug.Log("Changing " + playerOneClass.playerIcon.name + " to Player1");
 		playerOneClass.playerIcon.layer = LayerMask.NameToLayer("Player1");
 		this.fullChangeLayer(playerOneClass.playerIcon.transform, "Player1");
-		Debug.Log("Changing " + playerTwoClass.playerIcon.name + " to Player2");
 		playerTwoClass.playerIcon.layer = LayerMask.NameToLayer("Player2");
 		this.fullChangeLayer(playerTwoClass.playerIcon.transform, "Player2");
 		if (this.isServer) {
@@ -302,7 +300,6 @@ public class GameEngine : NetworkBehaviour {
 
         //  Update the player's body to be the icon
         GameObject myIcon = this.isServer ? playerOneClass.playerIcon : playerTwoClass.playerIcon;
-        Debug.Log("My icon is " + myIcon.name);
         myPlayer.GetComponent<PlayerNetworking>().updateBodyToIcon(myIcon);
 
         //  Enable player controls
@@ -1162,7 +1159,7 @@ public class GameEngine : NetworkBehaviour {
     }
 
     //  Utility function for recursively changing a GameObject's layer
-    public void fullChangeLayer (Transform obj, string layer) {
+    public static void fullChangeLayer (Transform obj, string layer) {
         foreach (Transform child in obj) {
             child.gameObject.layer = LayerMask.NameToLayer(layer);
             fullChangeLayer(child, layer);

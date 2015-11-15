@@ -57,30 +57,46 @@ public class PlayerNetworking : NetworkBehaviour {
         icon.transform.localRotation = Quaternion.Euler(0, 90, 0);
 
         //  Synch up the body on client
-//        NetworkServer.Spawn(icon);
-//        RpcSyncIconBody(
-//            icon,
-//            this.gameObject,
-//            icon.transform.localPosition,
-//            icon.transform.localRotation,
-//            icon.transform.localScale
-//        );
+        RpcSyncIconBody(
+            icon.name,
+            icon.transform.localPosition,
+            icon.transform.localRotation,
+            icon.transform.localScale,
+			fromServer
+        );
     }
 
     [ClientRpc]
-    public void RpcSyncIconBody (GameObject icon, GameObject parent, Vector3 localPos, Quaternion localRote, Vector3 localScale) {
+    public void RpcSyncIconBody (
+		string iconName, Vector3 localPos, Quaternion localRote, Vector3 localScale, bool fromServer
+	)
+	{
         if (this.isServer) {
             //  Don't do anything on the server's client
             return;
         }
 
+		//	Find the icon
+		GameObject icon = GameObject.Find(iconName);
+
+		//	Find the player parent
+		GameObject parent = null;
+		foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
+			if (fromServer && !go.GetComponent<FirstPersonController>().isActiveAndEnabled) {
+				parent = go;
+				break;
+			}
+			else if (!fromServer && go.GetComponent<FirstPersonController>().isActiveAndEnabled) {
+				parent = go;
+				break;
+			}
+		}
+
 		//  Set its layer and its children's layers to "Player2"
-		Debug.Log("Changing " + icon.name + " to Player2");
-		icon.layer = LayerMask.NameToLayer("Player2");
-		gameEngine.fullChangeLayer(icon.transform, "Player2");
-		
-		//	Set the culling mask to vision of "Player1" but not "Player2"
-		Camera.main.cullingMask = Camera.main.cullingMask | 1 << LayerMask.NameToLayer("Player1");
+		string iconLayer = fromServer ? "Player1" : "Player2";
+		Debug.Log("Changing " + iconName + " to " + iconLayer);
+		icon.layer = LayerMask.NameToLayer(iconLayer);
+		GameEngine.fullChangeLayer(icon.transform, iconLayer);
 
         icon.transform.parent = parent.transform;
         icon.transform.localPosition = localPos;
