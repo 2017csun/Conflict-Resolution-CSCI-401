@@ -44,7 +44,6 @@ public class GameEngine : NetworkBehaviour {
     [Header("Player Input Variables")]
 	public GameObject[] playerIconFabs;
     public GameObject[] playerIcons;
-	public List<GameObject> currentPlayerIcons;
 	public Text[] playerNameTextFields;
 	public GameObject nameInputPanel;
 	public GameObject panelIconSelect;
@@ -172,7 +171,6 @@ public class GameEngine : NetworkBehaviour {
 		playerNames = new List<string> ();
 		iconNames = new List<string> ();
         playersChosenToPlay = new List<int>();
-		currentPlayerIcons = new List<GameObject> ();
 		intentListPro = new List<string> ();
 		intentListCon = new List<string> ();
 		wrongList = new List<string> ();
@@ -289,8 +287,10 @@ public class GameEngine : NetworkBehaviour {
 		playersChosenPanel.SetActive (false);
 
 		//	Set the right layers for each icon
+		Debug.Log("Changing " + playerOneClass.playerIcon.name + " to Player1");
 		playerOneClass.playerIcon.layer = LayerMask.NameToLayer("Player1");
 		this.fullChangeLayer(playerOneClass.playerIcon.transform, "Player1");
+		Debug.Log("Changing " + playerTwoClass.playerIcon.name + " to Player2");
 		playerTwoClass.playerIcon.layer = LayerMask.NameToLayer("Player2");
 		this.fullChangeLayer(playerTwoClass.playerIcon.transform, "Player2");
 		if (this.isServer) {
@@ -474,7 +474,10 @@ public class GameEngine : NetworkBehaviour {
 			}
 			iconNames.Add (name);
 
-            currEditedPlayer.playerIcon = playerIcons[currentIcon];
+			//	Move the icon away
+			playerIcons[currentIcon].transform.position = new Vector3(0, -20, 0);
+
+            currEditedPlayer.playerIcon = Instantiate(playerIcons[currentIcon]);
             allPlayers.Add(new PlayerClass(currEditedPlayer));
             Debug.Log("Added icon " + currEditedPlayer.playerIcon + " to player #" + currEditedPlayer.playerID);
 
@@ -494,7 +497,6 @@ public class GameEngine : NetworkBehaviour {
                 );
             }
 
-            currentPlayerIcons.Add(playerIcons[currentIcon]);
             //  Update the player text fields
             for (int i = 0; i < allPlayers.Count; ++i) {
                 PlayerClass play = allPlayers[i];
@@ -508,10 +510,8 @@ public class GameEngine : NetworkBehaviour {
 			panelIconSelect.SetActive (false);
 			animationPanel.discardPanel();
 			for (int i = 0; i < playerIcons.Length; i++) {
-                if (playerIcons[i].transform.parent == null) {
-                    //  Move them out of view instead so they can still be found in script
-                    playerIcons[i].transform.position = new Vector3(0, -20, 0);
-                }
+                //  Move them out of view instead so they can still be found in script
+                playerIcons[i].transform.position = new Vector3(0, -20, 0);
 			}
 
 			//turn on summaryPlayerInput Panel
@@ -529,7 +529,7 @@ public class GameEngine : NetworkBehaviour {
     public void updatePlayerAcrossNetwork (string playerName, int iconIndex, int playerID) {
         //  Create and add the player
         PlayerClass newPlayer = new PlayerClass(playerName, playerID);
-        newPlayer.playerIcon = playerIcons[iconIndex];
+        newPlayer.playerIcon = Instantiate(playerIcons[iconIndex]);
 
         Debug.Log("Network creating player #" + playerID + " named " + playerName + " with icon " + newPlayer.playerIcon.name);
 
@@ -540,7 +540,6 @@ public class GameEngine : NetworkBehaviour {
 			name = name.Substring(0, cloneIndex) + name.Substring(cloneIndex + 7);
 		}
         iconNames.Add(name);
-        currentPlayerIcons.Add(playerIcons[iconIndex]);
 
         allPlayers.Add(newPlayer);
 

@@ -52,26 +52,19 @@ public class PlayerNetworking : NetworkBehaviour {
         icon.transform.localScale += new Vector3(.2f, .2f, .2f);
         icon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
 
-//        //  Set its layer and its children's layers to "Player1"
-//		icon.layer = LayerMask.NameToLayer(fromServer ? "Player1" : "Player2");
-//		gameEngine.fullChangeLayer(icon.transform, fromServer ? "Player1" : "Player2");
-//
-//		//	Set the culling mask to vision of "Player2" but not "Player1"
-//		Camera.main.cullingMask = Camera.main.cullingMask | 1 << LayerMask.NameToLayer(fromServer ? "Player2" : "Player1");
-
         icon.transform.parent = this.transform;
         icon.transform.localPosition = new Vector3(0, 0, 0);
         icon.transform.localRotation = Quaternion.Euler(0, 90, 0);
 
         //  Synch up the body on client
-        NetworkServer.Spawn(icon);
-        RpcSyncIconBody(
-            icon,
-            this.gameObject,
-            icon.transform.localPosition,
-            icon.transform.localRotation,
-            icon.transform.localScale
-        );
+//        NetworkServer.Spawn(icon);
+//        RpcSyncIconBody(
+//            icon,
+//            this.gameObject,
+//            icon.transform.localPosition,
+//            icon.transform.localRotation,
+//            icon.transform.localScale
+//        );
     }
 
     [ClientRpc]
@@ -81,13 +74,13 @@ public class PlayerNetworking : NetworkBehaviour {
             return;
         }
 
-//		//  Set its layer and its children's layers to "Player2"
-//		Debug.Log("On client setting layer to player2");
-//		icon.layer = LayerMask.NameToLayer("Player2");
-//		gameEngine.fullChangeLayer(icon.transform, "Player2");
-//		
-//		//	Set the culling mask to vision of "Player1" but not "Player2"
-//		Camera.main.cullingMask = Camera.main.cullingMask | 1 << LayerMask.NameToLayer("Player1");
+		//  Set its layer and its children's layers to "Player2"
+		Debug.Log("Changing " + icon.name + " to Player2");
+		icon.layer = LayerMask.NameToLayer("Player2");
+		gameEngine.fullChangeLayer(icon.transform, "Player2");
+		
+		//	Set the culling mask to vision of "Player1" but not "Player2"
+		Camera.main.cullingMask = Camera.main.cullingMask | 1 << LayerMask.NameToLayer("Player1");
 
         icon.transform.parent = parent.transform;
         icon.transform.localPosition = localPos;
@@ -101,9 +94,9 @@ public class PlayerNetworking : NetworkBehaviour {
         CmdSetBodyIcon(icon.name, this.isServer);
 
         //  Destroy this local icon if client
-        if (!this.isServer) {
-            Destroy(icon);
-        }
+//        if (!this.isServer) {
+//            Destroy(icon);
+//        }
     }
 
     //  Send a new player to the server game engine
