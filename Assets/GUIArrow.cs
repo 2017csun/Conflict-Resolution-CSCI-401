@@ -17,17 +17,6 @@ public class GUIArrow : MonoBehaviour {
 	void PositionArrow()
 	{
 		this.gameObject.GetComponent<Image>().enabled = false;
-		Vector3 targetLoc = goTarget.GetComponent<Floating>().startPoint;
-		
-		Vector3 v3Pos = Camera.main.WorldToViewportPoint(targetLoc);
-		GameObject dummyCam = Camera.main.transform.parent.FindChild("DummyCamera").gameObject;
-		Vector3 v3PosDummy = dummyCam.GetComponent<Camera>().WorldToViewportPoint(targetLoc);
-
-//		if (v3Pos.x >= 0.0f && v3Pos.x <= 1.0f && v3Pos.y >= 0.0f && v3Pos.y <= 1.0f) {
-//			return; // Object center is visible
-//		}
-		
-		this.gameObject.GetComponent<Image>().enabled = true;
 
 		//	Get horizontal field of view
 		float vFOVInRads = Camera.main.fieldOfView * Mathf.Deg2Rad;
@@ -35,7 +24,8 @@ public class GUIArrow : MonoBehaviour {
 		float hFOV = hFOVInRads * Mathf.Rad2Deg;
 
 		//	Get Y rotation needed to face target
-		Vector3 vecToTarget = targetLoc - Camera.main.transform.position;
+
+		Vector3 vecToTarget = goTarget.GetComponent<Floating>().startPoint - Camera.main.transform.position;
 		//	Project forward vec and vecToTarget onto same plane
 		Vector3 vecToTargetProject = Vector3.ProjectOnPlane(vecToTarget, Vector3.up);
 		Vector3 camForwardProject = Vector3.ProjectOnPlane(Camera.main.transform.forward, Vector3.up);
@@ -46,52 +36,38 @@ public class GUIArrow : MonoBehaviour {
 		}
 
 		//	Get X rotation needed to face target
-		Debug.Log("Need to rotate: " + yRote);
-		Quaternion forward = Camera.main.transform.rotation;
-		forward *= Quaternion.AngleAxis(yRote, Vector3.up);
-		fromTo = Quaternion.Angle(forward, vecToTarget);
-		Debug.Log(fromTo.eulerAngles);
-//		forward *= Quaternion.AngleAxis(yRote, Vector3.up);
-//		Camera.main.transform.rotation = forward;
 
-//		Debug.Log("xRote: " + xRote + ", yRote: " + yRote);
+		//	Zero out y component of vecToTarget and get the angle
+		float angleTarget = Vector3.Angle(vecToTarget, new Vector3(vecToTarget.x, 0, vecToTarget.z));
+		angleTarget *= vecToTarget.y > 0 ? 1 : -1;
+		//	Zero out y component of camera forward and get the angle
+		float angleCam = Vector3.Angle(
+			Camera.main.transform.forward,
+			new Vector3(Camera.main.transform.forward.x, 0, Camera.main.transform.forward.z)
+		);
+		angleCam *= Camera.main.transform.forward.y > 0 ? 1 : -1;
 
-		//	Get rotation from forward to the target
-//		}
-//		float yViewCoord = Mathf.Clamp(fromToVec.x / (Camera.main.fieldOfView) + 0.5f, 0, 1);
-//		float xViewCoord = Mathf.Clamp(fromToVec.y / (hFOV) + 0.5f, 0, 1);
-//		Debug.Log(fromToVec);
-//		Debug.Log("X view coord: " + xViewCoord);
+		float xRote = angleTarget - angleCam;
 
-		//	Clamp so coords are on edge of screen
-//		Debug.Log("View pos: " + v3Pos);
-//		Debug.Log("View pos dummy: " + v3PosDummy);
-//		v3Pos.x = Mathf.Clamp(v3Pos.x, 0, 1);
-//		v3Pos.y = Mathf.Clamp(v3Pos.y, 0, 1);
-//		v3PosDummy.x = Mathf.Clamp(v3PosDummy.x, 0, 1);
-//		v3PosDummy.y = Mathf.Clamp(v3PosDummy.y, 0, 1);
-//
-//		Vector3 screenPos;
-//		if (v3Pos.z > 0) {
-//			screenPos = new Vector3(v3Pos.x * Screen.width, v3Pos.y * Screen.height, 0);
-//		}
-//		else {
-//			screenPos = new Vector3(v3PosDummy.x * Screen.width, v3PosDummy.y * Screen.height, 0);
-//		}
-//
-//		Debug.Log("Screen pos: " + screenPos);
-//
-//		//	Set position
-//		this.transform.position = new Vector3(v3Pos.x * Screen.width, v3Pos.y * Screen.height, 0);
+		//	Get view space coords based on camera FOV
+		float u = Mathf.Clamp(yRote/hFOV + 0.5f, 0, 1);
+		float v = Mathf.Clamp(xRote/Camera.main.fieldOfView + 0.5f, 0, 1);
+
+		//	Hide if u,v is within the screen
+		if (u > 0 && u < 1 && v > 0 && v < 1) {
+			return;
+		}
+		this.gameObject.GetComponent<Image>().enabled = true;
+
+		//	Set position to u, v
+		this.transform.position = new Vector3(u * Screen.width, v * Screen.height, 0);
 
 		//	Set rotation
-//		Quaternion v3Quat = Quaternion.FromToRotation(
-//			Vector3.right,
-//			new Vector3(v3Pos.x - 0.5f, v3Pos.y - 0.5f, 0)
-//		);
-////		Debug.Log(v3Quat.eulerAngles);
-//
-//        RectTransform rectTrans = this.gameObject.GetComponent<RectTransform>();
-//		rectTrans.rotation = Quaternion.Euler(0, 0, v3Quat.eulerAngles.z - 90);
+		Quaternion v3Quat = Quaternion.FromToRotation(
+			Vector3.right,
+			new Vector3(u - 0.5f, v - 0.5f, 0)
+		);
+        RectTransform rectTrans = this.gameObject.GetComponent<RectTransform>();
+		rectTrans.rotation = Quaternion.Euler(0, 0, v3Quat.eulerAngles.z - 90);
 	}
 }
