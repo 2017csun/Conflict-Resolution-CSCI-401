@@ -26,6 +26,8 @@ public class CountDownTimer : MonoBehaviour {
 	public Text instructionText;
 	public Canvas scenarioCanvas;
 	public Text scenarioText;
+
+    //public Text waitingText;
 	/*
 	public Text competingText;
 	public Text collaboratingText;
@@ -77,6 +79,9 @@ public class CountDownTimer : MonoBehaviour {
 
 		continueButton = continueButton.GetComponent<Button> ();
 
+        //waitingText = waitingText.GetComponent<Text>();
+        //waitingText.enabled = false;
+
 		timerMenu.enabled = false;
 
 		// for testing, comment the line for final version
@@ -104,10 +109,23 @@ public class CountDownTimer : MonoBehaviour {
 		accommodatingButton.gameObject.SetActive (true);
 		
 		instructionText.text = "Click on your intention below to learn more about them!";
+		//var instructionCanvasPos = instructionCanvas.GetComponent<RectTransform> ();
+		//instructionCanvasPos.localPosition = new Vector3 (0,145,0);
 		instructionCanvas.enabled = true;
+
+        /*
+		Screen.SetResolution (Screen.currentResolution.width-1,
+		                      Screen.currentResolution.height,
+		                      false);
+		Screen.SetResolution (Screen.currentResolution.width+1,
+		                      Screen.currentResolution.height,
+		                      false);
+                          */
+
 		scenarioText.text = GameEngine.getScenarioTitle () + "\n"
 			+ GameEngine.getScenario ();
 		scenarioCanvas.enabled = true;
+        //waitingText.enabled = false;
 		donePlanning = false;
 		doneRolePlaying = false;
 		continueButton.gameObject.SetActive (false);
@@ -223,4 +241,9 @@ public class CountDownTimer : MonoBehaviour {
 		avoidingInfoCanvas.enabled = false;
 		accommodatingInfoCanvas.enabled = false;
 	}
+
+    public void startWaiting()
+    {
+        //waitingText.enabled = true;
+    }
 }
