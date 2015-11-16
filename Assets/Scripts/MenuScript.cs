@@ -160,5 +160,12 @@ public class MenuScript : MonoBehaviour {
 		joinFailOKButton.enabled = true;
 	}
 
+    public void MultipleMatchJoinFailed()
+    {
+        joinLoadText.text = "Multiple Match!";
+        joinFailOKButton.gameObject.SetActive(true);
+        joinFailOKButton.enabled = true;
+    }
+
 
 }

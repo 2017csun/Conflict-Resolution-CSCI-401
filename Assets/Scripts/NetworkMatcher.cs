@@ -66,7 +66,7 @@ public class NetworkMatcher : MonoBehaviour {
 		}
 
         if (matches.Count > 1) {
-			menuScript.JoinFailed();
+            menuScript.MultipleMatchJoinFailed();
             Debug.LogError("THERE ARE MULTIPLE MATCHES IDK WHAT TO DOOOOO");
             for (int i = 0; i < matches.Count; ++i) {
                 Debug.LogError("ID: " + matches[i].networkId + "\nName: " + matches[i].name);
