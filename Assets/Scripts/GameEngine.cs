@@ -17,6 +17,7 @@ public class GameEngine : NetworkBehaviour {
     public AnimationPanel animationPanel;
     public GameObject checkpointFab;
     public GameObject checkpointLocations;
+	public GameObject errorPanel;
     public FadeScene fadeScene;
     private List<Transform> allCheckpoints;
     private List<string> playerNames;
@@ -545,11 +546,19 @@ public class GameEngine : NetworkBehaviour {
 		else 
 		{
 			//TODO handle error
-			print ("already chosen");
-
+			//	Prep and display the error screen
+			Text err = errorPanel.transform.FindChild("ErrorText").GetComponent<Text>();
+			err.text = "Error: Someone on the other computer has taken this icon.";
+			
+			errorPanel.SetActive(true);
 		}
 
 	}
+
+	public void discardErrorScreen () {
+		errorPanel.SetActive(false);
+	}
+
     //  Update icons across network
     public void updatePlayerAcrossNetwork (string playerName, int iconIndex, int playerID) {
         //  Create and add the player
@@ -1115,11 +1124,6 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	private void activateReset() {
-		myPlayer.GetComponent<FirstPersonController> ().enabled = false;
-		myPlayer.GetComponent<AnimateRotateCamera> ().beginRotation (
-			Quaternion.LookRotation (Vector3.left),
-			2
-		);
 		Invoke ("whiteFadeOut", 2.5f);
 		Invoke ("movePlayerToStart", 6);
 		Invoke ("whiteFadeIn", 6.5f);
@@ -1127,15 +1131,13 @@ public class GameEngine : NetworkBehaviour {
 		resetVars ();
 	}
 
-    public void checkpointHit() {
+    public void checkpointHit(Vector3 checkpointPos) {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
             this.activateNameInputPanel ();
-//			this.activateReset();
 		}
 
 		if (currCheckpoint == 2) {
-//			this.activateChoosePlayerPanel ();
 			if(this.isServer) {
 				numPlayersHitCheckpoint++;
 			} else {
@@ -1180,7 +1182,6 @@ public class GameEngine : NetworkBehaviour {
 				activateWaitingForOtherPlayerPanel();
 				InvokeRepeating ("waitingToRecap", 0.5f, 0.5f);
 			}
-//			this.activateRecapPanel();
 		}
 
 		if (currCheckpoint == 14) {
@@ -1204,9 +1205,6 @@ public class GameEngine : NetworkBehaviour {
 				activateWaitingForOtherPlayerPanel();
 				InvokeRepeating ("waitingForTimer", 0.1f, 0.1f);
 			}
-//			timerMenu.enabled = true;
-//			countDownTimer.StartTimer ();
-//			myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		}
 
 		if (currCheckpoint == 16) {
@@ -1217,10 +1215,6 @@ public class GameEngine : NetworkBehaviour {
 				this.activateVotePanel();
 			}
 		}
-
-/*		if (currCheckpoint == 16 && this.isServer) {
-			this.activateVotePanel();
-		} */
 
 		if (currCheckpoint == 19) {
 			this.activateProConPanel();
@@ -1238,7 +1232,6 @@ public class GameEngine : NetworkBehaviour {
 				activateWaitingForOtherPlayerPanel();
 				InvokeRepeating ("waitingForScore", 0.5f, 0.5f);
 			}
-//			this.activateScorePanel();
 		}
 
 		if (currCheckpoint == 25) {
@@ -1253,6 +1246,12 @@ public class GameEngine : NetworkBehaviour {
 
         if (currCheckpoint == 27 && this.isServer) {
 			numPlayersHitCheckpoint++;
+			myPlayer.GetComponent<FirstPersonController> ().enabled = false;
+			myPlayer.GetComponent<AnimateRotateCamera> ().beginRotation (
+				Quaternion.LookRotation (Vector3.left),
+				2,
+				checkpointPos
+			);
 			if(checkpointCleared) {
 				this.activateReset();
 			} else {
@@ -1262,6 +1261,12 @@ public class GameEngine : NetworkBehaviour {
         }
 
 		if (currCheckpoint == 28) {
+			myPlayer.GetComponent<FirstPersonController> ().enabled = false;
+			myPlayer.GetComponent<AnimateRotateCamera> ().beginRotation (
+				Quaternion.LookRotation (Vector3.left),
+				2,
+				checkpointPos
+			);
 			myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
 			if(checkpointCleared) {
 				this.activateReset();

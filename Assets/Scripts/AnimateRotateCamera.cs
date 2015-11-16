@@ -4,6 +4,7 @@ using System.Collections;
 public class AnimateRotateCamera : MonoBehaviour {
 
     private Quaternion startRotation, endRotation, currRotation;
+	private Vector3 posToMoveTo, startPos, currPos;
     private float rotateTime, currTime;
 
     private bool isRotating;
@@ -22,16 +23,21 @@ public class AnimateRotateCamera : MonoBehaviour {
                 return;
             }
             currRotation = Quaternion.Slerp(startRotation, endRotation, currTime / rotateTime);
+			currPos = Vector3.Lerp(startPos, posToMoveTo, currTime / rotateTime);
             Camera.main.transform.rotation = currRotation;
+			Camera.main.transform.position = currPos;
         }
 	}
 
-    public void beginRotation (Quaternion to, float time) {
+	public void beginRotation (Quaternion to, float time, Vector3 pos) {
         rotateTime = time;
         currTime = 0;
         endRotation = to;
         startRotation = Camera.main.transform.rotation;
+		startPos = Camera.main.transform.position;
+		currPos = startPos;
         currRotation = startRotation;
+		posToMoveTo = new Vector3(pos.x, startPos.y, pos.z);
         isRotating = true;
     }
 }
