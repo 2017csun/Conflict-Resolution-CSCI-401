@@ -67,7 +67,7 @@ public class NetworkMatcher : MonoBehaviour {
 
         if (matches.Count > 1) {
             menuScript.MultipleMatchJoinFailed();
-            Debug.LogError("THERE ARE MULTIPLE MATCHES IDK WHAT TO DOOOOO");
+            Debug.LogError("There are multiple matches!");
             for (int i = 0; i < matches.Count; ++i) {
                 Debug.LogError("ID: " + matches[i].networkId + "\nName: " + matches[i].name);
             }
@@ -78,7 +78,7 @@ public class NetworkMatcher : MonoBehaviour {
         }
         else {
 			menuScript.JoinFailed();
-            Debug.LogError("MATCH NOT FOUND!!");
+            Debug.LogError("Match not found!!");
         }
     }
 
