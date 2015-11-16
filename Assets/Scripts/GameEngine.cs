@@ -1123,6 +1123,13 @@ public class GameEngine : NetworkBehaviour {
 	public void resetVars() {
 		justResetGame = true;
 		currCheckpoint = 1;
+
+		//	Remove the icons at the players
+		foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
+			Transform child = go.transform.GetChild(1);
+			child.gameObject.SetActive(false);
+		}
+
 		playerOneClass = null;
 		playerTwoClass = null;
 	}
