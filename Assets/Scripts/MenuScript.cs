@@ -25,6 +25,7 @@ public class MenuScript : MonoBehaviour {
 	public Canvas hostGameMenu;
 	public Canvas joinGameMenu;
 	public Canvas joinLoadMenu;
+
 	// Use this for initialization
 	void Start () {
 
@@ -113,6 +114,7 @@ public class MenuScript : MonoBehaviour {
 		joinLoadMenu.enabled = false;
 		joinButton.enabled = true;
 		joinGameCancelButton.enabled = true;
+        joinLoadText.text = "Joining a game . . .";
 	}
 	
 	public void JoinGamePressed() {
@@ -154,12 +156,14 @@ public class MenuScript : MonoBehaviour {
 		networkMatcher.connectToServer(inputKey);
 	}
 
+    // failed joining because of wrong key
 	public void JoinFailed() {
 		joinLoadText.text = "Joining failed!";
 		joinFailOKButton.gameObject.SetActive (true);
 		joinFailOKButton.enabled = true;
 	}
 
+    // failed joining because of multiple match
     public void MultipleMatchJoinFailed()
     {
         joinLoadText.text = "Multiple Match!";
