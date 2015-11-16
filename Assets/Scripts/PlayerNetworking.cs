@@ -225,5 +225,14 @@ public class PlayerNetworking : NetworkBehaviour {
 	public void CmdUpdatePlayer2Spin () {
 		gameEngine.getIntention (1);
 	}
+
+	public void updateJustResetGame () {
+		CmdUpdateJustResetGame();
+	}
+	
+	[Command]
+	public void CmdUpdateJustResetGame () {
+		gameEngine.justResetGame = false;
+	}
 	
 }

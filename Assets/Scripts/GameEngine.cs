@@ -30,6 +30,9 @@ public class GameEngine : NetworkBehaviour {
 	[HideInInspector]
 	[SyncVar]
 	public int numPlayersHitCheckpoint;
+	[HideInInspector]
+	[SyncVar]
+	public bool justResetGame;
 	
     [HideInInspector]
     public List<PlayerClass> allPlayers;
@@ -1035,6 +1038,7 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	private void instantiateVariables() {
+		justResetGame = false;
 		player1RoleStatic = "";
 		player2RoleStatic = "";
 		currScenarioStatic = "";
@@ -1117,7 +1121,7 @@ public class GameEngine : NetworkBehaviour {
     }
 
 	public void resetVars() {
-		resetPlayersHit ();
+		justResetGame = true;
 		currCheckpoint = 1;
 
 	}
@@ -1190,8 +1194,19 @@ public class GameEngine : NetworkBehaviour {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
             this.activateNameInputPanel ();
-		}
+		} 
 
+		if (currCheckpoint == 1) {
+			if(justResetGame == true) {
+				resetPlayersHit();
+				if(this.isServer) {
+					justResetGame = false;
+				} else {
+					myPlayer.GetComponent<PlayerNetworking>().updateJustResetGame();
+				}
+			}
+		}
+		
 		if (currCheckpoint == 2) {
 			if(this.isServer) {
 				numPlayersHitCheckpoint++;
@@ -1210,7 +1225,7 @@ public class GameEngine : NetworkBehaviour {
 			if(checkpointCleared) {
 				resetPlayersHit();
 			}
-		}
+		} 
 
 		if (currCheckpoint == 5) {
 			if (this.isServer) {
