@@ -43,6 +43,10 @@ public class GameEngine : NetworkBehaviour {
 	// Gui Guide Variables
 	//---------------------------------------------
 	public GameObject welcomePanel;
+    public GameObject scenarioGuidePanel;
+    public GameObject intentionGuidePanel;
+    private bool hasSeenScenarioGuide = false;
+    private bool hasSeenIntentionGuide = false;
 
 	//---------------------------------------------
 	//	Player input variables
@@ -83,13 +87,16 @@ public class GameEngine : NetworkBehaviour {
 
 	private List<string> iconNames;
     private int currentIcon;
-	public static bool allowP1IntentionSpin;
-	public static bool allowP2IntentionSpin;
+	public bool allowP1IntentionSpin;
+	[SyncVar]
+	public bool allowP2IntentionSpin;
 	public static bool allowScenarioSpin;
 	private static string[] scenariosList;
 	private static string[] scenariosTitles;
 	private static string[] intentionsList;
-	
+	public GameObject intentionsWheel;
+	public GameObject spinWheelPanel;
+	public Text spinWheelText;
 
 	//---------------------------------------------
 	//	Recap variables
@@ -107,8 +114,6 @@ public class GameEngine : NetworkBehaviour {
 	private string player1Role;
 	[SyncVar]
 	private string player2Role;
-	private static string player1IntentionStatic;
-	private static string player2IntentionStatic;
 	private static string player1RoleStatic;
 	private static string player2RoleStatic;
 	private static string currScenarioStatic;
@@ -193,6 +198,9 @@ public class GameEngine : NetworkBehaviour {
 		timerMenu = timerMenu.GetComponent<Canvas> ();
 		timerMenu.enabled = false;
 
+        scenarioGuidePanel.SetActive(false);
+        intentionGuidePanel.SetActive(false);
+
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
 
@@ -234,6 +242,28 @@ public class GameEngine : NetworkBehaviour {
 
 
 	}
+
+    public void activateScenarioGuidePanel()
+    {
+        scenarioGuidePanel.SetActive(true);
+    }
+
+    public void deactivateScenarioGuidePanel()
+    {
+        scenarioGuidePanel.SetActive(false);
+    }
+
+    public void activateIntentionGuidePanel()
+    {
+        deactivateScenarioGuidePanel();
+        intentionGuidePanel.SetActive(true);
+    }
+
+    public void deactivateIntentionGuidePanel()
+    {
+        intentionGuidePanel.SetActive(false);
+    }
+
     public void activateNameInputPanel () {
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -384,6 +414,31 @@ public class GameEngine : NetworkBehaviour {
 
 	public void deactivateRecapPanel() {
 		recapPanel.SetActive (false);
+		animationPanel.discardPanel();
+		myPlayer.GetComponent<FirstPersonController>().enabled = true;
+	}
+
+	public void activateSpinWheelPanel () {
+		if (this.isServer) {
+			spinWheelText.text = "Please spin both Scenario and Intention Wheels.";
+		} else {
+			spinWheelText.text = "Please spin the Intention Wheel.";
+		}
+		//  Disable player controls
+		myPlayer.GetComponent<FirstPersonController>().enabled = false;
+		//  Start up the panel animation
+		animationPanel.beginAnimation(380, 160, 0.9f);
+		//  Wait for animation to finish before displaying UI
+		Invoke("actuallyActivateSpinWheelPanel", animationPanel.animationTime);
+	}
+	
+	private void actuallyActivateSpinWheelPanel () {
+		//  Display the UI
+		spinWheelPanel.SetActive(true);
+	}
+	
+	public void deactivateSpinWheelPanel() {
+		spinWheelPanel.SetActive (false);
 		animationPanel.discardPanel();
 		myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
@@ -883,16 +938,18 @@ public class GameEngine : NetworkBehaviour {
 
 	}
 
-	public static void setIntention(int playerNumber, int intentionNumber) {
+	public void getIntention (int playerNumber) {
+		int intentionNumber = Random.Range (0, 4);
 		if (playerNumber == 0) {
-			player1IntentionStatic = intentionsList [intentionNumber];
+			player1Intention = intentionsList [intentionNumber];
 		} else {
-			player2IntentionStatic = intentionsList [intentionNumber];
+			player2Intention = intentionsList [intentionNumber];
 		}
+		intentionsWheel.GetComponent<IntentionsSpin> ().spinWheel (intentionNumber);
 	}
 
-	public void syncPlayer2Intention(string intention) {
-		player2Intention = intention;
+	public void player2Spun () {
+		myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Spin ();
 	}
 
 	public static void setScenario(int scenarioNumber) {
@@ -978,8 +1035,6 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	private void instantiateVariables() {
-		player1IntentionStatic = "";
-		player2IntentionStatic = "";
 		player1RoleStatic = "";
 		player2RoleStatic = "";
 		currScenarioStatic = "";
@@ -1015,12 +1070,12 @@ public class GameEngine : NetworkBehaviour {
 		};
 	}
 	
-	public static void updateServerSpin() {
+	public void updateServerSpin() {
 		allowP1IntentionSpin = true;
 		allowScenarioSpin = true;
 	}
 	
-	public static void updateClientSpin() {
+	public void updateClientSpin() {
 		allowP2IntentionSpin = true;
 	}
 
@@ -1038,15 +1093,11 @@ public class GameEngine : NetworkBehaviour {
 
 	private void updateSyncedPlayerVariables() {
 		if (this.isServer) {
-			player1Intention = player1IntentionStatic;
 			player1Role = player1RoleStatic;
 			player2Role = player2RoleStatic;
 			currScenario = currScenarioStatic;
 			currScenarioTitle = currScenarioTitleStatic;
-		} else {
-			player2Intention = player2IntentionStatic;
-			myPlayer.GetComponent<PlayerNetworking> ().sendPlayer2Intention ();
-		}
+		} 
 	}
 
     //  These are for loading new rounds
@@ -1157,16 +1208,46 @@ public class GameEngine : NetworkBehaviour {
 			}
 		}
 
+		if (currCheckpoint == 5) {
+			if (this.isServer) {
+				updateServerSpin ();
+			} else {
+				updateClientSpin ();
+			}
+		}
+
 		if (currCheckpoint == 6) {
-			if(this.isServer){
+/*			if(this.isServer){
 				updateServerSpin();
 			} else {
 				updateClientSpin();
 //				Skip checkpoint for client
-			}
+			} */
+            if (!hasSeenScenarioGuide)
+            {
+                activateScenarioGuidePanel();
+                hasSeenScenarioGuide = true;
+            }
 		}
 
+        if (currCheckpoint == 7)
+        {
+            if (!hasSeenIntentionGuide)
+            {
+                activateIntentionGuidePanel();
+                hasSeenIntentionGuide = true;
+            }
+        }
+
 		if (currCheckpoint == 8) {
+			if(allowP1IntentionSpin || (allowP2IntentionSpin && !this.isServer)) {
+				if(this.isServer) {
+					currCheckpoint = currCheckpoint-3;
+				} else {
+					currCheckpoint = currCheckpoint-2;
+				}
+				activateSpinWheelPanel();
+			}
 			updateSyncedPlayerVariables();
 		}
 
