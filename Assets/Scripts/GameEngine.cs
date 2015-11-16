@@ -63,7 +63,7 @@ public class GameEngine : NetworkBehaviour {
 	public GameObject spotlight;
 	public GameObject summaryPanel;
 	public GameObject buttonAddPlayer;
-
+	int playerIntNum;
 	public Text maxMessage;
 
     //---------------------------------------------
@@ -197,7 +197,7 @@ public class GameEngine : NetworkBehaviour {
 		answers2 = new List<string> ();
 		instantiateVariables ();
 		instantiateScenarios ();
-
+		playerIntNum = 1;
 		timerMenu = timerMenu.GetComponent<Canvas> ();
 		timerMenu.enabled = false;
 
@@ -451,7 +451,7 @@ public class GameEngine : NetworkBehaviour {
 		
 		scorePanel.SetActive (true);
 		Player1ProCon.SetActive (true);
-		checkAnswers ();
+		//checkAnswers ();
 		displayScore (); 
 		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		
@@ -653,11 +653,28 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	public void addPlayerInput () {
-		summaryPanel.SetActive (false);
-        //  Start up the panel animation
-        animationPanel.beginAnimation(250, 275, 0.9f);
-        //  Wait for animation to finish before displaying UI
-        Invoke("actuallyActivateNameInputPanel", animationPanel.animationTime);
+		playerIntNum++;
+		if (playerIntNum <= 8) {
+			summaryPanel.SetActive (false);
+			//  Start up the panel animation
+			animationPanel.beginAnimation (250, 275, 0.9f);
+			//  Wait for animation to finish before displaying UI
+			Invoke ("actuallyActivateNameInputPanel", animationPanel.animationTime);
+		}	else {
+				maxMessage.text = "Max Players Reached. Press done to continue";
+				maxMessage.fontStyle = FontStyle.Bold;
+				maxMessage.fontSize = 30;
+				maxMessage.color = Color.red;
+				maxMessage.alignment = TextAnchor.MiddleCenter;
+				summaryPanel.SetActive (true);
+				
+				
+				
+			}
+
+
+
+
 	}
 
     //  Function that can only be run on server
@@ -829,7 +846,11 @@ public class GameEngine : NetworkBehaviour {
 		} else {
 			if (answers2.Count != 0) {
 				Debug.Log (" the count for answers two is " + answers2.Count);
-
+				
+				Debug.Log ("Client Score is " + score);
+				roundScore.text = "Round Score : " + score;
+				
+				totalScore.text = "Total Score : " + score;	
 				for (int i = 0; i < 6; i++) {
 		
 					print (answers2 [i] + " is first answer ");
@@ -852,9 +873,7 @@ public class GameEngine : NetworkBehaviour {
 				}
 
 			}	
-			roundScore.text = "Round Score : " + score;
-			
-			totalScore.text = "Total Score : " + score;	
+
 		
 		}
 	
@@ -914,29 +933,48 @@ public class GameEngine : NetworkBehaviour {
 }
 	public void sendIntention(string[] intent){
 		print ("IM SENDING INTENTION");
-		//intentions = new string[6];
-		//intentList = new List<string> ();
-
+		if (this.isServer) {
+			Debug.Log ("The server is sending the intention Mon");
 			for (int i = 0; i < intent.Length; i++) {
-			print (intent [i]);
-			//intentions [i] = intent [i];
+				print (intent [i]);
 
-			if (i >= 3) {
-				intentListCon.Add (intent [i]);
+				if (i >= 3) {
+					intentListCon.Add (intent [i]);
+				}
+				if (i < 3) {
+
+					intentListPro.Add (intent [i]);
+				}
+
 			}
-			if (i < 3) {
-
-				intentListPro.Add (intent [i]);
-			}
-
 		}
-		//print (intentList.Count + " is how big the list is");
+		else {
+			Debug.Log ("The client is sending the intention Mon");
+			for (int i = 0; i < intent.Length; i++) {
+				print (intent [i]);
+				//intentions [i] = intent [i];
+				
+				if (i >= 3) {
+					intentListCon.Add (intent [i]);
+				}
+				if (i < 3) {
+					
+					intentListPro.Add (intent [i]);
+				}
+				
+			}
+		}
+
 	}
 
 
 	public void updateScoreToClient(int score) {
 
 		this.score = score;
+		if (isServer) {
+
+			Debug.Log ("Score should have updated son " + score);
+		}
 
 
 	}
@@ -1318,7 +1356,10 @@ public class GameEngine : NetworkBehaviour {
 		if (currCheckpoint == 19) {
 			this.activateProConPanel();
 		}
-
+		if (currCheckpoint == 20) {
+			checkAnswers ();
+			
+		}
 		if (currCheckpoint == 24) {
 			if(this.isServer) {
 				numPlayersHitCheckpoint++;

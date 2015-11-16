@@ -192,6 +192,7 @@ public class PlayerNetworking : NetworkBehaviour {
 		
 		
 	}
+	[Command]
 	public void CmdSetScore(int score) {
 
 		gameEngine.updateScoreToClient (score);
