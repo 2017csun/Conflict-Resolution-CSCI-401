@@ -73,6 +73,8 @@ public class VoteManager : MonoBehaviour {
 		report.text = "";
 		upVotes.text = "";
 		downVotes.text = "";
+		submitButton.transform.GetChild(0).GetComponent<Text>().text = "Submit";
+		submitButton.transform.GetChild(0).GetComponent<Text>().color = Color.blue;
 
 		//	Enable player
 		engine.myPlayer.GetComponent<FirstPersonController>().enabled = true;
