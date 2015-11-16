@@ -115,6 +115,7 @@ public class MenuScript : MonoBehaviour {
 		joinButton.enabled = true;
 		joinGameCancelButton.enabled = true;
         joinLoadText.text = "Joining a game . . .";
+        joinFailOKButton.gameObject.SetActive(false);
 	}
 	
 	public void JoinGamePressed() {
