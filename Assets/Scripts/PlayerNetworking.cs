@@ -51,7 +51,7 @@ public class PlayerNetworking : NetworkBehaviour {
             return;
         }
 
-        icon.transform.localScale += new Vector3(.2f, .2f, .2f);
+        icon.transform.localScale += new Vector3(.15f, .15f, .15f);
         icon.GetComponent<RotateSlowly>().enabled = false;    //  Stop the rotating script
 
         icon.transform.parent = this.transform;

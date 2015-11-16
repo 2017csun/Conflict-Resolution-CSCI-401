@@ -1123,7 +1123,8 @@ public class GameEngine : NetworkBehaviour {
 	public void resetVars() {
 		justResetGame = true;
 		currCheckpoint = 1;
-
+		playerOneClass = null;
+		playerTwoClass = null;
 	}
 
 	public void bothPlayersHit() {
