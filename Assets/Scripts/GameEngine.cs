@@ -1050,7 +1050,7 @@ public class GameEngine : NetworkBehaviour {
     public void movePlayerToStart () {
         GameObject spawnLoc = GameObject.FindGameObjectWithTag("PlayerSpawn");
         myPlayer.transform.position = spawnLoc.transform.position;
-        myPlayer.transform.rotation = spawnLoc.transform.rotation;
+		myPlayer.transform.rotation = spawnLoc.transform.rotation;
     }
     public void reactivatePlayerControls () {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
@@ -1130,7 +1130,8 @@ public class GameEngine : NetworkBehaviour {
     public void checkpointHit() {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
-            this.activateNameInputPanel ();
+//            this.activateNameInputPanel ();
+			this.activateReset();
 		}
 
 		if (currCheckpoint == 2) {
@@ -1258,16 +1259,6 @@ public class GameEngine : NetworkBehaviour {
 				activateWaitingForOtherPlayerPanel();
 				InvokeRepeating ("waitingToResetGame", 0.5f, 0.5f);
 			}
-/*            myPlayer.GetComponent<FirstPersonController>().enabled = false;
-            myPlayer.GetComponent<AnimateRotateCamera>().beginRotation(
-               Quaternion.LookRotation(Vector3.left),
-               2
-            );
-            Invoke("whiteFadeOut", 2.5f);
-            Invoke("movePlayerToStart", 6);
-            Invoke("whiteFadeIn", 6.5f);
-            Invoke("reactivatePlayerControls", 8);
-			resetVars(); */
         }
 
 		if (currCheckpoint == 28) {

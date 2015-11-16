@@ -45,20 +45,25 @@ public class NetworkMatcher : MonoBehaviour {
     //--------------------------------------------------
 
     //	Request the list of matches matching gameTypeName
-    public void connectToServer (string gameTypeName) {
-        if (gameTypeName.Equals("")) {
-            //  TODO: this
-            Debug.LogError("MUST INPUT SOMETHING");
-        }
-
-        gameTypeName = gameTypeName.ToUpper();
-        Debug.Log("Attempting to join " + gameTypeName);
-        NetworkManager.singleton.matchMaker.ListMatches(0, 20, gameTypeName, OnMatchList);
+    public void connectToServer (string gCode) {
+		gCode = gCode.ToUpper();
+		gameCode = gCode;
+		Debug.Log("Attempting to join " + gCode);
+		NetworkManager.singleton.matchMaker.ListMatches(0, 20, gCode, OnMatchList);
     }
 
     //	Check for exactly 1 match
     public void OnMatchList (ListMatchResponse matchListResponse) {
         List<MatchDesc> matches = matchListResponse.matches;
+
+		//	The match name must be exact same as gameCode
+		for (int i = 0; i < matches.Count; ++i) {
+			MatchDesc match = matches[i];
+			if (!match.name.Equals(gameCode)) {
+				matches.RemoveAt(i);
+				i--;
+			}
+		}
 
         if (matches.Count > 1) {
 			menuScript.JoinFailed();
