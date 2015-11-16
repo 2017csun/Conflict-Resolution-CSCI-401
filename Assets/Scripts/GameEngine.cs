@@ -1173,11 +1173,9 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	private void waitingToResetGame() {
-		Debug.Log("Num = " + numPlayersHitCheckpoint);
 		if (numPlayersHitCheckpoint >= 2) {
 			bothPlayersHit();
 			myPlayer.GetComponent<FirstPersonController>().enabled = false;
-			Debug.Log("ACTIVATING RESET");
 			this.activateReset();
 		}
 	}
@@ -1346,6 +1344,7 @@ public class GameEngine : NetworkBehaviour {
 
         if (currCheckpoint == 27 && this.isServer) {
 			numPlayersHitCheckpoint++;
+			currCheckpoint = 0;
 			Debug.Log("Incrementing to " + numPlayersHitCheckpoint);
 			myPlayer.GetComponent<FirstPersonController> ().enabled = false;
 			myPlayer.GetComponent<AnimateRotateCamera> ().beginRotation (
@@ -1354,16 +1353,15 @@ public class GameEngine : NetworkBehaviour {
 				checkpointPos
 			);
 			if(checkpointCleared) {
-				Debug.Log("ACTIVATING RESET");
 				this.activateReset();
 			} else {
-				Debug.Log("ACTIVATING WAITING");
 				activateWaitingForOtherPlayerPanel();
 				InvokeRepeating ("waitingToResetGame", 0.5f, 0.5f);
 			}
         }
 
 		if (currCheckpoint == 28) {
+			currCheckpoint = 0;
 			myPlayer.GetComponent<FirstPersonController> ().enabled = false;
 			myPlayer.GetComponent<AnimateRotateCamera> ().beginRotation (
 				Quaternion.LookRotation (Vector3.left),
@@ -1372,10 +1370,8 @@ public class GameEngine : NetworkBehaviour {
 			);
 			myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
 			if(checkpointCleared) {
-				Debug.Log("ACTIVATING RESET");
 				this.activateReset();
 			} else {
-				Debug.Log("ACTIVATING WAITING");
 				activateWaitingForOtherPlayerPanel();
 				InvokeRepeating ("waitingToResetGame", 0.5f, 0.5f);
 			}
