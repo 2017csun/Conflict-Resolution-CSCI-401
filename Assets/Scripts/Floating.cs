@@ -41,7 +41,8 @@ public class Floating : MonoBehaviour {
 
     void OnTriggerEnter (Collider col) {
         Instantiate(checkpointEffect, this.transform.position, Quaternion.identity);
-		gameEngine.GetComponent<GameEngine> ().checkpointHit (this.transform.position);
+		Debug.Log("Passing in " + this.gameObject.transform.position);
+		gameEngine.GetComponent<GameEngine> ().checkpointHit (this.gameObject.transform.position);
 
 		Destroy (this.gameObject);
 	}

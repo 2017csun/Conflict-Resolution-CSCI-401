@@ -193,7 +193,7 @@ public class PlayerNetworking : NetworkBehaviour {
 		
 	}
 	public void CmdSetScore(int score) {
-		
+
 		gameEngine.updateScoreToClient (score);
 	}
 
@@ -204,6 +204,7 @@ public class PlayerNetworking : NetworkBehaviour {
 	[Command]
 	public void CmdUpdatePlayer2Hit () {
 		gameEngine.numPlayersHitCheckpoint++;
+		Debug.Log("Incrementing to " + gameEngine.numPlayersHitCheckpoint);
 	}
 
 	public void updateBothPlayersHit () {

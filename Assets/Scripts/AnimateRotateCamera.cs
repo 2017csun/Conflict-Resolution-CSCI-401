@@ -25,7 +25,7 @@ public class AnimateRotateCamera : MonoBehaviour {
             currRotation = Quaternion.Slerp(startRotation, endRotation, currTime / rotateTime);
 			currPos = Vector3.Lerp(startPos, posToMoveTo, currTime / rotateTime);
             Camera.main.transform.rotation = currRotation;
-			Camera.main.transform.position = currPos;
+			this.gameObject.transform.position = currPos;
         }
 	}
 
@@ -34,7 +34,7 @@ public class AnimateRotateCamera : MonoBehaviour {
         currTime = 0;
         endRotation = to;
         startRotation = Camera.main.transform.rotation;
-		startPos = Camera.main.transform.position;
+		startPos = this.gameObject.transform.position;
 		currPos = startPos;
         currRotation = startRotation;
 		posToMoveTo = new Vector3(pos.x, startPos.y, pos.z);
