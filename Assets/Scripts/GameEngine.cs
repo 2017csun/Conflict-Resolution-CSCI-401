@@ -1206,13 +1206,21 @@ public class GameEngine : NetworkBehaviour {
 			}
 		}
 
+		if (currCheckpoint == 5) {
+			if (this.isServer) {
+				updateServerSpin ();
+			} else {
+				updateClientSpin ();
+			}
+		}
+
 		if (currCheckpoint == 6) {
-			if(this.isServer){
+/*			if(this.isServer){
 				updateServerSpin();
 			} else {
 				updateClientSpin();
 //				Skip checkpoint for client
-			}
+			} */
             if (!hasSeenScenarioGuide)
             {
                 activateScenarioGuidePanel();
@@ -1231,8 +1239,12 @@ public class GameEngine : NetworkBehaviour {
 
 		if (currCheckpoint == 8) {
 			if(allowP1IntentionSpin || (allowP2IntentionSpin && !this.isServer)) {
+				if(this.isServer) {
+					currCheckpoint = currCheckpoint-3;
+				} else {
+					currCheckpoint = currCheckpoint-2;
+				}
 				activateSpinWheelPanel();
-				currCheckpoint = currCheckpoint-2;
 			}
 			updateSyncedPlayerVariables();
 		}

@@ -9,6 +9,8 @@ public class PlayerNetworking : NetworkBehaviour {
 
     private GameEngine gameEngine;
 
+	private IntentionsSpin intentionsSpin;
+
     [SerializeField]
     Camera FPSCharacterCam;
 
@@ -195,15 +197,6 @@ public class PlayerNetworking : NetworkBehaviour {
 		gameEngine.updateScoreToClient (score);
 	}
 
-	public void sendPlayer2Intention () {
-		CmdUpdatePlayer2Intention(gameEngine.getPlayer2Intention());
-	}
-
-	[Command]
-	public void CmdUpdatePlayer2Intention (string intention) {
-		gameEngine.syncPlayer2Intention(intention);
-	}
-
 	public void updatePlayer2Hit () {
 		CmdUpdatePlayer2Hit();
 	}
@@ -222,4 +215,14 @@ public class PlayerNetworking : NetworkBehaviour {
 		gameEngine.numPlayersHitCheckpoint = 0;
 		gameEngine.checkpointCleared = false;
 	}
+
+	public void updatePlayer2Spin () {
+		CmdUpdatePlayer2Spin();
+	}
+	
+	[Command]
+	public void CmdUpdatePlayer2Spin () {
+		gameEngine.getIntention (1);
+	}
+	
 }
