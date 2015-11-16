@@ -42,6 +42,10 @@ public class GameEngine : NetworkBehaviour {
 	// Gui Guide Variables
 	//---------------------------------------------
 	public GameObject welcomePanel;
+    public GameObject scenarioGuidePanel;
+    public GameObject intentionGuidePanel;
+    private bool hasSeenScenarioGuide = false;
+    private bool hasSeenIntentionGuide = false;
 
 	//---------------------------------------------
 	//	Player input variables
@@ -192,6 +196,9 @@ public class GameEngine : NetworkBehaviour {
 		timerMenu = timerMenu.GetComponent<Canvas> ();
 		timerMenu.enabled = false;
 
+        scenarioGuidePanel.SetActive(false);
+        intentionGuidePanel.SetActive(false);
+
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
 
@@ -233,6 +240,28 @@ public class GameEngine : NetworkBehaviour {
 
 
 	}
+
+    public void activateScenarioGuidePanel()
+    {
+        scenarioGuidePanel.SetActive(true);
+    }
+
+    public void deactivateScenarioGuidePanel()
+    {
+        scenarioGuidePanel.SetActive(false);
+    }
+
+    public void activateIntentionGuidePanel()
+    {
+        deactivateScenarioGuidePanel();
+        intentionGuidePanel.SetActive(true);
+    }
+
+    public void deactivateIntentionGuidePanel()
+    {
+        intentionGuidePanel.SetActive(false);
+    }
+
     public void activateNameInputPanel () {
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -1162,7 +1191,21 @@ public class GameEngine : NetworkBehaviour {
 				updateClientSpin();
 //				Skip checkpoint for client
 			}
+            if (!hasSeenScenarioGuide)
+            {
+                activateScenarioGuidePanel();
+                hasSeenScenarioGuide = true;
+            }
 		}
+
+        if (currCheckpoint == 7)
+        {
+            if (!hasSeenIntentionGuide)
+            {
+                activateIntentionGuidePanel();
+                hasSeenIntentionGuide = true;
+            }
+        }
 
 		if (currCheckpoint == 8) {
 			updateSyncedPlayerVariables();
