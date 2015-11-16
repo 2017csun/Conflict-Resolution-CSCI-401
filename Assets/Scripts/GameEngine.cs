@@ -1130,8 +1130,8 @@ public class GameEngine : NetworkBehaviour {
     public void checkpointHit() {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
-//            this.activateNameInputPanel ();
-			this.activateReset();
+            this.activateNameInputPanel ();
+//			this.activateReset();
 		}
 
 		if (currCheckpoint == 2) {

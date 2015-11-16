@@ -70,6 +70,10 @@ public class VoteManager : MonoBehaviour {
 		votePanel.SetActive(false);
 		animPanel.discardPanel();
 
+		report.text = "";
+		upVotes.text = "";
+		downVotes.text = "";
+
 		//	Enable player
 		engine.myPlayer.GetComponent<FirstPersonController>().enabled = true;
 	}
