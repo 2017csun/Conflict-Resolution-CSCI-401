@@ -42,6 +42,10 @@ public class GameEngine : NetworkBehaviour {
 	// Gui Guide Variables
 	//---------------------------------------------
 	public GameObject welcomePanel;
+    public GameObject scenarioGuidePanel;
+    public GameObject intentionGuidePanel;
+    private bool hasSeenScenarioGuide = false;
+    private bool hasSeenIntentionGuide = false;
 
 	//---------------------------------------------
 	//	Player input variables
@@ -193,6 +197,9 @@ public class GameEngine : NetworkBehaviour {
 		timerMenu = timerMenu.GetComponent<Canvas> ();
 		timerMenu.enabled = false;
 
+        scenarioGuidePanel.SetActive(false);
+        intentionGuidePanel.SetActive(false);
+
         //  Spawn the first checkpoint
         Instantiate(checkpointFab, allCheckpoints[currCheckpoint].position, Quaternion.identity);
 
@@ -234,6 +241,28 @@ public class GameEngine : NetworkBehaviour {
 
 
 	}
+
+    public void activateScenarioGuidePanel()
+    {
+        scenarioGuidePanel.SetActive(true);
+    }
+
+    public void deactivateScenarioGuidePanel()
+    {
+        scenarioGuidePanel.SetActive(false);
+    }
+
+    public void activateIntentionGuidePanel()
+    {
+        deactivateScenarioGuidePanel();
+        intentionGuidePanel.SetActive(true);
+    }
+
+    public void deactivateIntentionGuidePanel()
+    {
+        intentionGuidePanel.SetActive(false);
+    }
+
     public void activateNameInputPanel () {
         //  Disable player controls
         myPlayer.GetComponent<FirstPersonController>().enabled = false;
@@ -1072,7 +1101,7 @@ public class GameEngine : NetworkBehaviour {
     public void movePlayerToStart () {
         GameObject spawnLoc = GameObject.FindGameObjectWithTag("PlayerSpawn");
         myPlayer.transform.position = spawnLoc.transform.position;
-        myPlayer.transform.rotation = spawnLoc.transform.rotation;
+		myPlayer.transform.rotation = spawnLoc.transform.rotation;
     }
     public void reactivatePlayerControls () {
         myPlayer.GetComponent<FirstPersonController>().enabled = true;
@@ -1153,6 +1182,7 @@ public class GameEngine : NetworkBehaviour {
         //  Call appropriate function
 		if (currCheckpoint == 0) {
             this.activateNameInputPanel ();
+//			this.activateReset();
 		}
 
 		if (currCheckpoint == 2) {
@@ -1183,7 +1213,21 @@ public class GameEngine : NetworkBehaviour {
 				updateClientSpin();
 //				Skip checkpoint for client
 			}
+            if (!hasSeenScenarioGuide)
+            {
+                activateScenarioGuidePanel();
+                hasSeenScenarioGuide = true;
+            }
 		}
+
+        if (currCheckpoint == 7)
+        {
+            if (!hasSeenIntentionGuide)
+            {
+                activateIntentionGuidePanel();
+                hasSeenIntentionGuide = true;
+            }
+        }
 
 		if (currCheckpoint == 8) {
 			if(allowP1IntentionSpin || (allowP2IntentionSpin && !this.isServer)) {
@@ -1284,16 +1328,6 @@ public class GameEngine : NetworkBehaviour {
 				activateWaitingForOtherPlayerPanel();
 				InvokeRepeating ("waitingToResetGame", 0.5f, 0.5f);
 			}
-/*            myPlayer.GetComponent<FirstPersonController>().enabled = false;
-            myPlayer.GetComponent<AnimateRotateCamera>().beginRotation(
-               Quaternion.LookRotation(Vector3.left),
-               2
-            );
-            Invoke("whiteFadeOut", 2.5f);
-            Invoke("movePlayerToStart", 6);
-            Invoke("whiteFadeIn", 6.5f);
-            Invoke("reactivatePlayerControls", 8);
-			resetVars(); */
         }
 
 		if (currCheckpoint == 28) {
