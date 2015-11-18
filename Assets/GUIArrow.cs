@@ -20,6 +20,10 @@ public class GUIArrow : MonoBehaviour {
 	
 	void PositionArrow()
 	{
+		if (Camera.main == null) {
+			return;
+		}
+
 		this.gameObject.GetComponent<Image>().enabled = false;
 
 		//	Get horizontal field of view

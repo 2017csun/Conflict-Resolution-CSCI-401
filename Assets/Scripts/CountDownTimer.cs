@@ -22,19 +22,12 @@ public class CountDownTimer : MonoBehaviour {
 	public Canvas collaboratingInfoCanvas;
 	public Canvas avoidingInfoCanvas;
 	public Canvas accommodatingInfoCanvas;
+
 	public Canvas instructionCanvas;
 	public Text instructionText;
+
 	public Canvas scenarioCanvas;
 	public Text scenarioText;
-
-    //public Text waitingText;
-	/*
-	public Text competingText;
-	public Text collaboratingText;
-	public Text compromosingText;
-	public Text avoidingText;
-	public Text accommodatingText;
-	*/
 
 	// variables for timer
 	private int timeRemaining;
@@ -79,22 +72,12 @@ public class CountDownTimer : MonoBehaviour {
 
 		continueButton = continueButton.GetComponent<Button> ();
 
-        //waitingText = waitingText.GetComponent<Text>();
-        //waitingText.enabled = false;
-
 		timerMenu.enabled = false;
 
 		// for testing, comment the line for final version
 		//StartTimer ();
-		
-
-		/*
-		timerText = timerText.GetComponent<Text> ();
-		int numMin = timeRemaining / 60;
-		int numSec = timeRemaining % 60;
-		timerText.text = "0" + numMin + ":" + numSec;
-		*/
 	}
+
 	// do not need to use Update
 	void Update () {
 
@@ -108,27 +91,32 @@ public class CountDownTimer : MonoBehaviour {
 		avoidingButton.gameObject.SetActive (true);
 		accommodatingButton.gameObject.SetActive (true);
 		
+        // start the instruction text
 		instructionText.text = "Click on your intention below to learn more about them!";
-		//var instructionCanvasPos = instructionCanvas.GetComponent<RectTransform> ();
-		//instructionCanvasPos.localPosition = new Vector3 (0,145,0);
 		instructionCanvas.enabled = true;
 
-        /*
+        /* instruction text locataion bug fix; it doesn't happen anymore but maybe in the future
+        var instructionCanvasPos = instructionCanvas.GetComponent<RectTransform> ();
+        instructionCanvasPos.localPosition = new Vector3 (0,145,0);
 		Screen.SetResolution (Screen.currentResolution.width-1,
 		                      Screen.currentResolution.height,
 		                      false);
 		Screen.SetResolution (Screen.currentResolution.width+1,
 		                      Screen.currentResolution.height,
 		                      false);
-                          */
+        */
 
-		scenarioText.text = GameEngine.getScenarioTitle () + "\n"
+        // start the scenario text
+        scenarioText.text = GameEngine.getScenarioTitle () + "\n"
 			+ GameEngine.getScenario ();
 		scenarioCanvas.enabled = true;
-        //waitingText.enabled = false;
-		donePlanning = false;
+
+        // disable continu until timer is done
+        continueButton.gameObject.SetActive(false);
+
+        // start the timer variables
+        donePlanning = false;
 		doneRolePlaying = false;
-		continueButton.gameObject.SetActive (false);
 		timeRemaining = PLANNING_TIME;
 		timerText.text = "02:00";
 		timerMenu.enabled = true;
@@ -155,6 +143,7 @@ public class CountDownTimer : MonoBehaviour {
 
 		} else if (timeRemaining == 0 && !donePlanning && !doneRolePlaying) {
 			// planning has ended
+            // disable everything except scenario and instruction
 			competingButton.gameObject.SetActive(false);
 			compromisingButton.gameObject.SetActive(false);
 			collaboratingButton.gameObject.SetActive(false);
@@ -171,12 +160,9 @@ public class CountDownTimer : MonoBehaviour {
 			timerAlarm.Play ();
 			donePlanning = true;
 			timeRemaining = ROLEPLAYING_TIME;
-
-			// disable all the buttons
-
-
 		} else if (timeRemaining == 0 && donePlanning && !doneRolePlaying) {
 			// roleplaying has ended
+            // disable everything and enable continue button
 			timerAlarm.Play ();
 			doneRolePlaying = true;
 			timeRemaining = 0;
@@ -227,7 +213,7 @@ public class CountDownTimer : MonoBehaviour {
 		accommodatingInfoCanvas.enabled = true;
 	}
 
-	// may not need this function.
+	// press ok to disable all intention information pop ups
 	public void OKPressed() {
 		competingButton.enabled = true;
 		compromisingButton.enabled = true;
@@ -241,9 +227,4 @@ public class CountDownTimer : MonoBehaviour {
 		avoidingInfoCanvas.enabled = false;
 		accommodatingInfoCanvas.enabled = false;
 	}
-
-    public void startWaiting()
-    {
-        //waitingText.enabled = true;
-    }
 }
