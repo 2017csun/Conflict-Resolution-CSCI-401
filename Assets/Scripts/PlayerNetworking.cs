@@ -116,7 +116,39 @@ public class PlayerNetworking : NetworkBehaviour {
 //            Destroy(icon);
 //        }
     }
+public void setScoreIntent (string intentText) {
 
+		CmdSetScoreIntentText (intentText);
+
+	}
+	[Command] 
+	public void CmdSetScoreIntentText(string intentText) {
+		gameEngine.updateScoreIntentText(intentText);
+
+	}
+	public void sendcurrentIntentionsToServer(string intentionLong) {
+
+		CmdSendIntentionToServer (intentionLong);
+
+	}
+
+	public void updateTotalScore(int totalscore) {
+
+
+		CmdSetTotalScore (totalscore);
+	}
+
+	[Command]
+	public void CmdSetTotalScore(int totalscore) {
+
+		gameEngine.updateTotalScore (totalscore);
+
+	}
+	[Command]
+	public void CmdSendIntentionToServer(string intentionLong) {
+		gameEngine.updateIntentionNetworked (intentionLong);
+
+	}
     //  Send a new player to the server game engine
     public void sendPlayerToServer (string playerName, int playerIconIndex, int playerID) {
         CmdSendPlayerToServer(playerName, playerIconIndex, playerID);
@@ -197,7 +229,16 @@ public class PlayerNetworking : NetworkBehaviour {
 
 		gameEngine.updateScoreToClient (score);
 	}
+	public void sendClientProsAndCons2(string[] clientAnswers) {
+		CmdSetClientAnswers2 (clientAnswers);
+	}
 
+	[Command]
+	public void CmdSetClientAnswers2 (string[] clientAnswers) {
+
+		gameEngine.setClientAnswers2(clientAnswers);
+
+	}
 	public void updatePlayer2Hit () {
 		CmdUpdatePlayer2Hit();
 	}

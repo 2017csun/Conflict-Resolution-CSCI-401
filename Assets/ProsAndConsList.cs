@@ -53,88 +53,88 @@ public class ProsAndConsList : MonoBehaviour {
 		displayText.text = displayText.text + " " + currentIntention1;
 		//intentText.text = currentIntention1;
 		//competing pros
-		generalProConList.Add ("Asserting your positions so ideas are taken seriously");
-		generalProConList.Add ("Making quick decisions or achieving quick victory");
-		generalProConList.Add ("Protecting interests from attack");
-		masterProList.Add ("Asserting your positions so ideas are taken seriously");
-		masterProList.Add ("Making quick decisions or achieving quick victory");
-		masterProList.Add ("Protecting interests from attack");
+		generalProConList.Add ("Asserting your positions so ideas are taken seriously.");
+		generalProConList.Add ("Making quick decisions or achieving quick victory.");
+		generalProConList.Add ("Protecting interests from attack.");
+		masterProList.Add ("Asserting your positions so ideas are taken seriously.");
+		masterProList.Add ("Making quick decisions or achieving quick victory.");
+		masterProList.Add ("Protecting interests from attack.");
 
 		//competing cons
-		generalProConList.Add ("Straining work relationships as people develop resentment");
-		generalProConList.Add ("Not exchanging information freely");
-		generalProConList.Add ("Escalation conflict and creating and deadlock negotiations by using extreme tactics");
-		masterConList.Add ("Straining work relationships as people develop resentment");
-		masterConList.Add ("Not exchanging information freely");
-		masterConList.Add ("Escalation conflict and creating and deadlock negotiations by using extreme tactics");
+		generalProConList.Add ("Straining work relationships as people develop resentment.");
+		generalProConList.Add ("Not exchanging information freely.");
+		generalProConList.Add ("Escalation conflict and creating and deadlock negotiations by using extreme tactics.");
+		masterConList.Add ("Straining work relationships as people develop resentment.");
+		masterConList.Add ("Not exchanging information freely.");
+		masterConList.Add ("Escalation conflict and creating and deadlock negotiations by using extreme tactics.");
 		
 		//collaborative pros
-		generalProConList.Add ("Seeking innovative solutions and creating synergy through the exchange of ideas");
-		generalProConList.Add ("Working toward meeting both people’s concerns");
-		generalProConList.Add ("Resolving problems in a relationship");
-		masterProList.Add ("Seeking innovative solutions and creating synergy through the exchange of ideas");
-		masterProList.Add ("Working toward meeting both people’s concerns");
-		masterProList.Add ("Resolving problems in a relationship");
+		generalProConList.Add ("Seeking innovative solutions and creating synergy through the exchange of ideas.");
+		generalProConList.Add ("Working toward meeting both people’s concerns.");
+		generalProConList.Add ("Resolving problems in a relationship.");
+		masterProList.Add ("Seeking innovative solutions and creating synergy through the exchange of ideas.");
+		masterProList.Add ("Working toward meeting both people’s concerns.");
+		masterProList.Add ("Resolving problems in a relationship.");
 
 		
 		//collaborative cons
-		generalProConList.Add ("Involving a lot of time, full concentration, and creativity");
-		generalProConList.Add ("Psychologically demanding to be open to new ideas");
-		generalProConList.Add ("Causing hurt feelings by discussing sensitive issues");
-		masterConList.Add ("Involving a lot of time, full concentration, and creativity");
-		masterConList.Add ("Psychologically demanding to be open to new ideas");
-		masterConList.Add ("Causing hurt feelings by discussing sensitive issues");
+		generalProConList.Add ("Involving a lot of time, full concentration, and creativity.");
+		generalProConList.Add ("Psychologically demanding to be open to new ideas.");
+		generalProConList.Add ("Causing hurt feelings by discussing sensitive issues.");
+		masterConList.Add ("Involving a lot of time, full concentration, and creativity.");
+		masterConList.Add ("Psychologically demanding to be open to new ideas.");
+		masterConList.Add ("Causing hurt feelings by discussing sensitive issues.");
 
 		
 		
 		//compromising pros
-		generalProConList.Add ("Getting to a situation that is good enough");
-		generalProConList.Add ("Providing equal gains and losses for both people");
-		generalProConList.Add ("Meeting half way to reduce relationship strain");
-		masterProList.Add ("Getting to a situation that is good enough");
-		masterProList.Add ("Providing equal gains and losses for both people");
-		masterProList.Add ("Meeting half way to reduce relationship strain");
+		generalProConList.Add ("Getting to a situation that is good enough.");
+		generalProConList.Add ("Providing equal gains and losses for both people.");
+		generalProConList.Add ("Meeting half way to reduce relationship strain.");
+		masterProList.Add ("Getting to a situation that is good enough.");
+		masterProList.Add ("Providing equal gains and losses for both people.");
+		masterProList.Add ("Meeting half way to reduce relationship strain.");
 		
 		
 		//compromising cons
-		generalProConList.Add ("Developing feelings of frustration if issue not fully resolved");
-		generalProConList.Add ("Creating superficial understandings because  issue only partially resolved");
-		generalProConList.Add ("Diminishing the quality of decision due to less innovation in the decision");
-		masterConList.Add("Developing feelings of frustration if issue not fully resolved");
-		masterConList.Add ("Creating superficial understandings because  issue only partially resolved");
-		masterConList.Add ("Diminishing the quality of decision due to less innovation in the decision");
+		generalProConList.Add ("Developing feelings of frustration if issue not fully resolved.");
+		generalProConList.Add ("Creating superficial understandings because  issue only partially resolved.");
+		generalProConList.Add ("Diminishing the quality of decision due to less innovation in the decision.");
+		masterConList.Add("Developing feelings of frustration if issue not fully resolved.");
+		masterConList.Add ("Creating superficial understandings because  issue only partially resolved.");
+		masterConList.Add ("Diminishing the quality of decision due to less innovation in the decision.");
 		
 		//avoiding pros
-		generalProConList.Add ("Reducing stress by evading unpleasant people and topics");
-		generalProConList.Add ("Not stirring up problems or provoking trouble");
-		generalProConList.Add ("Gaining more time to be better prepared and be less distracted");
-		masterProList.Add ("Reducing stress by evading unpleasant people and topics");
-		masterProList.Add ("Not stirring up problems or provoking trouble");
-		masterProList.Add ("Gaining more time to be better prepared and be less distracted");
+		generalProConList.Add ("Reducing stress by evading unpleasant people and topics.");
+		generalProConList.Add ("Not stirring up problems or provoking trouble.");
+		generalProConList.Add ("Gaining more time to be better prepared and be less distracted.");
+		masterProList.Add ("Reducing stress by evading unpleasant people and topics.");
+		masterProList.Add ("Not stirring up problems or provoking trouble.");
+		masterProList.Add ("Gaining more time to be better prepared and be less distracted.");
 		
 		//avoiding cons
-		generalProConList.Add ("Procrastinating on work because people avoid each other");
-		generalProConList.Add ("Others feeling resentful as their concerns are neglected");
-		generalProConList.Add ("People walking on eggshells instead of speaking candidly with each other");
-		masterConList.Add ("Procrastinating on work because people avoid each other");
-		masterConList.Add ("Others feeling resentful as their concerns are neglected");
-		masterConList.Add ("People walking on eggshells instead of speaking candidly with each other");
+		generalProConList.Add ("Procrastinating on work because people avoid each other.");
+		generalProConList.Add ("Others feeling resentful as their concerns are neglected.");
+		generalProConList.Add ("People walking on eggshells instead of speaking candidly with each other.");
+		masterConList.Add ("Procrastinating on work because people avoid each other.");
+		masterConList.Add ("Others feeling resentful as their concerns are neglected.");
+		masterConList.Add ("People walking on eggshells instead of speaking candidly with each other.");
 		
 		//accomodating pros
-		generalProConList.Add ("Helping people meet their needs");
-		generalProConList.Add ("Supporting people and calming people down");
-		generalProConList.Add ("Building social capital by doing favors");
-		masterProList.Add ("Helping people meet their needs");
-		masterProList.Add ("Supporting people and calming people down");
-		masterProList.Add ("Building social capital by doing favors");
+		generalProConList.Add ("Helping people meet their needs.");
+		generalProConList.Add ("Supporting people and calming people down.");
+		generalProConList.Add ("Building social capital by doing favors.");
+		masterProList.Add ("Helping people meet their needs.");
+		masterProList.Add ("Supporting people and calming people down.");
+		masterProList.Add ("Building social capital by doing favors.");
 		
 		//accomodating cons
-		generalProConList.Add ("Sacrificing own interests and views");
-		generalProConList.Add ("Responding with less motivation because agreeing to things that are not of interest");
-		generalProConList.Add ("Losing people’s respect because constantly agreeing and not challenging");
-		masterConList.Add ("Sacrificing own interests and views");
-		masterConList.Add ("Responding with less motivation because agreeing to things that are not of interest");
-		masterConList.Add ("Losing people’s respect because constantly agreeing and not challenging");
+		generalProConList.Add ("Sacrificing own interests and views.");
+		generalProConList.Add ("Responding with less motivation because agreeing to things that are not of interest.");
+		generalProConList.Add ("Losing people’s respect because constantly agreeing and not challenging.");
+		masterConList.Add ("Sacrificing own interests and views.");
+		masterConList.Add ("Responding with less motivation because agreeing to things that are not of interest.");
+		masterConList.Add ("Losing people’s respect because constantly agreeing and not challenging.");
 	
 		competingList[0] = masterProList[0];
 		competingList[1] = masterProList [1];
@@ -220,6 +220,21 @@ public class ProsAndConsList : MonoBehaviour {
 		GUI.EndScrollView ();
 		
 	}*/
+
+
+	public void resetVars() {
+		 currentIntention1 = "";
+		 currentIntention2= "";
+
+		for (int i = savedAnswers.Count; i > 0; i--) {
+
+			savedAnswers.Remove(savedAnswers[i]);
+		}
+
+
+
+
+	}
 	public void populateScrollList(string intention){
 		List<string> tempList = new List<string> ();
 		List<string> tempList2 = new List<string> ();
