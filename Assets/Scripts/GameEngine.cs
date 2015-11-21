@@ -237,9 +237,7 @@ public class GameEngine : NetworkBehaviour {
 	[SyncVar]
 	public int totalscore;
 	[SyncVar]
-	public string player1answerLong;
-	[SyncVar] 
-	public string player2answerLong;
+	public string wrongListLong;
 	public GameObject scorePanel;
 	public GameObject finishRoundButton;
 	public GameObject ContinueButton;
@@ -909,11 +907,13 @@ public class GameEngine : NetworkBehaviour {
 					
 					if (intentListPro1.Contains (answerListP1 [i]) || intentListCon1.Contains (answerListP1 [i])) {
 						score++;
-						totalscore = totalscore + score;
+						totalscore = totalscore +1;
 						print ("SCORE IS " + score);
+						print ("TotalSCORE IS " + totalscore);
 					} else {
 				
 						wrongList.Add (answerListP1 [i] + "1");
+						wrongListLong += answerListP1[i] + "1";
 					}
 				}  
 			}
@@ -926,17 +926,19 @@ public class GameEngine : NetworkBehaviour {
 				
 					if (intentListPro2.Contains (answerListP2 [i]) || intentListCon2.Contains (answerListP2 [i])) {
 						score++;
-						totalscore = totalscore + score;
+						totalscore = totalscore + 1;
 						myPlayer.GetComponent<PlayerNetworking> ().updateScore (score);
 						myPlayer.GetComponent<PlayerNetworking> ().updateTotalScore (totalscore);
 						print ("SCORE2 IS " + score);
+						print ("TotalSCORE2 IS " + totalscore);
 					} else {
 							
 						wrongList.Add (answerListP2 [i] + "2");
+						wrongListLong += answerListP2[i] + "2";
 					}
 				}
 			}
-		
+			myPlayer.GetComponent<PlayerNetworking>().updateWrongList(wrongListLong);
 		}
 
 		for (int i = 0; i < wrongList.Count; i++) {
@@ -947,7 +949,10 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 
+	public void setWrongLong(string wronglist){
+		wrongListLong = wronglist; 
 
+	}
 
 
 	public void displayScore() {
@@ -955,7 +960,8 @@ public class GameEngine : NetworkBehaviour {
 		if (this.isServer) {
 			for (int i = 0; i < 6; i++) {
 				print (answerListP1 [i] + " is first answer ");
-				if (!wrongList.Contains (answerListP1 [i] + "1")) {
+				//if (!wrongList.Contains (answerListP1 [i] + "1")) {
+					if (!wrongListLong.Contains (answerListP1 [i] + "1")) {
 					//Color greenish = new Color(0.0,0.6,0.0,1.0);
 					player1Answers [i].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 				}
@@ -987,7 +993,7 @@ public class GameEngine : NetworkBehaviour {
 				for (int i = 0; i < 6; i++) {
 		
 					print (answerListP2 [i] + " is first answer ");
-					if (!wrongList.Contains (answerListP2 [i] + "2")) {
+					if (!wrongListLong.Contains (answerListP2 [i] + "2")) {
 						//Color greenish = new Color(0.0,0.6,0.0,1.0);
 						player1Answers [i].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
 					}
@@ -1017,7 +1023,8 @@ public class GameEngine : NetworkBehaviour {
 		ContinueButton.SetActive (false);
 		finishRoundButton.SetActive (true);
 		if (isServer) {
-
+			scoreName1.text = playerTwoClass.playerName;
+			intentScoreText.text = player2Intention;
 			for (int i = 0; i < player1Answers.Length; i++ ) {
 				player1Answers[i].color = Color.black;
 				
@@ -1028,27 +1035,27 @@ public class GameEngine : NetworkBehaviour {
 
 					
 
-			if (!wrongList.Contains (p2pro1 + "2")) {
+			if (!wrongListLong.Contains (p2pro1 + "2")) {
 					
 						player1Answers [0].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
 					}
-			if (!wrongList.Contains (p2pro2 + "2")) {
+			if (!wrongListLong.Contains (p2pro2 + "2")) {
 				
 				player1Answers [1].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
 			}
-			if (!wrongList.Contains (p2pro3 + "2")) {
+			if (!wrongListLong.Contains (p2pro3 + "2")) {
 				
 				player1Answers [2].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
 			}
-			if (!wrongList.Contains (p2con1 + "2")) {
+			if (!wrongListLong.Contains (p2con1 + "2")) {
 				
 				player1Answers [3].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
 			}
-			if (!wrongList.Contains (p2con2 + "2")) {
+			if (!wrongListLong.Contains (p2con2 + "2")) {
 				
 				player1Answers [4].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
 			}
-			if (!wrongList.Contains (p2con3 + "2")) {
+			if (!wrongListLong.Contains (p2con3 + "2")) {
 				
 				player1Answers [5].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0); //set color to green because the answer is right
 			}
@@ -1082,7 +1089,8 @@ public class GameEngine : NetworkBehaviour {
 
 
 		else {
-
+			scoreName1.text = playerOneClass.playerName;
+			intentScoreText.text = player1Intention;
 			roundScore.text = "Round Score : " + score;
 			
 			totalScore.text = "Total Score : " + totalscore;
@@ -1093,17 +1101,17 @@ public class GameEngine : NetworkBehaviour {
 			}
 
 		
-			if (!wrongList.Contains (p1pro1 + "1")) {
+			if (!wrongListLong.Contains (p1pro1 + "1")) {
 
 					player1Answers [0].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 			}
 			
-			if (!wrongList.Contains (p1pro2 + "1")) {
+			if (!wrongListLong.Contains (p1pro2 + "1")) {
 			
 				player1Answers [1].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 			}
 
-			if (!wrongList.Contains (p1pro3 + "1" )) {
+			if (!wrongListLong.Contains (p1pro3 + "1" )) {
 				
 				player1Answers [2].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 			}
@@ -1111,12 +1119,12 @@ public class GameEngine : NetworkBehaviour {
 				
 				player1Answers [3].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 			}
-			if (!wrongList.Contains (p1con2 + "1")) {
+			if (!wrongListLong.Contains (p1con2 + "1")) {
 				
 				player1Answers [4].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 			}
 
-			if (!wrongList.Contains (p1con3 + "1")) {
+			if (!wrongListLong.Contains (p1con3 + "1")) {
 				
 				player1Answers [5].color = new Color ((float)0.0, (float)0.6, (float)0.0, (float)1.0);//set color to green because the answer is right
 			}
@@ -1535,21 +1543,28 @@ public class GameEngine : NetworkBehaviour {
 		currCheckpoint = 1;
 		//reset round score 
 		score = 0;
-
+		ContinueButton.SetActive (true);
+		wrongListLong = "";
 		for (int i  = 0; i < answers.Count; i++) {
 			answers.Remove (answers[i]);
 			answers2.Remove (answers2[i]);
 		}
 		//clear the procons list
-		for (int i  = 0; i < intentListPro1.Count; i++) {
+		intentListPro1.Clear ();
+		intentListPro2.Clear ();
+		intentListCon1.Clear ();
+		intentListCon2.Clear ();
+		wrongList.Clear ();
+		/*for (int i  = 0; i < intentListPro1.Count; i++) {
 			intentListPro1.Remove (intentListPro1[i]);
 			intentListCon1.Remove (intentListCon1[i]);
 			intentListPro2.Remove (intentListPro2[i]);
 			intentListCon2.Remove (intentListCon2[i]);
 		}
-		for (int i = 0; i < wrongList.Count; i++) {
+		*/
+		/*for (int i = 0; i < wrongList.Count; i++) {
 			wrongList.Remove (wrongList[i]);
-		}
+		}*/
 		//	Remove the icons at the players
 		foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
 			Transform child = go.transform.GetChild(1);
@@ -1558,6 +1573,11 @@ public class GameEngine : NetworkBehaviour {
 
 		playerOneClass = null;
 		playerTwoClass = null;
+
+		for (int i = 0; i < player1Answers.Length; i++ ) {
+			player1Answers[i].color = Color.black;
+			
+		}
 
 	}
 

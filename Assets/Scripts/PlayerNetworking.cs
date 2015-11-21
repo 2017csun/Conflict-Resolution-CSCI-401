@@ -116,6 +116,16 @@ public class PlayerNetworking : NetworkBehaviour {
 //            Destroy(icon);
 //        }
     }
+	public void updateWrongList(string wrongList) {
+
+		CmdSetWrongList (wrongList);
+
+	}
+	[Command]
+	public void CmdSetWrongList(string wrongLong) {
+
+		gameEngine.setWrongLong(wrongLong);
+	}
 public void setScoreIntent (string intentText) {
 
 		CmdSetScoreIntentText (intentText);
