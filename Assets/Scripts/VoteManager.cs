@@ -41,7 +41,7 @@ public class VoteManager : MonoBehaviour {
 			Color textC = text.color;
 			if (up > down) {
 				report.text = "Congratulations! Things are back on track!";
-				reportC = textC = Color.green;
+				reportC = textC = new Color(0, 0.5f, 0);
 				text.text = "Yay!";
 			}
 			else if (up == down) {
