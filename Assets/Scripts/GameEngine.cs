@@ -97,6 +97,7 @@ public class GameEngine : NetworkBehaviour {
 	private static string[] scenariosList;
 	private static string[] scenariosTitles;
 	private static string[] intentionsList;
+	private List<int> previousSpunIntentions;
 	public GameObject intentionsWheel;
 	public GameObject spinWheelPanel;
 	public Text spinWheelText;
@@ -304,6 +305,7 @@ public class GameEngine : NetworkBehaviour {
             foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
                 if (go.GetComponent<FirstPersonController>().isActiveAndEnabled) {
                     myPlayer = go;
+					myPlayer.GetComponent<FirstPersonController>().enabled = false;
                 }
             }
         }
@@ -323,9 +325,20 @@ public class GameEngine : NetworkBehaviour {
         }
     }
 	public void deactivateWelcomePanel() {
-
+//		myPlayer.GetComponent<FirstPersonController>().enabled = false;
 		welcomePanel.SetActive (false);
-
+		//RETURN HERE
+		if(this.isServer) {
+			numPlayersHitCheckpoint++;
+		} else {
+			myPlayer.GetComponent<PlayerNetworking> ().updatePlayer2Hit ();
+		}
+		if(checkpointCleared) {
+			// Do nothing
+		} else {
+			activateWaitingForOtherPlayerPanel();
+			InvokeRepeating ("waitingToContinue", 0.5f, 0.5f);
+		}
 
 	}
 
@@ -1358,7 +1371,14 @@ public class GameEngine : NetworkBehaviour {
 	}
 
 	public void getIntention (int playerNumber) {
+		if (previousSpunIntentions.Count == 5) {
+			previousSpunIntentions.Clear ();
+		}
 		int intentionNumber = Random.Range (0, 4);
+		while (previousSpunIntentions.Contains(intentionNumber)) {
+			Debug.Log ("Rerolling cause same, got " + intentionsList[intentionNumber]);
+			intentionNumber = Random.Range (0, 4);
+		}
 		if (playerNumber == 0) {
 			player1Intention = intentionsList [intentionNumber];
 		} else {
@@ -1465,13 +1485,14 @@ public class GameEngine : NetworkBehaviour {
 		allowP1IntentionSpin = false;
 		allowP1IntentionSpin = false;
 		allowScenarioSpin = false;
+		previousSpunIntentions = new List<int> ();
 	}
 		
 		private void instantiateScenarios() {
 		scenariosList = new string[] {
 			"Two weeks ago, the Captain asked the Cadet to prepare a report on the number of enemy invasions. The Manager plans to share the report at the quarterly intergalactic meeting. The Cadet procrastinates doing the work and plans to complete the report the morning of the meeting. When the Cadet reports to work, there is a system failure with the computer and the system will be down all day for repairs. When the Captain asks for the report for the meeting that will occur in an hour, the Cadet does not have the report to give to the Captain. What’s the Captain to do? What is the Cadet’s response when the Captain comes to ask for the report?", 
 			"The new Lieutenant of Communications instructs the Lieutenant of Navigation to inform the staff of the new meeting location change from conference room to the flight deck. The Lieutenant of Navigation did not share the information with everyone. Some people show up at the conference room for the meeting and some show up on the flight deck. After the initial confusion, the meeting occurs on the flight deck. This isn’t the first time the Lieutenant of Navigation has made this mistake. After the meeting, the Lieutenant of Communications schedules a meeting with the Lieutenant of Navigation to resolve the miscommunication issue. What will the Lieutenant of Communications say? How will the Lieutenant of Navigation respond?", 
-			"The Lieutenant Commander of Weapons in charge of the new satellite design and deployment project is working with the Ensign from Weapons who has the expertise on satellite design but no experience in the field of satellite deployment. The Ensign constantly challenges the Lieutenant Commander’s design plans. The Lieutenant Commander has been patient up to a point, but at the last meeting, erupts out of anger and frustration and shuts down the Ensign in front of the whole team. The Ensign sits in silence and quickly leaves at the end of the meeting. The Lieutenant Commander soon realizes the Ensign’s expertise is needed for the project. How will the Lieutenant Commander resolve the situation? What is the best way for the Ensign to respond to the Lieutenant Commander in light of the Lieutenant Commander actions at the meeting", 
+			"The Lieutenant Commander of Weapons in charge of the new satellite design and deployment project is working with the Ensign from Weapons who has the expertise on satellite design but no experience in the field of satellite deployment. The Ensign constantly challenges the Lieutenant Commander’s design plans. The Lieutenant Commander has been patient up to a point, but at the last meeting, erupts out of anger and frustration and shuts down the Ensign in front of the whole team. The Ensign sits in silence and quickly leaves at the end of the meeting. The Lieutenant Commander soon realizes the Ensign’s expertise is needed for the project. How will the Lieutenant Commander resolve the situation? What is the best way for the Ensign to respond to the Lieutenant Commander in light of the Lieutenant Commander actions at the meeting?", 
 			"The Captain encourages the Chief Officer to apply for the promotion to First Officer of the ship. The Chief Officer meets the requirements and submits the application according to protocol. Over dinner, the Captain reassures the Chief Officer the promotion belongs to the Chief Officer. A week later, the Chief Officer receives a letter from the Fleet Commander denying the application. The Chief Officer confronts the Captain in the transport room.  What will the Chief Officer say? How will the Captain seek to make things right?", 
 			"The team of Staff Officers schedules a meeting to finish the final presentation on new communications software. At an earlier meeting, the roles and responsibilities were assigned and deadlines were established. Everyone agree and committed to the plan. On the day of the meeting, the Staff Officer of Communications is a no show. There is no notice and no materials are submitted for the meeting. The project lead, the Staff Officer of Technology is rightfully upset since the presentation is fewer than six hours away. The Staff Officer of Technology tracks down the Staff Officer of Communications in the officers’ quarters. How will the Staff Officer of Communications respond to not showing up to the meeting? How will the Staff Officer of Technology guide and direct the conversation?", 
 			"During the last three team meetings to determine the hiring priorities for medical staff, the Physician’s Assistant talks too much and tends to dominate the discussion which impedes the efficiency of the discussion. The team delegates the lead nurse to speak with the Physician’s Assistant about the productivity of the next meeting. How with the Lead Nurse handle the situation? What will the outcome be for the Physician’s Assistant?", 
@@ -1597,6 +1618,18 @@ public class GameEngine : NetworkBehaviour {
 		}
 	}
 
+	private void waitingToContinue() {
+		if (numPlayersHitCheckpoint >= 2) {
+			bothPlayersHit();
+			if(this.isServer) {
+				justResetGame = true;
+			} else {
+				myPlayer.GetComponent<PlayerNetworking>().updateJustResetGame(true);
+			}
+			myPlayer.GetComponent<FirstPersonController>().enabled = true;
+		}
+	}
+
 	private void waitingToChoosePlayer() {
 		if (numPlayersHitCheckpoint >= 2) {
 			bothPlayersHit();
@@ -1656,7 +1689,7 @@ public class GameEngine : NetworkBehaviour {
 				if(this.isServer) {
 					justResetGame = false;
 				} else {
-					myPlayer.GetComponent<PlayerNetworking>().updateJustResetGame();
+					myPlayer.GetComponent<PlayerNetworking>().updateJustResetGame(false);
 				}
 			}
 		}
