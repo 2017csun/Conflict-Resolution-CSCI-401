@@ -1863,4 +1863,11 @@ public class GameEngine : NetworkBehaviour {
             fullChangeLayer(child, layer);
         }
     }
+
+	public void ExitGame() {
+		print ("Quitting Game");
+		Application.Quit();
+
+
+	}
 }
