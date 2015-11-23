@@ -128,8 +128,9 @@ public class CountDownTimer : MonoBehaviour {
 
 	// function to count down the timer
 	void CountDown() {
-		// count down here
-		if (timeRemaining > 0) {
+        // count down here
+        timerText.color = Color.black;
+        if (timeRemaining > 0) {
 			timeRemaining--;
 			int numMin = timeRemaining / 60;
 			int numSec = timeRemaining % 60;
@@ -138,10 +139,12 @@ public class CountDownTimer : MonoBehaviour {
 				timerText.text = "0" + numMin + ":" + numSec;
 			} else {
 				timerText.text = "0" + numMin + ":0" + numSec;
-				timerText.color = Color.red;
 			}
 
-		} else if (timeRemaining == 0 && !donePlanning && !doneRolePlaying) {
+            if (timeRemaining < 10) timerText.color = Color.red;
+            else timerText.color = Color.black;
+
+        } else if (timeRemaining == 0 && !donePlanning && !doneRolePlaying) {
 			// planning has ended
             // disable everything except scenario and instruction
 			competingButton.gameObject.SetActive(false);
