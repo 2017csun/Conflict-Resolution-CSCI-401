@@ -7,8 +7,8 @@ public class CountDownTimer : MonoBehaviour {
 	public Canvas timerMenu;
 
 	// change these two values accordingly
-	const int PLANNING_TIME = 11; // in number of seconds
-	const int ROLEPLAYING_TIME = 11; // in number of seconds
+	const int PLANNING_TIME = 120; // in number of seconds
+	const int ROLEPLAYING_TIME = 240; // in number of seconds
 
 	public Button competingButton;
 	public Button compromisingButton;
