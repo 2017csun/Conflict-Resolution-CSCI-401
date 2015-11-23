@@ -661,6 +661,7 @@ public class GameEngine : NetworkBehaviour {
 			playerIcons[currentIcon].transform.position = new Vector3(0, -20, 0);
 
             currEditedPlayer.playerIcon = Instantiate(playerIcons[currentIcon]);
+			currEditedPlayer.playerIconIndex = currentIcon;
             allPlayers.Add(new PlayerClass(currEditedPlayer));
             Debug.Log("Added icon " + currEditedPlayer.playerIcon + " to player #" + currEditedPlayer.playerID);
 
@@ -721,6 +722,7 @@ public class GameEngine : NetworkBehaviour {
         //  Create and add the player
         PlayerClass newPlayer = new PlayerClass(playerName, playerID);
         newPlayer.playerIcon = Instantiate(playerIcons[iconIndex]);
+		newPlayer.playerIconIndex = iconIndex;
 
         Debug.Log("Network creating player #" + playerID + " named " + playerName + " with icon " + newPlayer.playerIcon.name);
 
@@ -835,6 +837,8 @@ public class GameEngine : NetworkBehaviour {
 			//also updatename in score panel
 			scoreName1.text = playerOneClass.playerName;
 			scoreName2.text = playerTwoClass.playerName;
+
+			Debug.Log("My player icon is " + playerOneClass.playerIcon.name);
 			playerOneClass.playerIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f;
 		}
@@ -846,6 +850,7 @@ public class GameEngine : NetworkBehaviour {
 			scoreName2.text = playerOneClass.playerName;
 			scoreName1.text = playerTwoClass.playerName;
 
+			Debug.Log("My player icon is " + playerTwoClass.playerIcon.name);
 			playerTwoClass.playerIcon.transform.position =
                 Camera.main.transform.position + Camera.main.transform.forward * .8f + Camera.main.transform.up * -.3f; 
 		}
@@ -1090,17 +1095,7 @@ public class GameEngine : NetworkBehaviour {
 				answerKey1 [3].text = "-" + p2intcon1;
 				answerKey1 [4].text = "-" + p2intcon2;
 				answerKey1 [5].text = "-" + p2intcon3;
-					
-					
-
-				
 			}	
-			
-
-
-
-
-
 		else {
 			scoreName1.text = playerOneClass.playerName;
 			intentScoreText.text = player1Intention;
@@ -1586,10 +1581,18 @@ public class GameEngine : NetworkBehaviour {
 		/*for (int i = 0; i < wrongList.Count; i++) {
 			wrongList.Remove (wrongList[i]);
 		}*/
-		//	Remove the icons at the players
+		//	Move away the icons at the players
 		foreach (GameObject go in GameObject.FindGameObjectsWithTag("Player")) {
 			Transform child = go.transform.GetChild(1);
-			child.gameObject.SetActive(false);
+			child.SetParent(null);
+			child.localScale = new Vector3(0.2f, 0.2f, 0.2f);	//	Reset its size
+			child.gameObject.GetComponent<RotateSlowly>().enabled = true;    //  Start the rotating script
+
+			//	Reset layers
+			child.gameObject.layer = LayerMask.NameToLayer("Icons");
+			this.fullChangeLayer(child, "Icons");
+
+			child.position = new Vector3(0, 20, 0);
 		}
 
 		playerOneClass = null;
@@ -1712,7 +1715,7 @@ public class GameEngine : NetworkBehaviour {
 			if(checkpointCleared) {
 				resetPlayersHit();
 			}
-		} 
+		}
 
 		if (currCheckpoint == 5) {
 			if (this.isServer) {
@@ -1893,4 +1896,11 @@ public class GameEngine : NetworkBehaviour {
             fullChangeLayer(child, layer);
         }
     }
+
+	public void ExitGame() {
+		print ("Quitting Game");
+		Application.Quit();
+
+
+	}
 }
