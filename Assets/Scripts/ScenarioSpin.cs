@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ScenarioSpin : NetworkBehaviour {
 	
 	private bool spinning = false;
 	private float currentSpeed = 0;
 	public int currentRoll = 0;
+	private List<int> previousSpun;
 //	public NetworkView nView;
 
 	// Use this for initialization
@@ -14,6 +16,7 @@ public class ScenarioSpin : NetworkBehaviour {
 //		nView = GetComponent<NetworkView>();
 //		nView.observed = this;
 		GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+		previousSpun = new List<int>();
 	}
 
 	void DecreaseSpeed() {
@@ -35,17 +38,18 @@ public class ScenarioSpin : NetworkBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyUp ("space") && GameEngine.allowScenarioSpin) {
-			Debug.Log("Here");
 			if (!spinning) {
-				Debug.Log("But not here?");
 				GameEngine.allowScenarioSpin = false;
+				if(previousSpun.Count == 8) {
+					previousSpun.Clear();
+				}
 				int roll = Random.Range (0, 8);
+				while(previousSpun.Contains(roll)) {
+					Debug.Log ("Rerolling cause same, got " + roll);
+					roll = Random.Range (0, 8);
+				}
+				previousSpun.Add(roll);
 				GameEngine.setScenario(roll);
-/*				if(Network.isServer) {
-					GameEngine.setScenario(roll);
-				} else {
-					GameEngine.setScenario(roll);
-				} */
 				int equivAngle;
 				if (currentRoll > roll) {
 					equivAngle = (calculateAngle (roll) + 360) - calculateAngle (currentRoll);

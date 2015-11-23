@@ -278,13 +278,13 @@ public void setScoreIntent (string intentText) {
 		gameEngine.getIntention (1);
 	}
 
-	public void updateJustResetGame () {
-		CmdUpdateJustResetGame();
+	public void updateJustResetGame (bool reset) {
+		CmdUpdateJustResetGame(reset);
 	}
 	
 	[Command]
-	public void CmdUpdateJustResetGame () {
-		gameEngine.justResetGame = false;
+	public void CmdUpdateJustResetGame (bool reset) {
+		gameEngine.justResetGame = reset;
 	}
 	
 }

@@ -1726,12 +1726,6 @@ public class GameEngine : NetworkBehaviour {
 		}
 
 		if (currCheckpoint == 6) {
-/*			if(this.isServer){
-				updateServerSpin();
-			} else {
-				updateClientSpin();
-//				Skip checkpoint for client
-			} */
             if (!hasSeenScenarioGuide)
             {
                 activateScenarioGuidePanel();
