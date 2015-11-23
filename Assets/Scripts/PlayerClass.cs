@@ -6,6 +6,7 @@ public class PlayerClass {
     public string playerName;
     public int playerID;
     public GameObject playerIcon;
+	public int playerIconIndex;
 
     public PlayerClass () { }
 
@@ -19,5 +20,6 @@ public class PlayerClass {
         this.playerName = other.playerName;
         this.playerID = other.playerID;
         this.playerIcon = other.playerIcon;
+		this.playerIconIndex = other.playerIconIndex;
     }
 }
