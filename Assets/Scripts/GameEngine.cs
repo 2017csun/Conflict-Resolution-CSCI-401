@@ -787,7 +787,7 @@ public class GameEngine : NetworkBehaviour {
         }
 
         //  Check if all players have been chosen to play
-        if (playersChosenToPlay.Count >= allPlayers.Count - 1) {
+        if (playersChosenToPlay.Count >= allPlayers.Count) {
             //  Clear it out so they can be chosen again
             playersChosenToPlay.Clear();
         }
@@ -803,6 +803,13 @@ public class GameEngine : NetworkBehaviour {
 	
 		//  Set the player one class variable
         playerOneClass = allPlayers[index];
+
+		//  Check if all players have been chosen to play
+		if (playersChosenToPlay.Count >= allPlayers.Count) {
+			//  Clear it out except for the player just chosen
+			playersChosenToPlay.Clear();
+			playersChosenToPlay.Add(index);
+		}
 
         int index2 = Random.Range(0, allPlayers.Count);
         //  Loop and reroll for as long as you got the same roll or one that's been picked already
