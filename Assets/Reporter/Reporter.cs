@@ -5,6 +5,7 @@ using UnityEngine;
 //using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 
 
@@ -265,6 +266,7 @@ public class Reporter : MonoBehaviour {
 	{
 		if( !Initialized )
 			Initialize();
+        SceneManager.sceneLoaded += OnSceneLoaded;
 	}
 	
 	void OnEnable()
@@ -282,7 +284,7 @@ public class Reporter : MonoBehaviour {
 		Sample sample = new Sample();
 		sample.fps = fps ;
 		sample.fpsText = fpsText ;
-		sample.loadedScene = (byte)Application.loadedLevel ;
+		sample.loadedScene = (byte)SceneManager.GetActiveScene().buildIndex;
 		sample.time = Time.realtimeSinceStartup ;
 		sample.memory = gcTotalMemory ;
 		samples.Add( sample );
@@ -301,8 +303,9 @@ public class Reporter : MonoBehaviour {
 			catch( System.Exception e ){
 				Debug.LogException( e );
 			}
-			scenes = new string[ Application.levelCount ];
-			currentScene = Application.loadedLevelName;
+			scenes = new string[ SceneManager.sceneCountInBuildSettings ];
+			currentScene = SceneManager.GetActiveScene().name;
+
 			DontDestroyOnLoad( gameObject );
 #if USE_OLD_UNITY
 			Application.RegisterLogCallback (new Application.LogCallback (CaptureLog));
@@ -1813,9 +1816,10 @@ public class Reporter : MonoBehaviour {
 	{
 		fpsText = fps.ToString("0.000");
 		gcTotalMemory = (((float)System.GC.GetTotalMemory(false))/1024/1024) ;
-		//addSample();
-		if( string.IsNullOrEmpty( scenes[ Application.loadedLevel ] ))
-			scenes[ Application.loadedLevel ] = Application.loadedLevelName ;
+        //addSample();
+        int activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        if ( string.IsNullOrEmpty( scenes[activeSceneIndex] ))
+			scenes[activeSceneIndex] = SceneManager.GetActiveScene().name;
 
 		float elapsed = Time.realtimeSinceStartup - lastUpdate ;
 		fps = 1f / elapsed ;
@@ -1985,13 +1989,13 @@ public class Reporter : MonoBehaviour {
 	}
 	
 	//new scene is loaded
-	void OnLevelWasLoaded()
+	void OnSceneLoaded(Scene scene, LoadSceneMode m)
 	{
 		if( clearOnNewSceneLoaded )
 			clear();
 
-		currentScene = Application.loadedLevelName ;
-		Debug.Log( "Scene " + Application.loadedLevelName + " is loaded");
+        SceneManager.SetActiveScene(scene);
+		Debug.Log( "Scene " + scene + " is loaded");
 	}
 	
 	//save user config
@@ -2036,7 +2040,7 @@ public class Reporter : MonoBehaviour {
             url = System.IO.Path.Combine(streamingAssetsPath, prefFile);
         }
 
-        if (Application.platform != RuntimePlatform.OSXWebPlayer && Application.platform != RuntimePlatform.WindowsWebPlayer)
+      //  if (Application.platform != RuntimePlatform.OSXWebPlayer && Application.platform != RuntimePlatform.WindowsWebPlayer)
             if (!url.Contains("://"))
                 url = "file://" + url;
 
