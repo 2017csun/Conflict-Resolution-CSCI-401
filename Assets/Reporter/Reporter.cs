@@ -282,7 +282,7 @@ public class Reporter : MonoBehaviour {
 		Sample sample = new Sample();
 		sample.fps = fps ;
 		sample.fpsText = fpsText ;
-		sample.loadedScene = (byte)Application.loadedLevel ;
+		sample.loadedScene = (byte)UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
 		sample.time = Time.realtimeSinceStartup ;
 		sample.memory = gcTotalMemory ;
 		samples.Add( sample );
@@ -301,8 +301,8 @@ public class Reporter : MonoBehaviour {
 			catch( System.Exception e ){
 				Debug.LogException( e );
 			}
-			scenes = new string[ Application.levelCount ];
-			currentScene = Application.loadedLevelName;
+			scenes = new string[ UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings ];
+			currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 			DontDestroyOnLoad( gameObject );
 #if USE_OLD_UNITY
 			Application.RegisterLogCallback (new Application.LogCallback (CaptureLog));
@@ -1813,9 +1813,10 @@ public class Reporter : MonoBehaviour {
 	{
 		fpsText = fps.ToString("0.000");
 		gcTotalMemory = (((float)System.GC.GetTotalMemory(false))/1024/1024) ;
-		//addSample();
-		if( string.IsNullOrEmpty( scenes[ Application.loadedLevel ] ))
-			scenes[ Application.loadedLevel ] = Application.loadedLevelName ;
+        //addSample();
+        int activeSceneIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        if ( string.IsNullOrEmpty( scenes[activeSceneIndex] ))
+			scenes[activeSceneIndex] = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
 		float elapsed = Time.realtimeSinceStartup - lastUpdate ;
 		fps = 1f / elapsed ;
@@ -1990,8 +1991,8 @@ public class Reporter : MonoBehaviour {
 		if( clearOnNewSceneLoaded )
 			clear();
 
-		currentScene = Application.loadedLevelName ;
-		Debug.Log( "Scene " + Application.loadedLevelName + " is loaded");
+		currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+		Debug.Log( "Scene " + currentScene + " is loaded");
 	}
 	
 	//save user config
@@ -2036,7 +2037,7 @@ public class Reporter : MonoBehaviour {
             url = System.IO.Path.Combine(streamingAssetsPath, prefFile);
         }
 
-        if (Application.platform != RuntimePlatform.OSXWebPlayer && Application.platform != RuntimePlatform.WindowsWebPlayer)
+      //  if (Application.platform != RuntimePlatform.OSXWebPlayer && Application.platform != RuntimePlatform.WindowsWebPlayer)
             if (!url.Contains("://"))
                 url = "file://" + url;
 
