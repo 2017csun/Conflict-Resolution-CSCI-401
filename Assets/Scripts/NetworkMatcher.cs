@@ -15,7 +15,6 @@ public class NetworkMatcher : MonoBehaviour {
 	void Start () {
         NetworkManager.singleton.StartMatchMaker();
         networkMatch = NetworkManager.singleton.matchMaker;
-        networkMatch.SetProgramAppID((AppID)379051);
         gameCode = "";
 	}
 
