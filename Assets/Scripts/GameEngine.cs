@@ -418,9 +418,9 @@ public class GameEngine : NetworkBehaviour {
 
 		//	Set the right layers for each icon
 		playerOneClass.playerIcon.layer = LayerMask.NameToLayer("Player1");
-		this.fullChangeLayer(playerOneClass.playerIcon.transform, "Player1");
+		fullChangeLayer(playerOneClass.playerIcon.transform, "Player1");
 		playerTwoClass.playerIcon.layer = LayerMask.NameToLayer("Player2");
-		this.fullChangeLayer(playerTwoClass.playerIcon.transform, "Player2");
+		fullChangeLayer(playerTwoClass.playerIcon.transform, "Player2");
 		if (this.isServer) {
 			Camera.main.cullingMask = Camera.main.cullingMask | 1 << LayerMask.NameToLayer("Player2");
 		}
@@ -1597,7 +1597,7 @@ public class GameEngine : NetworkBehaviour {
 
 			//	Reset layers
 			child.gameObject.layer = LayerMask.NameToLayer("Icons");
-			this.fullChangeLayer(child, "Icons");
+			fullChangeLayer(child, "Icons");
 
 			child.position = new Vector3(0, 20, 0);
 		}
