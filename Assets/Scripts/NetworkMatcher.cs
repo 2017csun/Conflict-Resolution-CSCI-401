@@ -48,16 +48,14 @@ public class NetworkMatcher : MonoBehaviour {
 		gCode = gCode.ToUpper();
 		gameCode = gCode;
 		Debug.Log("Attempting to join " + gCode);
-		NetworkManager.singleton.matchMaker.ListMatches(0, 20, gCode, OnMatchList);
+		//NetworkManager.singleton.matchMaker.ListMatches(0, 20, gCode, OnMatchList);
     }
 
     //	Check for exactly 1 match
-    public void OnMatchList (ListMatchResponse matchListResponse) {
-        List<MatchDesc> matches = matchListResponse.matches;
-
+    public void OnMatchList (bool success, string extendedInfo, List<MatchInfoSnapshot> matches) {
 		//	The match name must be exact same as gameCode
 		for (int i = 0; i < matches.Count; ++i) {
-			MatchDesc match = matches[i];
+            MatchInfoSnapshot match = matches[i];
 			if (!match.name.Equals(gameCode)) {
 				matches.RemoveAt(i);
 				i--;
@@ -73,7 +71,8 @@ public class NetworkMatcher : MonoBehaviour {
         }
         else if (matches.Count == 1) {
             Debug.Log("Joining " + matches[0].name);
-            networkMatch.JoinMatch(matches[0].networkId, "", NetworkManager.singleton.OnMatchJoined);
+            //networkMatch.JoinMatch(matches[0].networkId, "", NetworkManager.singleton.OnMatchJoined);
+            networkMatch.JoinMatch(matches[0].networkId, "", "", "", 0, 0, NetworkManager.singleton.OnMatchJoined);
         }
         else {
 			menuScript.JoinFailed();
