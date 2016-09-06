@@ -29,14 +29,10 @@ public class NetworkMatcher : MonoBehaviour {
         }
         Debug.Log("Creating match under name: " + gameCode);
 
-        //	Create the matchmaker request
-        CreateMatchRequest create = new CreateMatchRequest();
-        create.name = gameCode;
-        create.size = 2;
-        create.advertise = true;
-        create.password = "";
-
-        networkMatch.CreateMatch(create, NetworkManager.singleton.OnMatchCreate);   
+        bool matchAdvertise = true;
+        uint matchSize = 2;
+        networkMatch.CreateMatch(gameCode, matchSize, matchAdvertise, "", "", "", 0, 0, NetworkManager.singleton.OnMatchCreate);
+        //the empty strings and zeroes are; password, publicClientAddress, privateClientAddress, scoreForMatch, and requestDomain
     }
 
     //--------------------------------------------------
