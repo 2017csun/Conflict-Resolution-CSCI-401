@@ -305,7 +305,6 @@ public class Reporter : MonoBehaviour {
 			}
 			scenes = new string[ SceneManager.sceneCountInBuildSettings ];
 			currentScene = SceneManager.GetActiveScene().name;
-
 			DontDestroyOnLoad( gameObject );
 #if USE_OLD_UNITY
 			Application.RegisterLogCallback (new Application.LogCallback (CaptureLog));
