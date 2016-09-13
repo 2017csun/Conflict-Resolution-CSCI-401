@@ -11,9 +11,9 @@ EditorBuildSettings:
     path: Assets/_Scenes/MainMenu Scene.unity
   - enabled: 1
     path: Assets/_Scenes/Main Scene.unity
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Scenes/Kristen's Scene.unity
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Scenes/Eric_Scene.unity
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Scenes/Angela's Scene.unity

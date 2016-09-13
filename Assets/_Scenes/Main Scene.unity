@@ -2942,6 +2942,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
   m_IsPrefabParent: 0
@@ -4478,8 +4486,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4996,8 +5004,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -5465,6 +5473,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ec6d6870917a4c69b15cad7da0c0db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scrollview: {fileID: 0}
+  gameEngine: {fileID: 1588267115}
+  displayText: {fileID: 0}
+  currentIntention1: 
+  currentIntention2: 
+  proConsList1: []
+  proConsList2: []
+  intentText: {fileID: 0}
+  buttons: []
+  savedAnswers: []
+  generalProConList: []
+  masterProList: []
+  masterConList: []
+  competingList: []
+  accomList: []
+  collabList: []
+  avoidList: []
+  compromiseList: []
+  chooseButton: {fileID: 0}
+  scr: {x: 0, y: 0}
 --- !u!4 &155696227
 Transform:
   m_ObjectHideFlags: 0
@@ -7387,6 +7415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dbf53f61395389449f438008604102e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentRoll: 0
 --- !u!54 &207168321
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8042,8 +8071,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -11061,6 +11090,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6447e893d3b8b455aa4977d0567ffa7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  engine: {fileID: 1588267115}
+  votePanel: {fileID: 2039824483}
+  errorPanel: {fileID: 1432670534}
+  submitButton: {fileID: 1174619995}
+  animPanel: {fileID: 963181390}
+  upVotes: {fileID: 638354509}
+  downVotes: {fileID: 1825876698}
+  report: {fileID: 1752414577}
 --- !u!4 &314194414
 Transform:
   m_ObjectHideFlags: 0
@@ -23428,8 +23465,8 @@ RectTransform:
   m_RootOrder: 12
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315, y: 260.5}
-  m_SizeDelta: {x: 630, y: 521}
+  m_AnchoredPosition: {x: 368.5, y: 135.5}
+  m_SizeDelta: {x: 737, y: 271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &637154892
 MonoBehaviour:
@@ -23844,6 +23881,18 @@ Prefab:
     - target: {fileID: 400002, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11461412, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
+      propertyPath: m_TransformSyncMode
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
@@ -27079,8 +27128,8 @@ RectTransform:
   m_RootOrder: 17
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315, y: 260.5}
-  m_SizeDelta: {x: 630, y: 521}
+  m_AnchoredPosition: {x: 368.5, y: 135.5}
+  m_SizeDelta: {x: 737, y: 271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &754459812
 MonoBehaviour:
@@ -27941,7 +27990,7 @@ ParticleSystemRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_SelectedWireframeHidden: 0
+  m_SelectedWireframeHidden: 1
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -33516,6 +33565,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
   m_IsPrefabParent: 0
@@ -34752,6 +34809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa779bcf16ac834099d71dc70e99d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeBeforeFadeIn: 0
 --- !u!114 &897236115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37118,8 +37176,8 @@ RectTransform:
   m_RootOrder: 14
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315, y: 260.5}
-  m_SizeDelta: {x: 630, y: 521}
+  m_AnchoredPosition: {x: 368.5, y: 135.5}
+  m_SizeDelta: {x: 737, y: 271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &944147105
 MonoBehaviour:
@@ -37653,6 +37711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8ca144f01d15114fbad7d4558d3d901, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animationTime: 0
 --- !u!114 &963181391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38023,17 +38082,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -40674,6 +40722,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
   m_IsPrefabParent: 0
@@ -42434,7 +42490,7 @@ ParticleSystemRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_SelectedWireframeHidden: 0
+  m_SelectedWireframeHidden: 1
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -48180,6 +48236,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cfa50e1fd0421c47addc53b39219346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentRoll: 0
+  gameEngine: {fileID: 1588267115}
 --- !u!54 &1206368041
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -53746,8 +53804,8 @@ RectTransform:
   m_RootOrder: 18
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315, y: 260.5}
-  m_SizeDelta: {x: 630, y: 521}
+  m_AnchoredPosition: {x: 368.5, y: 135.5}
+  m_SizeDelta: {x: 737, y: 271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1368900566
 MonoBehaviour:
@@ -53954,6 +54012,14 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
       propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -55698,6 +55764,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6d585603bad164c6a828800a289ede46, type: 2}
   m_IsPrefabParent: 0
@@ -55765,8 +55839,8 @@ RectTransform:
   m_RootOrder: 13
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315, y: 260.5}
-  m_SizeDelta: {x: 630, y: 521}
+  m_AnchoredPosition: {x: 368.5, y: 135.5}
+  m_SizeDelta: {x: 737, y: 271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1416378599
 MonoBehaviour:
@@ -60221,8 +60295,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -62256,8 +62330,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -62408,6 +62482,103 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af1c626e91741354a869203e3ba4bc81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myPlayer: {fileID: 0}
+  animationPanel: {fileID: 963181390}
+  checkpointFab: {fileID: 156846, guid: 54271e5fa3702434ca0e2b5b4d7578ac, type: 2}
+  checkpointLocations: {fileID: 1456933441}
+  errorPanel: {fileID: 1432670534}
+  fadeScene: {fileID: 897236114}
+  waitingForOtherPlayerPanel: {fileID: 1903874190}
+  checkpointCleared: 0
+  numPlayersHitCheckpoint: 0
+  justResetGame: 0
+  currAvailableID: 1
+  welcomePanel: {fileID: 467348628}
+  scenarioGuidePanel: {fileID: 902161577}
+  intentionGuidePanel: {fileID: 1012175410}
+  playerIconFabs: []
+  playerIcons: []
+  playerNameTextFields: []
+  nameInputPanel: {fileID: 1303468364}
+  panelIconSelect: {fileID: 1864715680}
+  spotlight: {fileID: 257668639}
+  summaryPanel: {fileID: 943213300}
+  buttonAddPlayer: {fileID: 1028984571}
+  maxMessage: {fileID: 548650815}
+  choosePlayersPanel: {fileID: 113928512}
+  playersChosenPanel: {fileID: 2118518410}
+  iconName: {fileID: 1277612868}
+  player1: {fileID: 1657291447}
+  player2: {fileID: 1383574330}
+  roundNumber: 0
+  allowP1IntentionSpin: 0
+  allowP2IntentionSpin: 0
+  intentionsWheel: {fileID: 1206368036}
+  spinWheelPanel: {fileID: 954390159}
+  spinWheelText: {fileID: 1443398340}
+  recapPanel: {fileID: 666880991}
+  player1NameText: {fileID: 848509284}
+  player2NameText: {fileID: 1665002431}
+  player1RoleText: {fileID: 1774548587}
+  player2RoleText: {fileID: 1806431997}
+  player1IntentionText: {fileID: 1218863966}
+  player2IntentionText: {fileID: 1544239482}
+  scenarioTitleText: {fileID: 612610303}
+  scenarioText: {fileID: 1480880491}
+  voteManager: {fileID: 314194412}
+  timerMenu: {fileID: 2048966021}
+  countDownTimer: {fileID: 2048966019}
+  answers: []
+  answers2: []
+  proConPanel: {fileID: 449970045}
+  intentListPro1: []
+  intentListCon1: []
+  intentListPro2: []
+  intentListCon2: []
+  player1Answers:
+  - {fileID: 1800940460}
+  - {fileID: 241992022}
+  - {fileID: 1379372422}
+  - {fileID: 1470654315}
+  - {fileID: 1372413771}
+  - {fileID: 1496159872}
+  player2Answers:
+  - {fileID: 2040391672}
+  - {fileID: 1475847904}
+  - {fileID: 868779070}
+  - {fileID: 1426775593}
+  - {fileID: 1187372568}
+  - {fileID: 1880044836}
+  answerKey1:
+  - {fileID: 443231841}
+  - {fileID: 1315557558}
+  - {fileID: 24355147}
+  - {fileID: 293054301}
+  - {fileID: 1740587061}
+  - {fileID: 417152359}
+  answerKey2:
+  - {fileID: 900475119}
+  - {fileID: 1077924284}
+  - {fileID: 1289917909}
+  - {fileID: 1528416371}
+  - {fileID: 3470880}
+  - {fileID: 413893491}
+  roundScore: {fileID: 1828424832}
+  totalScore: {fileID: 303020214}
+  intentScoreText: {fileID: 1038701505}
+  intent2: 
+  intentScoreText2: {fileID: 110858881}
+  scoreName1: {fileID: 1768729902}
+  scoreName2: {fileID: 1119024443}
+  score: 0
+  totalscore: 0
+  wrongListLong: 
+  scorePanel: {fileID: 65402809}
+  finishRoundButton: {fileID: 1496994008}
+  ContinueButton: {fileID: 828065125}
+  pscript: {fileID: 155696226}
+  Player1ProCon: {fileID: 1556123918}
+  Player2ProCon: {fileID: 2012803382}
 --- !u!4 &1588267116
 Transform:
   m_ObjectHideFlags: 0
@@ -63334,7 +63505,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -63356,7 +63527,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!1001 &1626231261
 Prefab:
   m_ObjectHideFlags: 0
@@ -66623,6 +66794,14 @@ Prefab:
       propertyPath: m_TransformSyncMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
   m_IsPrefabParent: 0
@@ -68564,8 +68743,8 @@ RectTransform:
   m_RootOrder: 15
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315, y: 260.5}
-  m_SizeDelta: {x: 630, y: 521}
+  m_AnchoredPosition: {x: 368.5, y: 135.5}
+  m_SizeDelta: {x: 737, y: 271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1758372290
 MonoBehaviour:
@@ -69659,8 +69838,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -71660,8 +71839,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -72927,8 +73106,8 @@ RectTransform:
   m_RootOrder: 16
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 315, y: 260.5}
-  m_SizeDelta: {x: 630, y: 521}
+  m_AnchoredPosition: {x: 368.5, y: 135.5}
+  m_SizeDelta: {x: 737, y: 271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1853950726
 MonoBehaviour:
@@ -74192,8 +74371,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -75960,6 +76139,14 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
       propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: 4077a99799ce54cdf9cfb8869fb20c22, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -78772,6 +78959,14 @@ Prefab:
       propertyPath: m_TransformSyncMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8200000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fc989c2e3fc774c839ba0d909b9c2aad, type: 2}
   m_IsPrefabParent: 0
@@ -79456,6 +79651,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506379655b0b08c489f8ec4930eb8c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timerMenu: {fileID: 0}
+  competingButton: {fileID: 0}
+  compromisingButton: {fileID: 0}
+  collaboratingButton: {fileID: 0}
+  avoidingButton: {fileID: 0}
+  accommodatingButton: {fileID: 0}
+  continueButton: {fileID: 0}
+  competingInfoCanvas: {fileID: 0}
+  compromisingInfoCanvas: {fileID: 0}
+  collaboratingInfoCanvas: {fileID: 0}
+  avoidingInfoCanvas: {fileID: 0}
+  accommodatingInfoCanvas: {fileID: 0}
+  instructionCanvas: {fileID: 0}
+  instructionText: {fileID: 0}
+  scenarioCanvas: {fileID: 0}
+  scenarioText: {fileID: 0}
+  timerText: {fileID: 2108356239}
+  timerAlarm: {fileID: 2048966020}
 --- !u!82 &2048966020
 AudioSource:
   m_ObjectHideFlags: 0
@@ -79507,7 +79720,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -79529,7 +79742,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!223 &2048966021
 Canvas:
   m_ObjectHideFlags: 0

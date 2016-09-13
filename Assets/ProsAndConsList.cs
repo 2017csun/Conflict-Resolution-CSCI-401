@@ -12,7 +12,7 @@ public class ProsAndConsList : MonoBehaviour {
 	// Pros and Cons Variables
 	//-------------------------------------------
 	[Header("Pros and Cons Variables")]
-	public 	GameObject scrollview;
+	//public 	GameObject scrollview;
 	public GameEngine gameEngine;
 	public Text displayText;
 	public string currentIntention1;
